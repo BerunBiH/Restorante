@@ -1,0 +1,6 @@
+@eRestoranteAPI_HostAddress = http://localhost:5266
+
+GET {{eRestoranteAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
