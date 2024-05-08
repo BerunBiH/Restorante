@@ -1,4 +1,4 @@
-﻿using eRestorante.Model;
+﻿using eRestorante.Models;
 using eRestorante.Services.Database;
 using System;
 using System.Collections.Generic;
@@ -17,9 +17,9 @@ namespace eRestorante.Services
         {
             _context = context;
         }
-        List<Model.Dishes> dishes = new List<Dishes>()
+        List<Models.Dishes> dishes = new List<Dishes>()
         {
-            new Model.Dishes()
+            new Models.Dishes()
             {
                 DishID = 1,
                 DishName="Burek",

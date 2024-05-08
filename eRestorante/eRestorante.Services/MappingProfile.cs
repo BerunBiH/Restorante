@@ -11,6 +11,8 @@ namespace eRestorante.Services
     {
         public MappingProfile() { 
             CreateMap<Database.User, eRestorante.Models.User>();
+            CreateMap<Models.Requests.UserInsertRequest, Database.User > ();
+            CreateMap<Models.Requests.UserUpdateRequest, Database.User > ();
         }
     }
 }

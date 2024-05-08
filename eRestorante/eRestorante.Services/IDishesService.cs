@@ -1,4 +1,4 @@
-﻿using eRestorante.Model;
+﻿using eRestorante.Models;
 using eRestorante.Services.Database;
 using System;
 using System.Collections.Generic;

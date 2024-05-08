@@ -1,4 +1,4 @@
-using eRestorante.Model;
+using eRestorante.Models;
 using eRestorante.Services;
 using eRestorante.Services.Database;
 using Microsoft.AspNetCore.Mvc;
