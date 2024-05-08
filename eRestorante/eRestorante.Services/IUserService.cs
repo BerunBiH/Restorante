@@ -1,5 +1,5 @@
 ﻿using eRestorante.Services.Database;
-using eRestorante.Model;
+using eRestorante.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,6 @@ namespace eRestorante.Services
 {
     public interface IUserService
     {
-        List<Model.User> Get();    
+        List<eRestorante.Models.User> Get();    
     }
 }

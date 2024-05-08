@@ -1,4 +1,4 @@
-using eRestorante.Model;
+using eRestorante.Models;
 using eRestorante.Services;
 using eRestorante.Services.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,7 @@ namespace eRestoranteAPI.Controllers
         }
 
         [HttpGet()]
-        public IEnumerable<eRestorante.Model.User> Get()
+        public IEnumerable<eRestorante.Models.User> Get()
         {
             return _service.Get();
         }

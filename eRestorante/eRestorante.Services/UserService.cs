@@ -1,42 +1,30 @@
 ﻿using eRestorante.Services.Database;
-using eRestorante.Model;
+using eRestorante.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using eRestorante.Models;
+using AutoMapper;
 
 namespace eRestorante.Services
 {
     public class UserService : IUserService
     {
         Ib200192Context _context;
+        public IMapper _mapper { get; set; }
 
-        public UserService(Ib200192Context context)
+        public UserService(Ib200192Context context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-        public List<Model.User> Get()
+        public List<eRestorante.Models.User> Get()
         {
             var entityList= _context.Users.ToList();
 
-            var list = new List<Model.User>();
-            foreach (var user in entityList)
-            {
-                list.Add(new Model.User()
-                {
-                    Email=user.UserEmail,
-                    UserName=user.UserName,
-                    UserSurname=user.UserSurname,
-                    UserPhone = user.UserPhone,
-                    UserStatus=user.UserStatus,
-                    UserImage = user.UserImage,
-                    UserId = user.UserId
-                });
-            }
-            return list;
+            return _mapper.Map<List<eRestorante.Models.User>>(entityList);
         }
     }
 }

@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds(type => type.ToString());
+});
 
 builder.Services.AddTransient<IDishesService, DishService>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -16,7 +20,9 @@ builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<Ib200192Context>(options =>
-options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddAutoMapper(typeof(IUserService));
 
 var app = builder.Build();
 
