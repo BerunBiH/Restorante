@@ -7,21 +7,21 @@ namespace eRestoranteAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DishesController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IDishesService _dishesService;
+        private readonly IUserService _service;
         //private readonly ILogger<WeatherForecastController> _logger;
 
-        public DishesController(IDishesService dishesService)
+        public UserController(IUserService service)
         {
             //_logger = logger;
-            _dishesService = dishesService;
+            _service = service;
         }
 
         [HttpGet()]
-        public IEnumerable<Dish> Get()
+        public IEnumerable<eRestorante.Model.User> Get()
         {
-            return _dishesService.Get();
+            return _service.Get();
         }
     }
 }

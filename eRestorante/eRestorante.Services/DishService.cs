@@ -1,4 +1,5 @@
 ﻿using eRestorante.Model;
+using eRestorante.Services.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,26 @@ namespace eRestorante.Services
 {
     public class DishService : IDishesService
     {
-        List<Dishes> dishes = new List<Dishes>()
+
+        Ib200192Context _context;
+
+        public DishService(Ib200192Context context)
         {
-            new Dishes()
+            _context = context;
+        }
+        List<Model.Dishes> dishes = new List<Dishes>()
+        {
+            new Model.Dishes()
             {
                 DishID = 1,
                 DishName="Burek",
                 DishDescription="FinBurekTOp",
             }
         };
-        public IList<Dishes> Get()
+        public IList<Dish> Get()
         {
-            return dishes;
+            var list =_context.Dishes.ToList();
+            return list;
         }
     }
 }

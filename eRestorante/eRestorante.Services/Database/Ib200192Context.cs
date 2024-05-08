@@ -9,7 +9,7 @@ public partial class Ib200192Context : DbContext
     public Ib200192Context()
     {
     }
-
+     
     public Ib200192Context(DbContextOptions<Ib200192Context> options)
         : base(options)
     {
