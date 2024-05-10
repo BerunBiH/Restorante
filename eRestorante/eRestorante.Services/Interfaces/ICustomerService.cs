@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using eRestorante.Models.Model;
 
-namespace eRestorante.Services
+namespace eRestorante.Services.Interfaces
 {
-    public interface IDrinkService
+    public interface ICustomerService : IService<Customer>
     {
-        Task<List<eRestorante.Models.Drink>> Get();
     }
 }

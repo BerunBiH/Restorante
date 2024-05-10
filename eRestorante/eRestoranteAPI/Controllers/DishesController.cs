@@ -1,6 +1,6 @@
 using eRestorante.Models;
-using eRestorante.Services;
 using eRestorante.Services.Database;
+using eRestorante.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eRestoranteAPI.Controllers

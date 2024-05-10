@@ -1,5 +1,4 @@
 ﻿using eRestorante.Services.Database;
-using eRestorante.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,8 +9,9 @@ using AutoMapper;
 using eRestorante.Models.Requests;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using eRestorante.Services.Interfaces;
 
-namespace eRestorante.Services
+namespace eRestorante.Services.Services
 {
     public class UserService : IUserService
     {
@@ -23,14 +23,14 @@ namespace eRestorante.Services
             _context = context;
             _mapper = mapper;
         }
-        public async Task<List<eRestorante.Models.User>> Get()
+        public async Task<List<Models.Model.User>> Get()
         {
             var entityList = await _context.Users.ToListAsync();
 
-            return _mapper.Map<List<eRestorante.Models.User>>(entityList);
+            return _mapper.Map<List<Models.Model.User>>(entityList);
         }
 
-        public Models.User Insert(UserInsertRequest request)
+        public Models.Model.User Insert(UserInsertRequest request)
         {
             var entity = new Database.User();
             _mapper.Map(request, entity);
@@ -41,17 +41,17 @@ namespace eRestorante.Services
             _context.Users.Add(entity);
             _context.SaveChanges();
 
-            return _mapper.Map<Models.User>(entity);
+            return _mapper.Map<Models.Model.User>(entity);
         }
 
-        public Models.User Update(int id, UserUpdateRequest request)
+        public Models.Model.User Update(int id, UserUpdateRequest request)
         {
             var entity = _context.Users.Find(id);
 
             _mapper.Map(request, entity);
 
             _context.SaveChanges();
-            return _mapper.Map<Models.User>(entity);
+            return _mapper.Map<Models.Model.User>(entity);
         }
 
         public static string GenerateSalt()
@@ -66,11 +66,11 @@ namespace eRestorante.Services
         public static string GenerateHash(string salt, string password)
         {
             byte[] src = Convert.FromBase64String(salt);
-            byte[] bytes= Encoding.Unicode.GetBytes(password);
+            byte[] bytes = Encoding.Unicode.GetBytes(password);
             byte[] dst = new byte[src.Length + bytes.Length];
 
-            System.Buffer.BlockCopy(src, 0, dst, 0, src.Length);
-            System.Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
+            Buffer.BlockCopy(src, 0, dst, 0, src.Length);
+            Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
 
             HashAlgorithm algorithm = HashAlgorithm.Create("SHA1");
             byte[] inArray = algorithm.ComputeHash(dst);
