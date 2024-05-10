@@ -11,7 +11,7 @@ namespace eRestorante.Services
 {
     public interface IUserService
     {
-        List<eRestorante.Models.User> Get();
+        Task<List<eRestorante.Models.User>> Get();
         Models.User Insert(UserInsertRequest request);
         Models.User Update(int id, UserUpdateRequest request);
     }
