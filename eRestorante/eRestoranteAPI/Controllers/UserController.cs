@@ -21,9 +21,9 @@ namespace eRestoranteAPI.Controllers
         }
 
         [HttpGet()]
-        public IEnumerable<eRestorante.Models.User> Get()
+        public async Task<IEnumerable<eRestorante.Models.User>> Get()
         {
-            return _service.Get();
+            return await _service.Get();
         }
 
         [HttpPost()]

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using eRestorante.Models.Requests;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 namespace eRestorante.Services
 {
@@ -22,9 +23,9 @@ namespace eRestorante.Services
             _context = context;
             _mapper = mapper;
         }
-        public List<eRestorante.Models.User> Get()
+        public async Task<List<eRestorante.Models.User>> Get()
         {
-            var entityList= _context.Users.ToList();
+            var entityList = await _context.Users.ToListAsync();
 
             return _mapper.Map<List<eRestorante.Models.User>>(entityList);
         }
@@ -75,6 +76,5 @@ namespace eRestorante.Services
             byte[] inArray = algorithm.ComputeHash(dst);
             return Convert.ToBase64String(inArray);
         }
-
     }
 }

@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddTransient<IDishesService, DishService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IDrinkService, DrinkService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
