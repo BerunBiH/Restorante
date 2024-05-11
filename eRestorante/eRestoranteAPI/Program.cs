@@ -1,5 +1,6 @@
-using eRestorante.Services;
 using eRestorante.Services.Database;
+using eRestorante.Services.Interfaces;
+using eRestorante.Services.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddTransient<IDishesService, DishService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IDrinkService, DrinkService>();
+builder.Services.AddTransient<ICustomerService, CustomerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

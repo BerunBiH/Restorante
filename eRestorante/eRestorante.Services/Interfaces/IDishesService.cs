@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eRestorante.Services
+namespace eRestorante.Services.Interfaces
 {
     public interface IDishesService
     {

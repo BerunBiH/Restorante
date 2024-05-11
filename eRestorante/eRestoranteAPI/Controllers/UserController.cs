@@ -1,7 +1,6 @@
-using eRestorante.Models;
 using eRestorante.Models.Requests;
-using eRestorante.Services;
 using eRestorante.Services.Database;
+using eRestorante.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -21,19 +20,19 @@ namespace eRestoranteAPI.Controllers
         }
 
         [HttpGet()]
-        public async Task<IEnumerable<eRestorante.Models.User>> Get()
+        public async Task<IEnumerable<eRestorante.Models.Model.User>> Get()
         {
             return await _service.Get();
         }
 
         [HttpPost()]
-        public eRestorante.Models.User Insert(UserInsertRequest request)
+        public eRestorante.Models.Model.User Insert(UserInsertRequest request)
         {
             return _service.Insert(request);
         }
 
         [HttpPut("{id}")]
-        public eRestorante.Models.User Update(int id, UserUpdateRequest request) 
+        public eRestorante.Models.Model.User Update(int id, UserUpdateRequest request) 
         {
             return _service.Update(id, request);
         }

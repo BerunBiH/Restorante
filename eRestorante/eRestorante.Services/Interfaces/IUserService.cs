@@ -1,5 +1,4 @@
 ﻿using eRestorante.Services.Database;
-using eRestorante.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using eRestorante.Models.Requests;
 
-namespace eRestorante.Services
+namespace eRestorante.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<List<eRestorante.Models.User>> Get();
-        Models.User Insert(UserInsertRequest request);
-        Models.User Update(int id, UserUpdateRequest request);
+        Task<List<Models.Model.User>> Get();
+        Models.Model.User Insert(UserInsertRequest request);
+        Models.Model.User Update(int id, UserUpdateRequest request);
     }
 }
