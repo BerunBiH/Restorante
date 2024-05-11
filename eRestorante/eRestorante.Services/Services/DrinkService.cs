@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,8 @@ using System.Threading.Tasks;
 
 namespace eRestorante.Services.Services
 {
-    public class DrinkService : BaseService<Models.Model.Drink, Database.Drink>, IDrinkService
+    public class DrinkService : BaseService<Models.Model.Drink, Database.Drink, BaseSearchObject>, IDrinkService
     {
-        Ib200192Context _context;
-        public IMapper _mapper;
-
         public DrinkService(Ib200192Context context, IMapper mapper)
             : base(context, mapper)
         {
