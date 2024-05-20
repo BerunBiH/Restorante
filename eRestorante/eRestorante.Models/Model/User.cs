@@ -21,5 +21,7 @@ namespace eRestorante.Models.Model
         public byte? UserStatus { get; set; }
 
         public byte[]? UserImage { get; set; }
+
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

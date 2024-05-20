@@ -1,4 +1,6 @@
 using eRestorante.Models.Requests;
+using eRestorante.Models.Model;
+using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,33 +10,24 @@ namespace eRestoranteAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController : BaseController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject>
     {
-        private readonly IUserService _service;
-        //private readonly ILogger<WeatherForecastController> _logger;
 
-        public UserController(IUserService service)
+        public UserController(ILogger<BaseController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject>> logger, IUserService service)
+            :base(logger,service)
         {
-            //_logger = logger;
-            _service = service;
-        }
-
-        [HttpGet()]
-        public async Task<IEnumerable<eRestorante.Models.Model.User>> Get()
-        {
-            return await _service.Get();
         }
 
         [HttpPost()]
         public eRestorante.Models.Model.User Insert(UserInsertRequest request)
         {
-            return _service.Insert(request);
+            return (_service as IUserService).Insert(request);
         }
 
         [HttpPut("{id}")]
         public eRestorante.Models.Model.User Update(int id, UserUpdateRequest request) 
         {
-            return _service.Update(id, request);
+            return (_service as IUserService).Update(id, request);
         }
     }
 }

@@ -13,6 +13,8 @@ namespace eRestorante.Services.Services
         public MappingProfile()
         {
             CreateMap<Database.User, User>();
+            CreateMap<Database.UserRole, UserRole>();
+            CreateMap<Database.Role, Role>();
             CreateMap<Database.Drink, Drink>();
             CreateMap<Database.Customer, Customer>();
             CreateMap<Models.Requests.UserInsertRequest, Database.User>();

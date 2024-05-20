@@ -10,24 +10,16 @@ using eRestorante.Models.Requests;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using eRestorante.Services.Interfaces;
+using eRestorante.Models.SearchObjects;
 
 namespace eRestorante.Services.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService<Models.Model.User, Database.User, Models.SearchObjects.UserSearchObject>, IUserService
     {
-        Ib200192Context _context;
-        public IMapper _mapper { get; set; }
 
         public UserService(Ib200192Context context, IMapper mapper)
+            :base(context,mapper)
         {
-            _context = context;
-            _mapper = mapper;
-        }
-        public async Task<List<Models.Model.User>> Get()
-        {
-            var entityList = await _context.Users.ToListAsync();
-
-            return _mapper.Map<List<Models.Model.User>>(entityList);
         }
 
         public Models.Model.User Insert(UserInsertRequest request)
@@ -52,6 +44,16 @@ namespace eRestorante.Services.Services
 
             _context.SaveChanges();
             return _mapper.Map<Models.Model.User>(entity);
+        }
+
+        public override IQueryable<User> AddInclude(IQueryable<User> query, UserSearchObject? search = null)
+        {
+
+            if (search?.isRoleIncluded==true)
+            {
+                query = query.Include("UserRoles.Role");
+            }
+            return base.AddInclude(query,search);
         }
 
         public static string GenerateSalt()
