@@ -22,9 +22,9 @@ namespace eRestorante.Services.Services
         {
         }
 
-        public override Task<Models.Model.User> Insert(UserInsertRequest insert)
+        public override async Task<Models.Model.User> Insert(UserInsertRequest insert)
         {
-            return base.Insert(insert);
+            return await base.Insert(insert);
         }
 
         public override async Task BeforeInsert(User entity, UserInsertRequest request)
@@ -33,28 +33,9 @@ namespace eRestorante.Services.Services
             entity.UserPassHash = GenerateHash(entity.UserPassSalt, request.UserPassword);
         }
 
-        //public Models.Model.User Insert(UserInsertRequest request)
-        //{
-        //    var entity = new Database.User();
-        //    _mapper.Map(request, entity);
-
-        //    entity.UserPassSalt = GenerateSalt();
-        //    entity.UserPassHash = GenerateHash(entity.UserPassSalt, request.UserPassword);
-
-        //    _context.Users.Add(entity);
-        //    _context.SaveChanges();
-
-        //    return _mapper.Map<Models.Model.User>(entity);
-        //}
-
-        public Models.Model.User Update(int id, UserUpdateRequest request)
+        public override async Task<Models.Model.User> Update(int id, UserUpdateRequest update)
         {
-            var entity = _context.Users.Find(id);
-
-            _mapper.Map(request, entity);
-
-            _context.SaveChanges();
-            return _mapper.Map<Models.Model.User>(entity);
+            return await base.Update(id, update);
         }
 
         public override IQueryable<User> AddInclude(IQueryable<User> query, UserSearchObject? search = null)

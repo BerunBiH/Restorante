@@ -15,10 +15,13 @@ namespace eRestorante.Services.Services
             CreateMap<Database.User, User>();
             CreateMap<Database.UserRole, UserRole>();
             CreateMap<Database.Role, Role>();
+            CreateMap<Database.Dish, Dishes>();
             CreateMap<Database.Drink, Drink>();
             CreateMap<Database.Customer, Customer>();
             CreateMap<Models.Requests.UserInsertRequest, Database.User>();
             CreateMap<Models.Requests.UserUpdateRequest, Database.User>();
+            CreateMap<Models.Requests.DishInsertRequest, Database.Dish>();
+            CreateMap<Models.Requests.DishUpdateRequest, Database.Dish>();
         }
     }
 }
