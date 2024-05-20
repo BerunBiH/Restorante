@@ -8,10 +8,7 @@ using eRestorante.Models.Requests;
 
 namespace eRestorante.Services.Interfaces
 {
-    public interface IUserService : IService<Models.Model.User, Models.SearchObjects.UserSearchObject>
+    public interface IUserService : IBaseCRUDService<Models.Model.User, Models.SearchObjects.UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
-
-        Models.Model.User Insert(UserInsertRequest request);
-        Models.Model.User Update(int id, UserUpdateRequest request);
     }
 }

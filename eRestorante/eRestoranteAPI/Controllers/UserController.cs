@@ -10,24 +10,12 @@ namespace eRestoranteAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : BaseController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject>
+    public class UserController : BaseCRUDController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
 
         public UserController(ILogger<BaseController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject>> logger, IUserService service)
             :base(logger,service)
         {
-        }
-
-        [HttpPost()]
-        public eRestorante.Models.Model.User Insert(UserInsertRequest request)
-        {
-            return (_service as IUserService).Insert(request);
-        }
-
-        [HttpPut("{id}")]
-        public eRestorante.Models.Model.User Update(int id, UserUpdateRequest request) 
-        {
-            return (_service as IUserService).Update(id, request);
         }
     }
 }

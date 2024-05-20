@@ -14,7 +14,7 @@ using eRestorante.Models.SearchObjects;
 
 namespace eRestorante.Services.Services
 {
-    public class UserService : BaseService<Models.Model.User, Database.User, Models.SearchObjects.UserSearchObject>, IUserService
+    public class UserService : BaseCRUDService<Models.Model.User, Database.User, Models.SearchObjects.UserSearchObject, UserInsertRequest, UserUpdateRequest>, IUserService
     {
 
         public UserService(Ib200192Context context, IMapper mapper)
@@ -22,19 +22,30 @@ namespace eRestorante.Services.Services
         {
         }
 
-        public Models.Model.User Insert(UserInsertRequest request)
+        public override Task<Models.Model.User> Insert(UserInsertRequest insert)
         {
-            var entity = new Database.User();
-            _mapper.Map(request, entity);
+            return base.Insert(insert);
+        }
 
+        public override async Task BeforeInsert(User entity, UserInsertRequest request)
+        {
             entity.UserPassSalt = GenerateSalt();
             entity.UserPassHash = GenerateHash(entity.UserPassSalt, request.UserPassword);
-
-            _context.Users.Add(entity);
-            _context.SaveChanges();
-
-            return _mapper.Map<Models.Model.User>(entity);
         }
+
+        //public Models.Model.User Insert(UserInsertRequest request)
+        //{
+        //    var entity = new Database.User();
+        //    _mapper.Map(request, entity);
+
+        //    entity.UserPassSalt = GenerateSalt();
+        //    entity.UserPassHash = GenerateHash(entity.UserPassSalt, request.UserPassword);
+
+        //    _context.Users.Add(entity);
+        //    _context.SaveChanges();
+
+        //    return _mapper.Map<Models.Model.User>(entity);
+        //}
 
         public Models.Model.User Update(int id, UserUpdateRequest request)
         {
