@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace eRestorante.Services.Interfaces
 {
-    public interface IDishesService
+    public interface IDishesService : IBaseCRUDService<Models.Model.Dishes, Models.SearchObjects.DishSearchObject, Models.Requests.DishInsertRequest, Models.Requests.DishUpdateRequest>
     {
-        IList<Dish> Get();
     }
 }

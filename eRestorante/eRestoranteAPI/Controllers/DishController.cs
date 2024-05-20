@@ -10,10 +10,10 @@ namespace eRestoranteAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : BaseCRUDController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject,UserInsertRequest,UserUpdateRequest>
+    public class DishController : BaseCRUDController<eRestorante.Models.Model.Dishes, eRestorante.Models.SearchObjects.DishSearchObject,DishInsertRequest,DishUpdateRequest>
     {
 
-        public UserController(ILogger<BaseController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject>> logger, IUserService service)
+        public DishController(ILogger<BaseController<eRestorante.Models.Model.Dishes, eRestorante.Models.SearchObjects.DishSearchObject>> logger, IDishesService service)
             :base(logger,service)
         {
         }

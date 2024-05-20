@@ -1,4 +1,7 @@
-﻿using eRestorante.Models.Model;
+﻿using AutoMapper;
+using eRestorante.Models.Model;
+using eRestorante.Models.Requests;
+using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
 using System;
@@ -9,28 +12,11 @@ using System.Threading.Tasks;
 
 namespace eRestorante.Services.Services
 {
-    public class DishService : IDishesService
+    public class DishService : BaseCRUDService<Models.Model.Dishes, Database.Dish, Models.SearchObjects.DishSearchObject, Models.Requests.DishInsertRequest, Models.Requests.DishUpdateRequest>, IDishesService
     {
-
-        Ib200192Context _context;
-
-        public DishService(Ib200192Context context)
-        {
-            _context = context;
-        }
-        List<Dishes> dishes = new List<Dishes>()
-        {
-            new Dishes()
-            {
-                DishID = 1,
-                DishName="Burek",
-                DishDescription="FinBurekTOp",
-            }
-        };
-        public IList<Dish> Get()
-        {
-            var list = _context.Dishes.ToList();
-            return list;
+        public DishService(Ib200192Context context, IMapper mapper)
+            :base(context, mapper)
+        {  
         }
     }
 }
