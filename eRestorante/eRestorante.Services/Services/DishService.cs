@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eRestorante.Models.Exceptions;
 using eRestorante.Models.Model;
 using eRestorante.Models.Requests;
 using eRestorante.Models.SearchObjects;
@@ -17,6 +18,18 @@ namespace eRestorante.Services.Services
         public DishService(Ib200192Context context, IMapper mapper)
             :base(context, mapper)
         {  
+        }
+
+        public override Task BeforeUpdate(Dish db, DishUpdateRequest update)
+        {
+            if (update.DishCost<=0)
+            {
+                throw new UserException("The cost of the dish can't be equal to or less than zero.");
+                update.DishCost = db.DishCost;
+            }
+            
+            return base.BeforeUpdate(db, update);
+
         }
     }
 }

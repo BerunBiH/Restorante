@@ -23,6 +23,11 @@ namespace eRestorante.Services.Services
 
         }
 
+        public virtual async Task BeforeUpdate(TDb db, TUpdate update)
+        {
+
+        }
+
         public virtual async Task<T> Insert(TInsert insert)
         {
             var set=_context.Set<TDb>();
@@ -40,6 +45,8 @@ namespace eRestorante.Services.Services
             var set = _context.Set<TDb>();
 
             var entity = await set.FindAsync(id);
+
+            await BeforeUpdate(entity, update);
 
             _mapper.Map(update, entity);
 
