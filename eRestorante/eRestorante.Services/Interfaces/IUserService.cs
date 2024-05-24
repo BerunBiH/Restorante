@@ -10,5 +10,8 @@ namespace eRestorante.Services.Interfaces
 {
     public interface IUserService : IBaseCRUDService<Models.Model.User, Models.SearchObjects.UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
+
+        public Task<Models.Model.User> Login(string email, string password);
+
     }
 }

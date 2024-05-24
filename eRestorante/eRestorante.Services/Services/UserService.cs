@@ -48,27 +48,50 @@ namespace eRestorante.Services.Services
             return base.AddInclude(query,search);
         }
 
+        public async Task<Models.Model.User> Login(string email, string password)
+        {
+            var entity = await _context.Users.Include("UserRoles.Role").FirstOrDefaultAsync(x => x.UserEmail == email);
+
+            if (entity == null)
+                return null;
+
+            var hash = GenerateHash(entity.UserPassSalt, password);
+
+            if (hash != entity.UserPassHash)
+            {
+                return null;
+            }
+
+            return _mapper.Map<Models.Model.User>(entity);
+
+        }
+
         public static string GenerateSalt()
         {
-            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
-            var byteArray = new byte[16];
-            provider.GetBytes(byteArray);
+            int saltSize = 16;
 
-            return Convert.ToBase64String(byteArray);
+            byte[] saltBytes = new byte[saltSize];
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(saltBytes);
+            }
+
+            return Convert.ToBase64String(saltBytes);
         }
 
         public static string GenerateHash(string salt, string password)
         {
-            byte[] src = Convert.FromBase64String(salt);
-            byte[] bytes = Encoding.Unicode.GetBytes(password);
-            byte[] dst = new byte[src.Length + bytes.Length];
+            string saltedPassword = salt + password;
 
-            Buffer.BlockCopy(src, 0, dst, 0, src.Length);
-            Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] saltedPasswordBytes = Encoding.UTF8.GetBytes(saltedPassword);
+                byte[] hashBytes = sha256.ComputeHash(saltedPasswordBytes);
 
-            HashAlgorithm algorithm = HashAlgorithm.Create("SHA1");
-            byte[] inArray = algorithm.ComputeHash(dst);
-            return Convert.ToBase64String(inArray);
+                // Convert the hash byte array to a base64 string
+                return Convert.ToBase64String(hashBytes);
+            }
         }
     }
 }
