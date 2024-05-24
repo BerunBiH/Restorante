@@ -5,6 +5,7 @@ using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eRestoranteAPI.Controllers
 {
@@ -16,6 +17,12 @@ namespace eRestoranteAPI.Controllers
         public UserController(ILogger<BaseController<eRestorante.Models.Model.User, eRestorante.Models.SearchObjects.UserSearchObject>> logger, IUserService service)
             :base(logger,service)
         {
+        }
+
+        [Authorize(Roles = "Menedzer")]
+        public override Task<eRestorante.Models.Model.User> Insert([FromBody] UserInsertRequest insert)
+        {
+            return base.Insert(insert);
         }
     }
 }

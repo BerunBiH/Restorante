@@ -1,5 +1,6 @@
 ﻿using eRestorante.Models.Model;
 using eRestorante.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eRestoranteAPI.Controllers

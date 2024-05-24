@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using eRestorante.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
@@ -10,8 +11,11 @@ namespace eRestoranteAPI.Authentication
 {
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        IUserService _userService;
+
+        public BasicAuthenticationHandler(IUserService userService, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
+            _userService = userService;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -23,19 +27,32 @@ namespace eRestoranteAPI.Authentication
 
             var autHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
             var credentialsBytes = Convert.FromBase64String(autHeader.Parameter);
-            var credentials = Encoding.UTF8.GetString(credentialsBytes);
+            var credentials = Encoding.UTF8.GetString(credentialsBytes).Split(':');
 
-            var username = credentials[0];
+            var email = credentials[0];
             var password = credentials[1];
+            var user = await _userService.Login(email, password);
 
-            if(username==null || password == null)
+            if (user==null)
             {
-                return AuthenticateResult.Fail("Username or Password was null");
+                return AuthenticateResult.Fail("Email or Password was null");
             }
 
             else
             {
-                var identity = new ClaimsIdentity();
+
+                var claim = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Email, user.UserEmail),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserName, user.UserSurname)
+                };
+
+                foreach(var role in user.UserRoles)
+                {
+                    claim.Add(new Claim(ClaimTypes.Role, role.Role.RoleName));
+                }
+
+                var identity = new ClaimsIdentity(claim, Scheme.Name);
                 var principal = new ClaimsPrincipal(identity);
 
                 var ticket = new AuthenticationTicket(principal, Scheme.Name);
