@@ -22,6 +22,10 @@ namespace eRestorante.Services.Services
             CreateMap<Models.Requests.UserUpdateRequest, Database.User>();
             CreateMap<Models.Requests.DishInsertRequest, Database.Dish>();
             CreateMap<Models.Requests.DishUpdateRequest, Database.Dish>();
+            CreateMap<Models.Requests.DrinkInsertRequest, Database.Drink>();
+            CreateMap<Models.Requests.DrinkUpdateRequest, Database.Drink>();
+            CreateMap<Models.Requests.CustomerInsertRequest, Database.Customer>();
+            CreateMap<Models.Requests.CustomerUpdateRequest, Database.Customer>();
         }
     }
 }

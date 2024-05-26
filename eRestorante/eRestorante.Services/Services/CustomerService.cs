@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using eRestorante.Models.Model;
+using eRestorante.Models.Requests;
 using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace eRestorante.Services.Services
 {
-    public class CustomerService : BaseService<Models.Model.Customer, Database.Customer, CustomerSearchObject>, ICustomerService
+    public class CustomerService : BaseCRUDService<Models.Model.Customer, Database.Customer, CustomerSearchObject, CustomerInsertRequest, CustomerUpdateRequest>, ICustomerService
     {
         public CustomerService(Ib200192Context context, IMapper mapper)
             : base(context, mapper)
@@ -33,6 +35,15 @@ namespace eRestorante.Services.Services
             }
 
             return base.AddFilter(query, search);
+        }
+
+        public override Task BeforeInsert(Database.Customer db, CustomerInsertRequest insert)
+        {
+            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+            db.CustomerDateRegister = currentDate;
+            db.CustomerPassSalt = GenerateSalt();
+            db.CustomerPassHash = GenerateHash(db.CustomerPassSalt, insert.CustomerPassword);
+            return base.BeforeInsert(db, insert);
         }
 
     }

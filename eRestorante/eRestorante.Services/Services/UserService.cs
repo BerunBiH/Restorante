@@ -65,33 +65,5 @@ namespace eRestorante.Services.Services
             return _mapper.Map<Models.Model.User>(entity);
 
         }
-
-        public static string GenerateSalt()
-        {
-            int saltSize = 16;
-
-            byte[] saltBytes = new byte[saltSize];
-
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(saltBytes);
-            }
-
-            return Convert.ToBase64String(saltBytes);
-        }
-
-        public static string GenerateHash(string salt, string password)
-        {
-            string saltedPassword = salt + password;
-
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] saltedPasswordBytes = Encoding.UTF8.GetBytes(saltedPassword);
-                byte[] hashBytes = sha256.ComputeHash(saltedPasswordBytes);
-
-                // Convert the hash byte array to a base64 string
-                return Convert.ToBase64String(hashBytes);
-            }
-        }
     }
 }

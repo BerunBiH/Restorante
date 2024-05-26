@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 namespace eRestoranteAPI.Controllers
 {
     [ApiController]
-    public class DrinkController : BaseController<eRestorante.Models.Model.Drink, BaseSearchObject>
+    public class DrinkController : BaseCRUDController<eRestorante.Models.Model.Drink, DrinkSearchObject,DrinkInsertRequest,DrinkUpdateRequest>
     {
-        public DrinkController(ILogger<BaseController<eRestorante.Models.Model.Drink, BaseSearchObject>> logger, IDrinkService service) : base(logger, service)
+        public DrinkController(ILogger<BaseController<eRestorante.Models.Model.Drink, DrinkSearchObject>> logger, IDrinkService service) : base(logger, service)
         {
         }
     }
