@@ -9,7 +9,7 @@ using eRestorante.Models.SearchObjects;
 
 namespace eRestorante.Services.Interfaces
 {
-    public interface IDrinkService : IBaseCRUDService<Drink, DrinkSearchObject, DrinkInsertRequest, DrinkUpdateRequest>
+    public interface IRatingDishService : IBaseCRUDService<Models.Model.RatingDish, RatingDishSearchObject, RatingDishInsertRequest, RatingDishUpdateRequest>
     {
     }
 }

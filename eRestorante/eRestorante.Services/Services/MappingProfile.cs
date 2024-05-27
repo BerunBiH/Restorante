@@ -18,10 +18,29 @@ namespace eRestorante.Services.Services
             CreateMap<Database.Dish, Dishes>();
             CreateMap<Database.Drink, Drink>();
             CreateMap<Database.Customer, Customer>();
+            CreateMap<Database.Category, Category>();
+            CreateMap<Database.Reservation, Reservation>();
+            CreateMap<Database.CommentDish, CommentDish>();
+            CreateMap<Database.CommentStaff, CommentStaff>();
+            CreateMap<Database.RatingStaff, RatingStaff>();
+            CreateMap<Database.RatingDish, RatingDish>();
             CreateMap<Models.Requests.UserInsertRequest, Database.User>();
             CreateMap<Models.Requests.UserUpdateRequest, Database.User>();
             CreateMap<Models.Requests.DishInsertRequest, Database.Dish>();
             CreateMap<Models.Requests.DishUpdateRequest, Database.Dish>();
+            CreateMap<Models.Requests.DrinkInsertRequest, Database.Drink>();
+            CreateMap<Models.Requests.DrinkUpdateRequest, Database.Drink>();
+            CreateMap<Models.Requests.CustomerInsertRequest, Database.Customer>();
+            CreateMap<Models.Requests.CustomerUpdateRequest, Database.Customer>();
+            CreateMap<Models.Requests.ReservationInsertRequest, Database.Reservation>();
+            CreateMap<Models.Requests.ReservationUpdateRequest, Database.Reservation>();
+            CreateMap<Models.Requests.CommentDishInsertRequest, Database.CommentDish>();
+            CreateMap<Models.Requests.CommentStaffUpdateRequest, Database.CommentStaff>();
+            CreateMap<Models.Requests.CommentStaffInsertRequest, Database.CommentStaff>();
+            CreateMap<Models.Requests.RatingStaffUpdateRequest, Database.RatingStaff>();
+            CreateMap<Models.Requests.RatingStaffInsertRequest, Database.RatingStaff>();
+            CreateMap<Models.Requests.RatingDishUpdateRequest, Database.RatingDish>();
+            CreateMap<Models.Requests.RatingDishInsertRequest, Database.RatingDish>();
         }
     }
 }

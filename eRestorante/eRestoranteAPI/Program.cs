@@ -16,9 +16,16 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddTransient<IDishesService, DishService>();
+builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IDrinkService, DrinkService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IReservationService, ReservationService>();
+builder.Services.AddTransient<ICommentDishService, CommentDishService>();
+builder.Services.AddTransient<ICommentStaffService, CommentStaffService>();
+builder.Services.AddTransient<IRatingStaffService, RatingStaffService>();
+builder.Services.AddTransient<IRatingDishService, RatingDishService>();
 
 builder.Services.AddControllers( x=>
 {
