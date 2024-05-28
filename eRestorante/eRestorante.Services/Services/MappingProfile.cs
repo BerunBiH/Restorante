@@ -13,6 +13,7 @@ namespace eRestorante.Services.Services
         public MappingProfile()
         {
             CreateMap<Database.User, User>();
+            CreateMap<Database.Order, Order>();
             CreateMap<Database.UserRole, UserRole>();
             CreateMap<Database.Role, Role>();
             CreateMap<Database.Dish, Dishes>();
@@ -21,11 +22,14 @@ namespace eRestorante.Services.Services
             CreateMap<Database.Category, Category>();
             CreateMap<Database.Reservation, Reservation>();
             CreateMap<Database.CommentDish, CommentDish>();
+            CreateMap<Database.OrderDish, OrderDishes>();
             CreateMap<Database.CommentStaff, CommentStaff>();
             CreateMap<Database.RatingStaff, RatingStaff>();
             CreateMap<Database.RatingDish, RatingDish>();
             CreateMap<Models.Requests.UserInsertRequest, Database.User>();
-            CreateMap<Models.Requests.UserUpdateRequest, Database.User>();
+            CreateMap<Models.Requests.UserUpdateRequest, Database.User>();            
+            CreateMap<Models.Requests.OrderInsertRequest, Database.Order>();
+            CreateMap<Models.Requests.OrderUpdateRequest, Database.Order>();
             CreateMap<Models.Requests.DishInsertRequest, Database.Dish>();
             CreateMap<Models.Requests.DishUpdateRequest, Database.Dish>();
             CreateMap<Models.Requests.DrinkInsertRequest, Database.Drink>();
@@ -40,7 +44,9 @@ namespace eRestorante.Services.Services
             CreateMap<Models.Requests.RatingStaffUpdateRequest, Database.RatingStaff>();
             CreateMap<Models.Requests.RatingStaffInsertRequest, Database.RatingStaff>();
             CreateMap<Models.Requests.RatingDishUpdateRequest, Database.RatingDish>();
-            CreateMap<Models.Requests.RatingDishInsertRequest, Database.RatingDish>();
+            CreateMap<Models.Requests.RatingDishInsertRequest, Database.RatingDish>();            
+            CreateMap<Models.Requests.OrderDishesUpdateRequest, Database.OrderDish>();
+            CreateMap<Models.Requests.OrderDishesInsertRequest, Database.OrderDish>();
         }
     }
 }
