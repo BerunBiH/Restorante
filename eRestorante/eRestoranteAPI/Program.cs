@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen(options =>
     options.CustomSchemaIds(type => type.ToString());
 });
 
+builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<IDishesService, DishService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -64,6 +65,8 @@ builder.Services.AddDbContext<Ib200192Context>(options =>
 builder.Services.AddAutoMapper(typeof(IUserService));
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
 
