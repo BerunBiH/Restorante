@@ -176,11 +176,11 @@ public partial class Ib200192Context : DbContext
             entity.ToTable("OrderDrink");
 
             entity.Property(e => e.OrderDrinkId).HasColumnName("OrderDrinkID");
-            entity.Property(e => e.DishId).HasColumnName("DishID");
+            entity.Property(e => e.DrinkId).HasColumnName("DrinkID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
-            entity.HasOne(d => d.Dish).WithMany(p => p.OrderDrinks)
-                .HasForeignKey(d => d.DishId)
+            entity.HasOne(d => d.Drink).WithMany(p => p.OrderDrinks)
+                .HasForeignKey(d => d.DrinkId)
                 .HasConstraintName("FK_IB200192_Drink");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDrinks)
