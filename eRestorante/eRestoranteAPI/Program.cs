@@ -23,6 +23,7 @@ builder.Services.AddTransient<IDrinkService, DrinkService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IOrderDishesService, OrderDishesService>();
+builder.Services.AddTransient<IOrderDrinksService, OrderDrinksService>();
 builder.Services.AddTransient<IReservationService, ReservationService>();
 builder.Services.AddTransient<ICommentDishService, CommentDishService>();
 builder.Services.AddTransient<ICommentStaffService, CommentStaffService>();

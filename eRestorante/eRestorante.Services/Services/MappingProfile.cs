@@ -23,6 +23,7 @@ namespace eRestorante.Services.Services
             CreateMap<Database.Reservation, Reservation>();
             CreateMap<Database.CommentDish, CommentDish>();
             CreateMap<Database.OrderDish, OrderDishes>();
+            CreateMap<Database.OrderDrink, OrderDrinks>();
             CreateMap<Database.CommentStaff, CommentStaff>();
             CreateMap<Database.RatingStaff, RatingStaff>();
             CreateMap<Database.RatingDish, RatingDish>();
@@ -46,7 +47,9 @@ namespace eRestorante.Services.Services
             CreateMap<Models.Requests.RatingDishUpdateRequest, Database.RatingDish>();
             CreateMap<Models.Requests.RatingDishInsertRequest, Database.RatingDish>();            
             CreateMap<Models.Requests.OrderDishesUpdateRequest, Database.OrderDish>();
-            CreateMap<Models.Requests.OrderDishesInsertRequest, Database.OrderDish>();
+            CreateMap<Models.Requests.OrderDishesInsertRequest, Database.OrderDish>();            
+            CreateMap<Models.Requests.OrderDrinksUpdateRequest, Database.OrderDrink>();
+            CreateMap<Models.Requests.OrderDrinksInsertRequest, Database.OrderDrink>();
         }
     }
 }

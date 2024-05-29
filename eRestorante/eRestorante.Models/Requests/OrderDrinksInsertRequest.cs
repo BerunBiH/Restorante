@@ -1,22 +1,19 @@
-﻿using System;
+﻿using eRestorante.Models.Model;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eRestorante.Models.Model
+namespace eRestorante.Models.Requests
 {
-    public partial class OrderDrinks
+    public class OrderDrinksInsertRequest
     {
-        public int OrderDrinkId { get; set; }
-
         public int OrderQuantity { get; set; }
 
         public int? OrderId { get; set; }
 
         public int? DrinkId { get; set; }
-
-        public virtual Drink? Drink { get; set; }
-
     }
 }

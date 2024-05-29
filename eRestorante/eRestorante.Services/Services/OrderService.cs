@@ -82,7 +82,7 @@ namespace eRestorante.Services.Services
         public override IQueryable<Database.Order> AddInclude(IQueryable<Database.Order> query, OrderSearchObject? search = null)
         {
             query = query.Include("OrderDishes.Dish");
-            query = query.Include("OrderDrinks");
+            query = query.Include("OrderDrinks.Drink");
             return base.AddInclude(query, search);
         }
 
