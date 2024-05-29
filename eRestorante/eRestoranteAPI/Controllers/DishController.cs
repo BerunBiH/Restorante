@@ -5,6 +5,7 @@ using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eRestoranteAPI.Controllers
 {
@@ -16,6 +17,17 @@ namespace eRestoranteAPI.Controllers
         public DishController(ILogger<BaseController<eRestorante.Models.Model.Dishes, eRestorante.Models.SearchObjects.DishSearchObject>> logger, IDishesService service)
             :base(logger,service)
         {
+        }
+        [Authorize(Roles = "Menedzer, Kuhar")]
+        public override Task<Dishes> Insert([FromBody] DishInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [Authorize(Roles = "Menedzer, Kuhar")]
+        public override Task<Dishes> Update(int id, [FromBody] DishUpdateRequest update)
+        {
+            return base.Update(id, update);
         }
     }
 }
