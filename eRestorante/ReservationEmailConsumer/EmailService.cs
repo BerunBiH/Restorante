@@ -17,7 +17,7 @@ public class EmailService
         var emailMessage = new MimeMessage();
 
 
-        var fromEmail=Environment.GetEnvironmentVariable("FromEmail");
+        var fromEmail = Environment.GetEnvironmentVariable("FromEmail");
 
         emailMessage.From.Add(new MailboxAddress("Restorante Reservation Service", fromEmail));
         emailMessage.To.Add(new MailboxAddress("Customer", recipientEmail));

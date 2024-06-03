@@ -6,6 +6,8 @@ using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +18,18 @@ namespace eRestorante.Services.Services
 {
     public class ReservationService : BaseCRUDService<Models.Model.Reservation, Database.Reservation, Models.SearchObjects.ReservationSearchObject, Models.Requests.ReservationInsertRequest, Models.Requests.ReservationUpdateRequest>, IReservationService
     {
-        private readonly EmailService _emailService;
+        private readonly RabbitMQ.Client.IModel _channel;
 
-        public ReservationService(Ib200192Context context, IMapper mapper, EmailService emailService)
+        public ReservationService(Ib200192Context context, IMapper mapper, ConnectionFactory factory)
             : base(context, mapper)
         {
-            _emailService = emailService;
+            var connection = factory.CreateConnection();
+            _channel = connection.CreateModel();
+            _channel.QueueDeclare(queue: "reservationQueue",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
         }
 
         public override async Task BeforeInsert(Database.Reservation db, ReservationInsertRequest insert)
@@ -31,7 +39,12 @@ namespace eRestorante.Services.Services
             var userEmail = customer.CustomerEmail;
             if (!string.IsNullOrEmpty(userEmail))
             {
-                _emailService.SendEmail(userEmail, "Your reservation has been successfully created. Thank you");
+                var message = $"Reservation created for {userEmail}";
+                var body = Encoding.UTF8.GetBytes(message);
+                _channel.BasicPublish(exchange: "",
+                                      routingKey: "reservationQueue",
+                                      basicProperties: null,
+                                      body: body);
             }
             await base.BeforeInsert(db, insert);
         }
