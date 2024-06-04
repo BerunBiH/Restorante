@@ -57,10 +57,21 @@ builder.Services.AddSwaggerGen(a =>
     });
 }
 );
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<Ib200192Context>(options =>
-    options.UseSqlServer(connectionString));
+var connectionEnvString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+if (connectionEnvString != null)
+{
+    builder.Services.AddDbContext<Ib200192Context>(options =>
+    options.UseSqlServer(connectionEnvString));
+    Console.WriteLine("Are you here");
+    Console.WriteLine(connectionEnvString);
+}
+else
+{
+    Console.WriteLine("Are you here default local host");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<Ib200192Context>(options =>
+        options.UseSqlServer(connectionString));
+}
 
 builder.Services.AddAutoMapper(typeof(IUserService));
 builder.Services.AddAuthentication("BasicAuthentication")

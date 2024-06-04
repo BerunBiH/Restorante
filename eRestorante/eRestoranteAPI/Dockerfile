@@ -13,11 +13,11 @@ COPY ["eRestoranteAPI/eRestoranteAPI.csproj", "eRestoranteAPI/"]
 RUN dotnet restore "./eRestoranteAPI/eRestoranteAPI.csproj"
 COPY . .
 WORKDIR "/src/eRestoranteAPI"
-RUN dotnet build "./eRestoranteAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./eRestoranteAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./eRestoranteAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./eRestoranteAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

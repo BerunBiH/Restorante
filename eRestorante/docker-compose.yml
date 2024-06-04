@@ -1,0 +1,35 @@
+networks:
+  erestorantenet:
+    driver: bridge 
+
+services:
+#mssql docker
+  erestorante-sql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=AdminPassword!
+      - MSSQL_PID=Developer
+    ports:
+      - 1401:1433
+    expose:
+      - 1433
+    networks:
+      - erestorantenet
+
+  erestorante-api:
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=erestorante-sql;Port=1433;Database=IB200192;User Id=sa;Password=AdminPassword!;ConnectRetryCount=0;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 5266:5266
+    networks:
+      - erestorantenet
+    links:
+      - erestorante-sql
+    depends_on:
+      - erestorante-sql
