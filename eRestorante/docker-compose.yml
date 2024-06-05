@@ -12,7 +12,7 @@ services:
       - SA_PASSWORD=AdminPassword!
       - MSSQL_PID=Developer
     ports:
-      - 1401:1433
+      - 1433:1433
     expose:
       - 1433
     networks:
@@ -23,7 +23,7 @@ services:
     build:
       context: .
     environment:
-      - ConnectionStrings__DefaultConnection=Server=erestorante-sql;Port=1433;Database=IB200192;User Id=sa;Password=AdminPassword!;ConnectRetryCount=0;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=erestorante-sql;Database=IB200192;User Id=sa;Password=AdminPassword!;ConnectRetryCount=0;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5266:5266

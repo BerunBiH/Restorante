@@ -57,27 +57,16 @@ builder.Services.AddSwaggerGen(a =>
     });
 }
 );
-var connectionEnvString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
-if (connectionEnvString != null)
-{
-    builder.Services.AddDbContext<Ib200192Context>(options =>
-    options.UseSqlServer(connectionEnvString));
-    Console.WriteLine("Are you here");
-    Console.WriteLine(connectionEnvString);
-}
-else
-{
-    Console.WriteLine("Are you here default local host");
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<Ib200192Context>(options =>
+builder.Configuration.AddEnvironmentVariables();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<Ib200192Context>(options =>
         options.UseSqlServer(connectionString));
-}
+Console.WriteLine(connectionString);
 
 builder.Services.AddAutoMapper(typeof(IUserService));
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-
-builder.Configuration.AddEnvironmentVariables();
 
 var rabbitMqFactory = new ConnectionFactory() { HostName = builder.Configuration["RabbitMQ:HostName"] };
 builder.Services.AddSingleton(rabbitMqFactory);
