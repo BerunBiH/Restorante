@@ -9,10 +9,10 @@ services:
     restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=AdminPassword!
+      - SA_PASSWORD=${SQL_PASSWORD}
       - MSSQL_PID=Developer
     ports:
-      - 1433:1433
+      - ${SQL_PORT}:1433
     expose:
       - 1433
     networks:
@@ -23,8 +23,13 @@ services:
     build:
       context: .
     environment:
-      - ConnectionStrings__DefaultConnection=Server=erestorante-sql;Database=IB200192;User Id=sa;Password=AdminPassword!;ConnectRetryCount=0;TrustServerCertificate=True
+      - ConnectionStrings:DefaultConnection=Server=${SQL_HOST}, 1433;Database=${SQL_DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=erestorante-rabbitmq
+      - RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VIRTUALHOST=/
+      - RABBITMQ_PORT=5672
     ports:
       - 5266:5266
     networks:
@@ -33,3 +38,50 @@ services:
       - erestorante-sql
     depends_on:
       - erestorante-sql
+      - erestorante-rabbitmq
+
+#rabbitMQ
+  erestorante-rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - 5672:5672  
+      - 15672:15672
+    expose:
+      - 5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER} 
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD} 
+    networks:
+      - erestorantenet
+    volumes:
+      - ./docker_data/rabbitmq_data:/var/lib/rabbitmq
+      - ./docker_data/rabbitmq_logs:/var/log/rabbitmq
+
+#ReservationMailingService
+
+  erestorante-mailingservice:
+    restart: on-failure
+    container_name: erestorante-mailingservice
+    hostname: erestorante-mailingservice
+    image: reservation-email-consumer:latest
+    build: 
+      context: .
+      dockerfile: ReservationEmailConsumerDockerfile
+    environment:
+      - RABBITMQ_HOST=erestorante-rabbitmq
+      - RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VIRTUALHOST=/
+      - FromEmail=${FROM_EMAIL}
+      - SmtpPass=${SMTP_PASS}
+      - SmtpUser=${SMTP_USER}
+    depends_on:
+      - erestorante-rabbitmq
+      - erestorante-api
+      - erestorante-sql 
+    networks:
+      - erestorantenet
+
+
