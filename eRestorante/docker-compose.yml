@@ -43,13 +43,15 @@ services:
 #rabbitMQ
   erestorante-rabbitmq:
     image: rabbitmq:3.13-management
-    container_name: rabbitmq
+    hostname: erestorante-rabbitmq
     restart: unless-stopped
     ports:
       - 5672:5672  
-      - 15672:15672
+      - 8080:15672
+      - 15692:15692
     expose:
       - 5672
+      - 8080
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER} 
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD} 
@@ -62,7 +64,7 @@ services:
 #ReservationMailingService
 
   erestorante-mailingservice:
-    restart: on-failure
+    restart: unless-stopped
     container_name: erestorante-mailingservice
     hostname: erestorante-mailingservice
     image: reservation-email-consumer:latest
@@ -74,6 +76,7 @@ services:
       - RABBITMQ_USERNAME=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_VIRTUALHOST=/
+      - RABBITMQ_PORT=5672
       - FromEmail=${FROM_EMAIL}
       - SmtpPass=${SMTP_PASS}
       - SmtpUser=${SMTP_USER}

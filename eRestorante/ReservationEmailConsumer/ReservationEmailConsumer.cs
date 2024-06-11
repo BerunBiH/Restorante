@@ -13,11 +13,23 @@ public class ReservationEmailConsumer
     private readonly IConfiguration _configuration;
     private readonly EmailService _emailService;
 
+    private readonly string _host = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+    private readonly string _username = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest";
+    private readonly string _password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest";
+    private readonly string _virtualhost = Environment.GetEnvironmentVariable("RABBITMQ_VIRTUALHOST") ?? "/";
+
     public ReservationEmailConsumer(IConfiguration configuration, EmailService emailService)
     {
         _configuration = configuration;
         _emailService = emailService;
-        var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQ:HostName"] };
+        //var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQ:HostName"] };
+
+        var factory = new ConnectionFactory
+        {
+            HostName = _host,
+            UserName = _username,
+            Password = _password
+        };
         var connection = factory.CreateConnection();
         _channel = connection.CreateModel();
     }
