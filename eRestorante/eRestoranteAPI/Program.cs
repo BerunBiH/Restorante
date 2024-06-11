@@ -57,16 +57,16 @@ builder.Services.AddSwaggerGen(a =>
     });
 }
 );
+builder.Configuration.AddEnvironmentVariables();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<Ib200192Context>(options =>
-    options.UseSqlServer(connectionString));
+        options.UseSqlServer(connectionString));
+Console.WriteLine(connectionString);
 
 builder.Services.AddAutoMapper(typeof(IUserService));
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-
-builder.Configuration.AddEnvironmentVariables();
 
 var rabbitMqFactory = new ConnectionFactory() { HostName = builder.Configuration["RabbitMQ:HostName"] };
 builder.Services.AddSingleton(rabbitMqFactory);
@@ -87,5 +87,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<Ib200192Context>();
+    if (dataContext.Database.EnsureCreated())
+    {
+        dataContext.Database.Migrate();
+    }
+}
 
 app.Run();

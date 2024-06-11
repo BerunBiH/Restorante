@@ -10,6 +10,9 @@ namespace eRestoranteAPI.Filters
 
         public override void OnException(ExceptionContext context)
         {
+            Console.WriteLine("========================================");
+            Console.WriteLine(context.Exception.Message);
+            Console.WriteLine("========================================");
             if(context.Exception is UserException)
             {
                 context.ModelState.AddModelError("error", context.Exception.Message);

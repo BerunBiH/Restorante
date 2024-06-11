@@ -14,8 +14,7 @@ class Program
 
     var reservationEmailConsumer = new ReservationEmailConsumer(configuration,emailService);
     reservationEmailConsumer.SendEmail();
-
-    Console.WriteLine("Reservation Email Consumer started. Press [enter] to exit.");
-    Console.ReadLine();
-}
+    Console.WriteLine("Reservation Email Consumer started");
+    Thread.Sleep(Timeout.Infinite);
+    }
 }

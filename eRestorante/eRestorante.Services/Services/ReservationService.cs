@@ -19,10 +19,21 @@ namespace eRestorante.Services.Services
     public class ReservationService : BaseCRUDService<Models.Model.Reservation, Database.Reservation, Models.SearchObjects.ReservationSearchObject, Models.Requests.ReservationInsertRequest, Models.Requests.ReservationUpdateRequest>, IReservationService
     {
         private readonly RabbitMQ.Client.IModel _channel;
+        private readonly string _host = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+        private readonly string _username = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest";
+        private readonly string _password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest";
+        private readonly string _virtualhost = Environment.GetEnvironmentVariable("RABBITMQ_VIRTUALHOST") ?? "/";
 
-        public ReservationService(Ib200192Context context, IMapper mapper, ConnectionFactory factory)
+        public ReservationService(Ib200192Context context, IMapper mapper)
             : base(context, mapper)
         {
+
+            var factory = new ConnectionFactory
+            {
+                HostName = _host,
+                UserName = _username,
+                Password = _password
+            };
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
             _channel.QueueDeclare(queue: "reservationQueue",
