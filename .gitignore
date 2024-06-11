@@ -458,7 +458,7 @@ $RECYCLE.BIN/
 Folder.DotSettings
 
 # Appsettings files that override
-appsettings.*.json
+#appsettings.*.json
 
 # IdentityServer keys
 keys/
