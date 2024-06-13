@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:erestorante_desktop/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -68,9 +69,17 @@ class _LoginPageState extends State<LoginPage> {
                   Image.asset(
                     'assets/images/RestoranteLogo.png', // Replace with your logo path
                     width: 450,
-                    height: 200,
+                    height: 100,
                   ),
                   SizedBox(height: 20.0),
+                  Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(111, 63, 189, 0.612),
+                      ),
+                    ),
                   // Email text field
                   TextField(
                     controller: widget._emailController,
@@ -80,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      errorText: _emailColor == Colors.red ? 'Invalid Email. Format needs to be: example@email.com' : null, // Show error text when red
+                      errorText: _emailColor == Colors.red ? 'Mail nije ok. Format mora biti: example@email.com' : null, // Show error text when red
                     ),
                     keyboardType: TextInputType.emailAddress,
                     style: TextStyle(color: _emailColor), // Set text color based on validation
@@ -92,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: widget._passwordController,
                     obscureText: !_showPassword,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'Lozinka',
                       prefixIcon: Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -111,21 +120,48 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 20.0),
                   // Login button
-                  ElevatedButton(
-                    onPressed: () {
-                        if(!validateEmail(widget._emailController))
-                        {
-                          return;
-                        }
-                        print("Everything was okay");
-                    },
-                    child: Text('Login'),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen()
+                                ),
+                            );
+                        },
+                        child: Text('Nazad'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                          overlayColor: Colors.red,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                    ),
+                      SizedBox(width: 50.0),
+                      ElevatedButton(
+                        onPressed: () {
+                            if(!validateEmail(widget._emailController))
+                            {
+                              return;
+                            }
+                            print(widget._emailController.text);
+                            print(widget._passwordController.text);
+                        },
+                        child: Text('Login'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10.0),
                   // Forgot password text
@@ -134,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                       // Handle forgot password logic
                       print('Forgot Password Pressed');
                     },
-                    child: Text('Forgot Password?'),
+                    child: Text('Zaboravili ste lozinku?'),
                     style: TextButton.styleFrom(
                     ),
                   ),
