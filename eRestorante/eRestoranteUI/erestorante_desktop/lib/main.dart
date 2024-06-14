@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
-import 'package:erestorante_desktop/screens/register_screen.dart';
+import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(MyApp());
@@ -128,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RegisterScreen()
+                                builder: (context) => MasterScreen()
                                 ),
                             );
                         },
