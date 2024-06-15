@@ -1,22 +1,38 @@
+import 'package:erestorante_desktop/screens/customer_screen.dart';
+import 'package:erestorante_desktop/screens/dishes_screen.dart';
+import 'package:erestorante_desktop/screens/main_menu_sreen.dart';
+import 'package:erestorante_desktop/screens/profile_screen.dart';
+import 'package:erestorante_desktop/screens/reservation_screen.dart';
+import 'package:erestorante_desktop/screens/review_screen.dart';
+import 'package:erestorante_desktop/screens/settings_screen.dart';
+import 'package:erestorante_desktop/screens/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:erestorante_desktop/main.dart';
 
-class MasterScreen extends StatefulWidget {
-  const MasterScreen({super.key});
+class MasterScreenWidget extends StatefulWidget {
+  Widget? child;
+  final bool isJelovnikPressed;
+  final bool isRecenzijePressed;
+  final bool isUposleniciPressed;
+  final bool isRezervacijePressed;
+  final bool isKorisniciPressed;
+  final bool isMojProfilPressed;
+  final bool isPostavkePressed;
+   MasterScreenWidget({required this.isJelovnikPressed,required this.isRecenzijePressed,required this.isUposleniciPressed,required this.isRezervacijePressed,required this.isKorisniciPressed,required this.isMojProfilPressed,required this.isPostavkePressed,this.child, super.key});
 
   @override
-  State<MasterScreen> createState() => _MasterScreenState();
+  State<MasterScreenWidget> createState() => _MasterScreenWidgetState();
 }
 
-class _MasterScreenState extends State<MasterScreen> {
+class _MasterScreenWidgetState extends State<MasterScreenWidget> {
 
-bool _isJelovnikPressed = false;
-bool _isRecenzijePressed = false;
-bool _isUposleniciPressed = false;
-bool _isRezervacijePressed = false;
-bool _isKorisniciPressed = false;
-bool _isMojProfilPressed = false;
-bool _isPostavkePressed = false;
+late bool _isJelovnikPressed = widget.isJelovnikPressed;
+late bool _isRecenzijePressed = widget.isRecenzijePressed;
+late bool _isUposleniciPressed = widget.isUposleniciPressed;
+late bool _isRezervacijePressed = widget.isRezervacijePressed;
+late bool _isKorisniciPressed = widget.isKorisniciPressed;
+late bool _isMojProfilPressed = widget.isMojProfilPressed;
+late bool _isPostavkePressed = widget.isPostavkePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +56,12 @@ bool _isPostavkePressed = false;
                       _isMojProfilPressed = false;
                       _isPostavkePressed = false;
                 });
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MainMenuSreen()
+                                ),
+                            );
                   },
                   child: Text(
                 '@Restorante',
@@ -57,7 +79,7 @@ bool _isPostavkePressed = false;
                 TextButton(
                   onPressed: (){
                     setState(() {
-                    _isJelovnikPressed = true;
+                      _isJelovnikPressed = true;
                       _isRecenzijePressed = false;
                       _isUposleniciPressed = false;
                       _isRezervacijePressed = false;
@@ -65,6 +87,12 @@ bool _isPostavkePressed = false;
                       _isMojProfilPressed = false;
                       _isPostavkePressed = false;
                   });
+                  Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DishesScreen()
+                                ),
+                            );
                   },
                   child: Text('Jelovnik',
                   style: TextStyle(
@@ -92,6 +120,12 @@ bool _isPostavkePressed = false;
                       _isMojProfilPressed = false;
                       _isPostavkePressed = false;
                      });
+                     Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReviewScreen()
+                                ),
+                            );
                   },
                   child: Text('Recenzije',
                   style: TextStyle(
@@ -119,6 +153,12 @@ bool _isPostavkePressed = false;
                     _isMojProfilPressed = false;
                     _isPostavkePressed = false;
                      });
+                     Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UserScreen()
+                                ),
+                            );
                   },
                   child: Text('Uposlenici',
                   style: TextStyle(
@@ -146,6 +186,12 @@ bool _isPostavkePressed = false;
                     _isMojProfilPressed = false;
                     _isPostavkePressed = false;
                      });
+                     Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReservationScreen()
+                                ),
+                            );
                   },
                   child: Text('Rezervacije',
                   style: TextStyle(
@@ -173,6 +219,12 @@ bool _isPostavkePressed = false;
                     _isMojProfilPressed = false;
                     _isPostavkePressed = false;
                      });
+                     Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomerScreen()
+                                ),
+                            );
                   },
                   child: Text('Korisnici',
                   style: TextStyle(
@@ -260,6 +312,12 @@ bool _isPostavkePressed = false;
             _isKorisniciPressed = false;
             _isPostavkePressed = false;
           });
+          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileScreen()
+                                ),
+                            );
         },
         selectedColor: Colors.white,
         selectedTileColor: Color.fromRGBO(111, 63, 189, 0.281),
@@ -282,6 +340,12 @@ bool _isPostavkePressed = false;
             _isKorisniciPressed = false;
             _isPostavkePressed = true;
           });
+          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SettingsScreen()
+                                ),
+                            );
         },
         selectedColor: Colors.white,
         selectedTileColor: Color.fromRGBO(111, 63, 189, 0.281),
@@ -306,6 +370,8 @@ bool _isPostavkePressed = false;
     ],
   ),
 ),
+body: widget.child,
     );
   }
+
 }
