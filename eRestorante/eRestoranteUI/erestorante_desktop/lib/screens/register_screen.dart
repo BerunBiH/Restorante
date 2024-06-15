@@ -136,9 +136,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  // App logo (replace with your logo image)
                   Image.asset(
-                    'assets/images/RestoranteLogo.png', // Replace with your logo pathq
+                    'assets/images/RestoranteLogo.png',
                     width: 450,
                     height: 100,
                   ),
@@ -161,11 +160,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      errorText: _nameColor == Colors.red ? 'Ime nije ok. Ime može imati min 2 slova i max 50' : null, // Show error text when red
+                      errorText: _nameColor == Colors.red ? 'Ime nije ok. Ime može imati min 2 slova i max 50' : null, 
                     ),
                     keyboardType: TextInputType.name,
-                    style: TextStyle(color: _nameColor), // Set text color based on validation
-                    onChanged: (value) => validateName(widget._nameController,true), // Validate on change
+                    style: TextStyle(color: _nameColor), 
+                    onChanged: (value) => validateName(widget._nameController,true), 
                   ),
                   SizedBox(height: 10.0),
                   //Surename text field
@@ -177,11 +176,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      errorText: _surenameColor == Colors.red ? 'Prezime nije ok. Prezime može imati min 2 slova i max 50' : null, // Show error text when red
+                      errorText: _surenameColor == Colors.red ? 'Prezime nije ok. Prezime može imati min 2 slova i max 50' : null, 
                     ),
                     keyboardType: TextInputType.name,
-                    style: TextStyle(color: _surenameColor), // Set text color based on validation
-                    onChanged: (value) => validateName(widget._surenameController,false), // Validate on change
+                    style: TextStyle(color: _surenameColor), 
+                    onChanged: (value) => validateName(widget._surenameController,false), 
                   ),
                   SizedBox(height: 10.0),
                   // Email text field
@@ -193,11 +192,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      errorText: _emailColor == Colors.red ? 'Mail nije ok. Format mora biti: example@email.com' : null, // Show error text when red
+                      errorText: _emailColor == Colors.red ? 'Mail nije ok. Format mora biti: example@email.com' : null, 
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(color: _emailColor), // Set text color based on validation
-                    onChanged: (value) => validateEmail(widget._emailController), // Validate on change
+                    style: TextStyle(color: _emailColor), 
+                    onChanged: (value) => validateEmail(widget._emailController), 
                   ),
                   SizedBox(height: 10.0),
                   //Telephone text field
@@ -209,11 +208,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      errorText: _phoneNumberColor == Colors.red ? 'Broj telefona može samo imati brojeve' : null, // Show error text when red
+                      errorText: _phoneNumberColor == Colors.red ? 'Broj telefona može samo imati brojeve' : null, 
                     ),
                     keyboardType: TextInputType.phone,
-                    style: TextStyle(color: _phoneNumberColor), // Set text color based on validation
-                    onChanged: (value) => validatePhoneNumber(widget._phoneController), // Validate on change
+                    style: TextStyle(color: _phoneNumberColor),
+                    onChanged: (value) => validatePhoneNumber(widget._phoneController), 
                   ),
                   SizedBox(height: 10.0),
                   // Password text field

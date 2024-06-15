@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
-  // Text field controllers for email and password
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -30,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
   Color _emailColor = Colors.black;
 
   bool validateEmail(TextEditingController controller) {
-    // Email validator regex pattern (you can customize this)
     final emailRegex = RegExp(r"[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+");
     if (controller.text.isEmpty) {
       setState(() {
@@ -62,9 +60,8 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  // App logo (replace with your logo image)
                   Image.asset(
-                    'assets/images/RestoranteLogo.png', // Replace with your logo path
+                    'assets/images/RestoranteLogo.png', 
                     width: 450,
                     height: 100,
                   ),

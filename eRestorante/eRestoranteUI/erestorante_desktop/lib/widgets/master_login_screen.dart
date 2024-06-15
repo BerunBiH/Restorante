@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MasterLoginScreenWidget extends StatefulWidget {
 Widget? child;
-  MasterLoginScreenWidget({this.child, Key? key}):super (key:key);
+  MasterLoginScreenWidget({this.child, super.key});
 
   @override
   State<MasterLoginScreenWidget> createState() => __MasterLoginScreenWidgetState();
