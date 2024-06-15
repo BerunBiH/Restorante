@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class MasterLoginScreenWidget extends StatefulWidget {
 Widget? child;
   MasterLoginScreenWidget({this.child, super.key});
