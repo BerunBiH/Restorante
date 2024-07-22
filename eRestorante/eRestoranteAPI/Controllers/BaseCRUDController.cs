@@ -19,12 +19,14 @@ namespace eRestoranteAPI.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Menedzer, Konobar, Kuhar, Šanker")]
         [HttpPost()]
         public virtual async Task<T> Insert([FromBody]TInsert insert)
         {
             return await _service.Insert(insert);
         }
 
+        [Authorize(Roles = "Menedzer, Konobar, Kuhar, Šanker")]
         [HttpPut("{id}")]
         public virtual async Task<T> Update(int id, [FromBody]Tupdate update)
         {
