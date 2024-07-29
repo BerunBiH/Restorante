@@ -129,7 +129,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return MasterLoginScreenWidget(
       child: Container(
           width: 400,
-          child: Card(
+          child: 
+          Card(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(20.0),
               child: Column(

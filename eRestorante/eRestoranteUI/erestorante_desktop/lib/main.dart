@@ -1,8 +1,15 @@
+import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/main_menu_sreen.dart';
+import 'package:erestorante_desktop/utils/util.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => UserProvider())
+  ],
+  child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,6 +26,7 @@ class MyApp extends StatelessWidget {
 class LoginPage extends StatefulWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  late UserProvider _userProvider;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -49,6 +57,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+   widget._userProvider = context.read<UserProvider>();
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -113,7 +123,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   SizedBox(height: 20.0),
-                  // Login button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -138,13 +147,33 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(width: 50.0),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                             if(!validateEmail(widget._emailController))
                             {
                               return;
                             }
-                            print(widget._emailController.text);
-                            print(widget._passwordController.text);
+                            Authorization.email=widget._emailController.text;
+                            Authorization.password=widget._passwordController.text;
+
+                            try{
+                              await widget._userProvider.get();
+                            } on Exception catch (e) {
+                              showDialog(context: context, builder: (BuildContext context)=> 
+                              AlertDialog(
+                                title: Text("Greška u prijavi",textAlign: TextAlign.center,),
+                                content: Text("Unjeli ste pogresne podatke, pokusajte opet sa ipsravnim!", textAlign: TextAlign.center,),
+                                actions: [
+                                  ElevatedButton(onPressed: ()=> Navigator.pop(context), child: Text("OK"),)
+                                ],
+                              ));
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MainMenuSreen()
+                                ),
+                            );
                         },
                         child: Text('Login'),
                         style: ElevatedButton.styleFrom(
