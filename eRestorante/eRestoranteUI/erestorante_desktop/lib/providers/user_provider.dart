@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:erestorante_desktop/models/search_result.dart';
+import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -12,8 +14,14 @@ class UserProvider with ChangeNotifier{
     _baseUrl=const String.fromEnvironment("baseUrl", defaultValue: "http://localhost:5266/");
   }
 
-  Future<dynamic> get() async{
+  Future<SearchResult<User>> get({dynamic filter}) async{
     var url = "$_baseUrl$_endpoint";
+
+    if(filter != null)
+    {
+      var querryString = getQueryString(filter);
+      url = "$url?$querryString";
+    }
 
     var uri = Uri.parse(url);
     var headers = createHeaders();
@@ -24,7 +32,15 @@ class UserProvider with ChangeNotifier{
     {
       var data = jsonDecode(response.body);
 
-      return data;
+      var result = SearchResult<User>();
+
+      result.count = data['count'];
+
+      for (var item in data['result']){
+        result.result.add(User.fromJson(item));
+      }
+
+      return result;
     }
     else{
       throw new Exception("Upps, something went wrong");
@@ -57,4 +73,37 @@ class UserProvider with ChangeNotifier{
 
     return headers;
   }
+
+ String getQueryString(Map params,
+      {String prefix= '&', bool inRecursion= false}) {
+    String query = '';
+    params.forEach((key, value) {
+      if (inRecursion) {
+        if (key is int) {
+          key = '[$key]';
+        } else if (value is List || value is Map) {
+          key = '.$key';
+        } else {
+          key = '.$key';
+        }
+      }
+      if (value is String || value is int || value is double || value is bool) {
+        var encoded = value;
+        if (value is String) {
+          encoded = Uri.encodeComponent(value);
+        }
+        query += '$prefix$key=$encoded';
+      } else if (value is DateTime) {
+        query += '$prefix$key=${(value as DateTime).toIso8601String()}';
+      } else if (value is List || value is Map) {
+        if (value is List) value = value.asMap();
+        value.forEach((k, v) {
+          query +=
+              getQueryString({k: v}, prefix: '$prefix$key', inRecursion: true);
+        });
+      }
+    });
+    return query;
+  }
+
 }

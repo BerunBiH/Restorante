@@ -9,5 +9,8 @@ namespace eRestorante.Models.SearchObjects
     public class UserSearchObject:BaseSearchObject
     {
         public bool? isRoleIncluded { get; set; }
+
+        public string? UserFTS { get; set; }
+
     }
 }

@@ -22,6 +22,17 @@ namespace eRestorante.Services.Services
         {
         }
 
+        public override IQueryable<User> AddFilter(IQueryable<User> query, UserSearchObject? search = null)
+        {
+            
+            if (!string.IsNullOrWhiteSpace(search?.UserFTS))
+            {
+                query = query.Where(x => x.UserName.Contains(search.UserFTS) || x.UserSurname.Contains(search.UserFTS));
+            }
+
+            return base.AddFilter(query, search);
+        }
+
         public override async Task<Models.Model.User> Insert(UserInsertRequest insert)
         {
             return await base.Insert(insert);
