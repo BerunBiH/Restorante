@@ -1,15 +1,19 @@
 import 'package:erestorante_desktop/main.dart';
+import 'package:erestorante_desktop/models/user.dart';
+import 'package:erestorante_desktop/screens/user_screen.dart';
 import 'package:erestorante_desktop/widgets/master_login_screen.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
-
+  User? user;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordRepeatController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surenameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
+  RegisterScreen({super.key, this.user});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -144,17 +148,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   SizedBox(height: 20.0),
                   Text(
-                      'Registriraj se',
+                      (widget.user==null)?'Registriraj se':"Promjeni podatke za radnika ${widget.user!.userName}",
                       style: TextStyle(
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold,
                         color: Color.fromRGBO(111, 63, 189, 0.612),
                       ),
+                      textAlign: TextAlign.center,
                     ),
 
                   //Name text field
                   TextField(
-                    controller: widget._nameController,
+                    controller: widget._nameController, 
                     decoration: InputDecoration(
                       labelText: 'Ime',
                       prefixIcon: Icon(Icons.info),
@@ -168,6 +173,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onChanged: (value) => validateName(widget._nameController,true), 
                   ),
                   SizedBox(height: 10.0),
+                  (widget.user==null) ? SizedBox.shrink():Text(
+                    "Ime je bilo: ${widget.user!.userName}"
+                  ),
+                  (widget.user==null) ? SizedBox.shrink():SizedBox(height: 10.0),
                   //Surename text field
                   TextField(
                     controller: widget._surenameController,
@@ -184,6 +193,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onChanged: (value) => validateName(widget._surenameController,false), 
                   ),
                   SizedBox(height: 10.0),
+                  (widget.user==null) ? SizedBox.shrink():Text(
+                    "Prezime je bilo: ${widget.user!.userSurname}"
+                  ),
+                  (widget.user==null) ? SizedBox.shrink():SizedBox(height: 10.0),
                   // Email text field
                   TextField(
                     controller: widget._emailController,
@@ -200,6 +213,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onChanged: (value) => validateEmail(widget._emailController), 
                   ),
                   SizedBox(height: 10.0),
+                  (widget.user==null) ? SizedBox.shrink():Text(
+                    "Mail je bio: ${widget.user!.userEmail}"
+                  ),
+                  (widget.user==null) ? SizedBox.shrink():SizedBox(height: 10.0),
                   //Telephone text field
                   TextField(
                     controller: widget._phoneController,
@@ -216,8 +233,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onChanged: (value) => validatePhoneNumber(widget._phoneController), 
                   ),
                   SizedBox(height: 10.0),
+                  (widget.user==null) ? SizedBox.shrink():Text(
+                    "Telefon je bio: ${widget.user!.userPhone}"
+                  ),
+                  (widget.user==null) ? SizedBox.shrink():SizedBox(height: 10.0),
                   // Password text field
-                  TextField(
+                  (widget.user!=null) ? SizedBox.shrink():TextField(
                     controller: widget._passwordController,
                     obscureText: !_showPassword,
                     decoration: InputDecoration(
@@ -242,7 +263,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   SizedBox(height: 10.0),
                   // Password Repeat text field
-                  TextField(
+                  (widget.user!=null) ? SizedBox.shrink():TextField(
                     controller: widget._passwordRepeatController,
                     obscureText: !_showRepeatPassword,
                     decoration: InputDecoration(
@@ -275,7 +296,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LoginPage()
+                                builder: (context) => const UserScreen()
                                 ),
                             );
                         },
@@ -292,14 +313,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(width: 50.0),
                       ElevatedButton(
                         onPressed: () {
-                            if((!validateName(widget._nameController,true) || !validateName(widget._surenameController,false)) || (!validateEmail(widget._emailController) || validatePasswords(widget._passwordController, widget._passwordRepeatController)))
+                            if((!validateName(widget._nameController,true) || !validateName(widget._surenameController,false)) || (!validateEmail(widget._emailController) ||(!validatePhoneNumber(widget._phoneController)) || validatePasswords(widget._passwordController, widget._passwordRepeatController)))
                             {
                               return;
                             }
                             print(widget._emailController.text);
                             print(widget._passwordController.text);
                         },
-                        child: Text('Registriraj'),
+                        child: (widget.user!=null) ? Text('Sačuvaj'):Text('Registriraj'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -311,8 +332,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ],
                   ),
                   SizedBox(height: 10.0),
-                  // Forgot password text
-                  TextButton(
+                  (widget.user!=null) ? SizedBox.shrink():TextButton(
                     onPressed: () {
                       Navigator.push(
                               context,

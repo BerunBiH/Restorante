@@ -37,6 +37,8 @@ namespace eRestorante.Services.Services
             CreateMap<Models.Requests.DrinkUpdateRequest, Database.Drink>();
             CreateMap<Models.Requests.CustomerInsertRequest, Database.Customer>();
             CreateMap<Models.Requests.CustomerUpdateRequest, Database.Customer>();
+            CreateMap<Models.Requests.UserRoleInsertRequest, Database.UserRole>();
+            CreateMap<Models.Requests.UserRoleUpdateRequest, Database.UserRole>();
             CreateMap<Models.Requests.ReservationInsertRequest, Database.Reservation>();
             CreateMap<Models.Requests.ReservationUpdateRequest, Database.Reservation>();
             CreateMap<Models.Requests.CommentDishInsertRequest, Database.CommentDish>();

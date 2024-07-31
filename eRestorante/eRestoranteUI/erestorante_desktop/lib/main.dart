@@ -187,16 +187,6 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                   SizedBox(height: 10.0),
-                  // Forgot password text
-                  TextButton(
-                    onPressed: () {
-                      // Handle forgot password logic
-                      print('Forgot Password Pressed');
-                    },
-                    child: Text('Zaboravili ste lozinku?'),
-                    style: TextButton.styleFrom(
-                    ),
-                  ),
                 ],
               ),
             ),

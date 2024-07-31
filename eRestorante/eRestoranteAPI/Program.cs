@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddTransient<IDishesService, DishService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IUserRoleService, UserRoleService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IDrinkService, DrinkService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
