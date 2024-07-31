@@ -1,6 +1,7 @@
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
+import 'package:erestorante_desktop/screens/register_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +19,21 @@ class _UserScreenState extends State<UserScreen> {
   late UserProvider _userProvider;
   SearchResult<User>? result;
 
-  @override
-  void didChangeDependencies() {
-
+ @override
+  void initState() {
+    super.initState();
     super.didChangeDependencies();
     _userProvider = context.read<UserProvider>();
+    _loadData();
   }
 
+  Future<void> _loadData() async {
+    var data = await _userProvider.get();
+    setState(() {
+      result = data;
+    });
+    print(result!.result[4].userRoles![0].roleId);
+  }
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(isJelovnikPressed: false,
@@ -39,7 +48,35 @@ class _UserScreenState extends State<UserScreen> {
           child: Column(
             children: [ 
               _buildSearch(),
-              _buildDataListView()
+              _buildDataListView(),
+              Container(
+        width: 400,
+        height: 100,
+        child: Card(
+          child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                        onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen()
+                                ),
+                            );
+                        },
+                        child: Text('Registriraj Rovog Radnika'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          surfaceTintColor:  Colors.green,
+                          overlayColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+              )
+          )
+        )
+        )
             ],
           ),
       )
@@ -55,11 +92,11 @@ class _UserScreenState extends State<UserScreen> {
         width: 1000,
         child: Card(
           child: SingleChildScrollView(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                   children: [
                     TextField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Pretraga',
                         hintText: 'Pretrazite po imenu ili prezimenu.',
                         border: OutlineInputBorder(),
@@ -75,8 +112,8 @@ class _UserScreenState extends State<UserScreen> {
                           });
                       },
                     ),
-                    SizedBox(height: 20.0),
-                    Text("Pretrazite po imenu ili prezimenu."),
+                    const SizedBox(height: 20.0),
+                    const Text("Pretrazite po imenu ili prezimenu."),
                   ],
                 ),
           )
@@ -89,8 +126,10 @@ class _UserScreenState extends State<UserScreen> {
     return Expanded(
         child: SingleChildScrollView(
         child: 
-        DataTable(columns: [
-        DataColumn(
+        DataTable(
+        showCheckboxColumn: false,  
+        columns: [
+        const DataColumn(
           label: Expanded(
           child: Text(
             'Ime',
@@ -98,7 +137,7 @@ class _UserScreenState extends State<UserScreen> {
            ),
            ),
             ),
-            DataColumn(
+            const DataColumn(
           label: Expanded(
           child: Text(
             'Prezime',
@@ -106,7 +145,7 @@ class _UserScreenState extends State<UserScreen> {
            ),
            ),
             ),
-            DataColumn(
+            const DataColumn(
           label: Expanded(
           child: Text(
             'Mail',
@@ -114,7 +153,7 @@ class _UserScreenState extends State<UserScreen> {
            ),
            ),
             ),
-            DataColumn(
+            const DataColumn(
           label: Expanded(
           child: Text(
             'Telefon',
@@ -122,7 +161,7 @@ class _UserScreenState extends State<UserScreen> {
            ),
            ),
             ),
-            DataColumn(
+            const DataColumn(
           label: Expanded(
           child: Text(
             'Uloga',
@@ -130,10 +169,18 @@ class _UserScreenState extends State<UserScreen> {
            ),
            ),
             ),
-            DataColumn(
+            const DataColumn(
           label: Expanded(
           child: Text(
             'Slika',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
+            ),
+            const DataColumn(
+          label: Expanded(
+          child: Text(
+            'Uredi',
             style: TextStyle(fontStyle: FontStyle.italic),
            ),
            ),
@@ -143,7 +190,12 @@ class _UserScreenState extends State<UserScreen> {
         DataRow(onSelectChanged: (selected) => {
           if(selected==true)
           {
-            
+            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen(user: e,)
+                                ),
+                            )
           }
         },
           cells: [
@@ -152,13 +204,14 @@ class _UserScreenState extends State<UserScreen> {
             DataCell(Text(e.userEmail ?? "")),
             DataCell(Text(e.userPhone ?? "")),
             DataCell(Text("")),
-            DataCell((e.userImage=="") == true ? Text("Nema slike")
+            DataCell((e.userImage=="") == true ? const Text("Nema slike")
             : Container( 
               width: 200,
               height: 100,
               child: imageFromBase64String(e.userImage!),
             )
-            )
+            ),
+            DataCell(Icon(Icons.edit_rounded)),
           ] 
         )
       ).toList() ?? []
