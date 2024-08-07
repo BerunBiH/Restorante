@@ -24,7 +24,7 @@ namespace eRestorante.Services.Services
 
         public override IQueryable<UserRole> AddFilter(IQueryable<UserRole> query, UserRoleSearchObject? search = null)
         {
-            if (search!=null)
+            if (search.UserId!=null)
             {
                 query = query.Where(x => x.UserId==search.UserId);
             }

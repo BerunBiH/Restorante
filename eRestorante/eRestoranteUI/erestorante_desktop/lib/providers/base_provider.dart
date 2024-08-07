@@ -28,6 +28,7 @@ abstract class BaseProvider<T> with ChangeNotifier{
 
     var response = await http.get(uri, headers: headers);
 
+
     if(isValidResponse(response))
     {
       var data = jsonDecode(response.body);
@@ -47,8 +48,40 @@ abstract class BaseProvider<T> with ChangeNotifier{
     }
   }
 
+
+ Future<T> insert(dynamic request) async {
+    var url = "$_baseUrl$_endpoint";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw new Exception("Unknown error");
+    }
+  }
   T fromJson(data){
     throw Exception("Method not implemented");
+  }
+
+   Future<T> update(int id, [dynamic request]) async {
+    var url = "$_baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw new Exception("Unknown error");
+    }
   }
 
   bool isValidResponse(Response response){

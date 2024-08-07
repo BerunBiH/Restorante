@@ -1,8 +1,20 @@
+import 'package:date_only/date_only.dart';
 import 'package:erestorante_desktop/main.dart';
+import 'package:erestorante_desktop/models/role.dart';
+import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
+import 'package:erestorante_desktop/models/userInsert.dart';
+import 'package:erestorante_desktop/models/userRole.dart';
+import 'package:erestorante_desktop/models/userRoleInsert.dart';
+import 'package:erestorante_desktop/models/userRoleUpdate.dart';
+import 'package:erestorante_desktop/providers/role_provider.dart';
+import 'package:erestorante_desktop/providers/userRole_provider.dart';
+import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/user_screen.dart';
 import 'package:erestorante_desktop/widgets/master_login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   User? user;
@@ -28,6 +40,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Color _surenameColor= Colors.black;
   Color _phoneNumberColor= Colors.black;
   Color _passwordColor= Colors.black;
+  late UserProvider _userProvider;
+  late UserRoleProvider _userRoleProvider;
+  late RoleProvider _roleProvider;
+  SearchResult<Role>? result;
+  String? selectedRole;
+  late List<Role> roles;
 
   bool validateEmail(TextEditingController controller) {
     final emailRegex = RegExp(r"[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+");
@@ -127,6 +145,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
       return true;
   }
+
+  @override
+  void initState() {
+    super.initState();
+    super.didChangeDependencies();
+
+    _userProvider = context.read<UserProvider>();
+    _userRoleProvider = context.read<UserRoleProvider>();
+    _roleProvider = context.read<RoleProvider>();
+    _loadData();
+  }
+
+Future<void> _loadData() async {
+  var data = await _roleProvider.get();
+  setState(() {
+    result = data;
+    roles = result!.result;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -312,13 +349,157 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       SizedBox(width: 50.0),
                       ElevatedButton(
-                        onPressed: () {
-                            if((!validateName(widget._nameController,true) || !validateName(widget._surenameController,false)) || (!validateEmail(widget._emailController) ||(!validatePhoneNumber(widget._phoneController)) || validatePasswords(widget._passwordController, widget._passwordRepeatController)))
+                        onPressed: () async {
+                          if(widget.user==null && !validatePasswords(widget._passwordController, widget._passwordRepeatController))
+                          {
+                            return;
+                          }
+                            if((!validateName(widget._nameController,true) || !validateName(widget._surenameController,false)) || (!validateEmail(widget._emailController) ||(!validatePhoneNumber(widget._phoneController))))
                             {
                               return;
                             }
-                            print(widget._emailController.text);
-                            print(widget._passwordController.text);
+                            else
+                            {
+                                try{
+                                  if(widget.user!=null)
+                                  {
+                                    User newUser=User(null, widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text, 1, "", null);
+                                    await _userProvider.update(widget.user!.userId!,newUser);
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Uspješno ažuriran radnik",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Uspješno ste ažurirali izabranog radnika! Izaberite novu ulogu za radnika:",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  DropdownButton<String>(
+                                                    value: selectedRole,
+                                                    hint: Text("Izaberite ulogu"),
+                                                    onChanged: (String? newValue) {
+                                                      setState(() {
+                                                        selectedRole = newValue;
+                                                      });
+                                                    },
+                                                    items: roles.map<DropdownMenuItem<String>>((Role value) {
+                                                      return DropdownMenuItem<String>(
+                                                        value: value.roleName,
+                                                        child: Text(value.roleName!),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    var role= roles.firstWhere((role)=> role.roleName!.startsWith(selectedRole!));
+                                                    DateOnly date= DateOnly.today();
+                                                    UserRoleUpdate newUserRole=UserRoleUpdate(role.rolesId, date.toString());
+                                                    await _userRoleProvider.update(widget.user!.userRoles![0].userRolesId!,newUserRole);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => UserScreen(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text("Ok"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }
+                                  else if(widget.user==null)
+                                  {
+                                    UserInsert newUser=UserInsert(widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text,widget._passwordController.text,widget._passwordRepeatController.text, 1, "");
+                                    await _userProvider.insert(newUser);
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Uspješno dodan radnik",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Uspješno ste dodali novog radnika! Izaberite novu ulogu za radnika:",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  DropdownButton<String>(
+                                                    value: selectedRole,
+                                                    hint: Text("Izaberite ulogu"),
+                                                    onChanged: (String? newValue) {
+                                                      setState(() {
+                                                        selectedRole = newValue;
+                                                      });
+                                                    },
+                                                    items: roles.map<DropdownMenuItem<String>>((Role value) {
+                                                      return DropdownMenuItem<String>(
+                                                        value: value.roleName,
+                                                        child: Text(value.roleName!),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    var role= roles.firstWhere((role)=> role.roleName!.startsWith(selectedRole!));
+                                                    DateOnly date= DateOnly.today();
+                                                    var userSearch = await _userProvider.get();
+                                                    var user=userSearch.result.last;
+                                                    UserRoleInsert newUserRole = UserRoleInsert(user.userId!, role.rolesId, date.toString());
+                                                    await _userRoleProvider.insert(newUserRole);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => UserScreen(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text("Ok"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
+                                on Exception catch (e) {
+                              showDialog(context: context, builder: (BuildContext context)=> 
+                              AlertDialog(
+                                title: Text("Greška u registraciji",textAlign: TextAlign.center,),
+                                content: Text("Upps, nešto nije okay, pokušajte ponovo!", textAlign: TextAlign.center,),
+                                actions: [
+                                  ElevatedButton(onPressed: ()=> Navigator.pop(context), child: Text("OK"),)
+                                ],
+                              ));
+                              return;
+                            }
+                            }
                         },
                         child: (widget.user!=null) ? Text('Sačuvaj'):Text('Registriraj'),
                         style: ElevatedButton.styleFrom(

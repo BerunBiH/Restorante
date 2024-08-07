@@ -32,7 +32,6 @@ class _UserScreenState extends State<UserScreen> {
     setState(() {
       result = data;
     });
-    print(result!.result[4].userRoles![0].roleId);
   }
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,7 @@ class _UserScreenState extends State<UserScreen> {
                                 ),
                             );
                         },
-                        child: Text('Registriraj Rovog Radnika'),
+                        child: Text('Registriraj Novog Radnika'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -203,7 +202,11 @@ class _UserScreenState extends State<UserScreen> {
             DataCell(Text(e.userSurname ?? "")),
             DataCell(Text(e.userEmail ?? "")),
             DataCell(Text(e.userPhone ?? "")),
-            DataCell(Text("")),
+            DataCell(
+              (e.userRoles == null || e.userRoles!.isEmpty) 
+                ? const Text("") 
+                : Text(e.userRoles![0].role!.roleName!)
+            ),
             DataCell((e.userImage=="") == true ? const Text("Nema slike")
             : Container( 
               width: 200,
