@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
@@ -18,7 +20,7 @@ class _UserScreenState extends State<UserScreen> {
   final TextEditingController _searchController = TextEditingController();
   late UserProvider _userProvider;
   SearchResult<User>? result;
-
+  bool authorised=false;
  @override
   void initState() {
     super.initState();
@@ -31,6 +33,14 @@ class _UserScreenState extends State<UserScreen> {
     var data = await _userProvider.get();
     setState(() {
       result = data;
+      var user=result!.result.firstWhere((u)=> u.userEmail!.contains(Authorization.email!));
+      if(user.userRoles![0].role!.roleName!="Menedzer")
+      {
+        authorised=false;
+      }
+      else{
+        authorised=true;
+      }
     });
   }
   @override
@@ -44,7 +54,38 @@ class _UserScreenState extends State<UserScreen> {
     isUposleniciPressed: true,
       child: 
       Container(
-          child: Column(
+          child: (!authorised)? 
+        Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: Container(
+              width: 400,
+              height: 100,
+              padding: EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    "Nemate privilegije da pristupite ovoj stranici.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ): 
+          Column(
             children: [ 
               _buildSearch(),
               _buildDataListView(),

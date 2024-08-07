@@ -363,7 +363,16 @@ Future<void> _loadData() async {
                                 try{
                                   if(widget.user!=null)
                                   {
-                                    User newUser=User(null, widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text, 1, "", null);
+                                    User newUser;
+                                    if(widget.user!.userImage!=null && widget.user!.userImage!.isEmpty==false)
+                                    {
+                                      widget.user!.userImage!;
+                                      newUser=User(null, widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text, 1, widget.user!.userImage!, null);
+                                    }
+                                    else
+                                    {
+                                    newUser=User(null, widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text, 1, "", null);
+                                    }
                                     await _userProvider.update(widget.user!.userId!,newUser);
                                     showDialog(
                                       context: context,
