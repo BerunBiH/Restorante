@@ -17,6 +17,5 @@ namespace eRestorante.Models.Requests
 
         public DateOnly DateChange { get; set; }
 
-        public virtual Role? Role { get; set; }
     }
 }

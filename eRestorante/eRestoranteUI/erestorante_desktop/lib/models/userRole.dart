@@ -1,12 +1,15 @@
+import 'package:erestorante_desktop/models/role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'userRole.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class UserRole{
+  int? userRolesId;
   int? roleId;
+  Role? role;
 
-  UserRole(this.roleId);
+  UserRole(this.userRolesId, this.roleId, this.role);
 
   factory UserRole.fromJson(Map<String, dynamic> json) => _$UserRoleFromJson(json);
 

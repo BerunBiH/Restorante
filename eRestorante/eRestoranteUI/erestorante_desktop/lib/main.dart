@@ -1,3 +1,5 @@
+import 'package:erestorante_desktop/providers/role_provider.dart';
+import 'package:erestorante_desktop/providers/userRole_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/main_menu_sreen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
@@ -6,7 +8,10 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => UserProvider())
+    ChangeNotifierProvider(create: (_) => UserProvider()),
+    ChangeNotifierProvider(create: (_) => RoleProvider()),
+    ChangeNotifierProvider(create: (_) => UserRoleProvider())
+
   ],
   child: const MyApp(),
   ));
