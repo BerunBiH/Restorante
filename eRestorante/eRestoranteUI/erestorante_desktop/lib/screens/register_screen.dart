@@ -410,20 +410,26 @@ Future<void> _loadData() async {
                                                 ],
                                               ),
                                               actions: [
-                                                ElevatedButton(
-                                                  onPressed: () async {
-                                                    var role= roles.firstWhere((role)=> role.roleName!.startsWith(selectedRole!));
-                                                    DateOnly date= DateOnly.today();
-                                                    UserRoleUpdate newUserRole=UserRoleUpdate(role.rolesId, date.toString());
-                                                    await _userRoleProvider.update(widget.user!.userRoles![0].userRolesId!,newUserRole);
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => UserScreen(),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text("Ok"),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      onPressed: () async {
+                                                        var role= roles.firstWhere((role)=> role.roleName!.startsWith(selectedRole!));
+                                                        DateOnly date= DateOnly.today();
+                                                        UserRoleUpdate newUserRole=UserRoleUpdate(role.rolesId, date.toString());
+                                                        await _userRoleProvider.update(widget.user!.userRoles![0].userRolesId!,newUserRole);
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => UserScreen(),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: const Text("Ok"),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             );

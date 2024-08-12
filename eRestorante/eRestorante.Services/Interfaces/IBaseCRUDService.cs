@@ -11,5 +11,6 @@ namespace eRestorante.Services.Interfaces
     {
         Task<T> Insert(TInsert insert);
         Task<T> Update(int id, TUpdate update);
+        Task<bool> Delete(int id);
     }
 }

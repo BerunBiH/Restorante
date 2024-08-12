@@ -5,6 +5,7 @@ using eRestorante.Models.Requests;
 using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,38 @@ namespace eRestorante.Services.Services
             
             return base.BeforeUpdate(db, update);
 
+        }
+
+        public override async Task<Task> BeforeRemove(Dish db)
+        {
+            var entityRatingD = await _context.RatingDishes.Where(x => x.DishId == db.DishId).ToListAsync();
+
+            foreach (var rating in entityRatingD)
+            {
+                _context.RatingDishes.Remove(rating);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var entityCommentD = await _context.CommentDishes.Where(x => x.DishId == db.DishId).ToListAsync();
+
+            foreach (var comment in entityCommentD)
+            {
+                _context.CommentDishes.Remove(comment);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var entityOrderD = await _context.OrderDishes.Where(x => x.DishId == db.DishId).ToListAsync();
+
+            foreach (var orderD in entityOrderD)
+            {
+                _context.OrderDishes.Remove(orderD);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return base.BeforeRemove(db);
         }
     }
 }

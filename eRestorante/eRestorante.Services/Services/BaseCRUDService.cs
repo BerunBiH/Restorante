@@ -29,6 +29,11 @@ namespace eRestorante.Services.Services
 
         }
 
+        public virtual async Task BeforeRemove(TDb db)
+        {
+
+        }
+
         public virtual async Task<T> Insert(TInsert insert)
         {
             var set=_context.Set<TDb>();
@@ -54,6 +59,26 @@ namespace eRestorante.Services.Services
             await _context.SaveChangesAsync();
             return _mapper.Map<T>(entity);
         }
+
+        public virtual async Task<bool> Delete(int id)
+        {
+            var set = _context.Set<TDb>();
+
+            var entity = await set.FindAsync(id);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            await BeforeRemove(entity);
+
+            set.Remove(entity);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public static string GenerateSalt()
         {
             int saltSize = 16;

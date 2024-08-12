@@ -17,7 +17,22 @@ namespace eRestorante.Services.Services
         public DrinkService(Ib200192Context context, IMapper mapper)
             : base(context, mapper)
         {
+            
+        }
 
+        public override async Task<Task> BeforeRemove(Drink db)
+        {
+
+            var entityOrderD = await _context.OrderDrinks.Where(x => x.DrinkId == db.DrinkId).ToListAsync();
+
+            foreach (var orderD in entityOrderD)
+            {
+                _context.OrderDrinks.Remove(orderD);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return base.BeforeRemove(db);
         }
 
     }
