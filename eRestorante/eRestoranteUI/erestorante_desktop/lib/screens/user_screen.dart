@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:cross_scroll/cross_scroll.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
@@ -164,7 +163,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: SingleChildScrollView(
+        child:CrossScroll(
         child: 
         DataTable(
         showCheckboxColumn: false,  
@@ -212,6 +211,22 @@ class _UserScreenState extends State<UserScreen> {
             const DataColumn(
           label: Expanded(
           child: Text(
+            'Prosječna ocjena radnika',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
+            ),
+            const DataColumn(
+          label: Expanded(
+          child: Text(
+            'Komentari radnika',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
+            ),
+            const DataColumn(
+          label: Expanded(
+          child: Text(
             'Slika',
             style: TextStyle(fontStyle: FontStyle.italic),
            ),
@@ -251,6 +266,8 @@ class _UserScreenState extends State<UserScreen> {
                 ? const Text("") 
                 : Text(e.userRoles![0].role!.roleName!)
             ),
+            DataCell(Text("")),
+            DataCell(Text("")),
             DataCell((e.userImage=="") == true ? const Text("Nema slike")
             : Container( 
               width: 200,
