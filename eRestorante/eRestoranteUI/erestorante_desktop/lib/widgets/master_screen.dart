@@ -6,6 +6,7 @@ import 'package:erestorante_desktop/screens/reservation_screen.dart';
 import 'package:erestorante_desktop/screens/review_screen.dart';
 import 'package:erestorante_desktop/screens/settings_screen.dart';
 import 'package:erestorante_desktop/screens/user_screen.dart';
+import 'package:erestorante_desktop/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:erestorante_desktop/main.dart';
 
@@ -263,21 +264,22 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 50.0,
-                  backgroundImage: AssetImage('assets/images/RestoranteProfilePicturePlaceholder.png'),
+                  backgroundImage: Info.image !=""
+                  ? imageFromBase64String(Info.image!).image
+                  : AssetImage('assets/images/RestoranteProfilePicturePlaceholder.png') as ImageProvider,
                 ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                "Name ",
+                Text("${Info.name!} ",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
                 ),
               ),
               Text(
-                "Surename",
+                Info.surname!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24.0,
@@ -286,7 +288,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
               ],
             ),
               Text(
-                "email@mail.com",
+                Authorization.email!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,

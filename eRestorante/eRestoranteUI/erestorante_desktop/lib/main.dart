@@ -1,3 +1,5 @@
+import 'package:erestorante_desktop/models/search_result.dart';
+import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/role_provider.dart';
 import 'package:erestorante_desktop/providers/userRole_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
@@ -32,6 +34,7 @@ class LoginPage extends StatefulWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   late UserProvider _userProvider;
+  late SearchResult<User> _searchResult;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -161,7 +164,14 @@ class _LoginPageState extends State<LoginPage> {
                             Authorization.password=widget._passwordController.text;
 
                             try{
-                              await widget._userProvider.get();
+                              widget._searchResult= await widget._userProvider.get();
+                              var user= widget._searchResult.result.firstWhere((user)=> user.userEmail!.startsWith(Authorization.email!));
+                              Info.name=user.userName!;
+                              Info.surname=user.userSurname!;
+                              if(user.userImage!=null)
+                              {
+                                Info.image=user.userImage;
+                              }
                             } on Exception catch (e) {
                               showDialog(context: context, builder: (BuildContext context)=> 
                               AlertDialog(

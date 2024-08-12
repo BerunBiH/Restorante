@@ -224,18 +224,21 @@ class _UserScreenState extends State<UserScreen> {
             style: TextStyle(fontStyle: FontStyle.italic),
            ),
            ),
+            ),
+             const DataColumn(
+          label: Expanded(
+          child: Text(
+            'Izbriši',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
             )
       ], 
       rows: result?.result.map((User e)=>
         DataRow(onSelectChanged: (selected) => {
           if(selected==true)
           {
-            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterScreen(user: e,)
-                                ),
-                            )
+            
           }
         },
           cells: [
@@ -255,7 +258,129 @@ class _UserScreenState extends State<UserScreen> {
               child: imageFromBase64String(e.userImage!),
             )
             ),
-            DataCell(Icon(Icons.edit_rounded)),
+            DataCell(
+              IconButton(
+            icon: Icon(Icons.edit_rounded),  
+            onPressed: () {
+              Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen(user: e,)
+                                ),
+                            );
+            },
+          ),),
+            DataCell(IconButton(
+            icon: Icon(Icons.delete),
+            color: Colors.red,      
+            onPressed: () {
+             showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Da li ste sigurni da želite izbrisati radnika?",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Ako želite izbrisati radnika pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                ],
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+                                                      onPressed: () async {
+                                                        await _userProvider.delete(e.userId!);
+                                                        showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Uspješno izbrisan radnik",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Uspješno ste izbrisali izabranog radnika!",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                ],
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => UserScreen(),
+                                                              ),
+                                                            );
+                                                      },
+                                                      child: const Text("Ok"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                                      },
+                                                      child: const Text("Ok"),
+                                                    ),
+                                                    SizedBox(width: 10,),
+                                                                                                    ElevatedButton(
+                                                                                                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.red,
+                          surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text("Odustani"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+            },
+          ),),
           ] 
         )
       ).toList() ?? []

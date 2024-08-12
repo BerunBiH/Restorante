@@ -8,6 +8,13 @@ class Authorization {
   static String? password;
 }
 
+class Info {
+  static String? name;
+  static String? surname;
+  static String? image;
+
+}
+
 Image imageFromBase64String(String base64Image){
  return Image.memory(base64Decode(base64Image));
 }

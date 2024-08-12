@@ -86,6 +86,29 @@ namespace eRestorante.Services.Services
             return base.AddInclude(query, search);
         }
 
+        public override async Task<Task> BeforeRemove(Database.Order db)
+        {
+            var entityOrderDrink = await _context.OrderDrinks.Where(x => x.OrderId == db.OrdersId).ToListAsync();
+
+            foreach (var orderD in entityOrderDrink)
+            {
+                _context.OrderDrinks.Remove(orderD);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var entityOrderDish = await _context.OrderDishes.Where(x => x.OrderId == db.OrdersId).ToListAsync();
+
+            foreach (var orderD in entityOrderDish)
+            {
+                _context.OrderDishes.Remove(orderD);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return base.BeforeRemove(db);
+        }
+
         private int numDecimals(int orderNumber)
         {
             int num = 1;

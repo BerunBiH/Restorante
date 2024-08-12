@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using eRestorante.Services.Interfaces;
 using eRestorante.Models.SearchObjects;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace eRestorante.Services.Services
 {
@@ -57,6 +58,38 @@ namespace eRestorante.Services.Services
                 query = query.Include("UserRoles.Role");
             //}
             return base.AddInclude(query,search);
+        }
+        public override async Task<Task> BeforeRemove(User db)
+        {
+
+            var entityRole = await _context.UserRoles.FirstOrDefaultAsync(x => x.UserId==db.UserId);
+
+            if (entityRole != null)
+            {
+                _context.UserRoles.Remove(entityRole);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var entityRating = await _context.RatingStaffs.Where(x => x.UserId == db.UserId).ToListAsync();
+
+            foreach (var rating in entityRating)
+            {
+                _context.RatingStaffs.Remove(rating);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var entityComment = await _context.CommentStaffs.Where(x => x.UserId == db.UserId).ToListAsync();
+
+            foreach (var comment in entityComment)
+            {
+                _context.CommentStaffs.Remove(comment);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return base.BeforeRemove(db);
         }
 
         public async Task<Models.Model.User> Login(string email, string password)
