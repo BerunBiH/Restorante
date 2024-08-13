@@ -1,5 +1,6 @@
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
+import 'package:erestorante_desktop/providers/customer_provider.dart';
 import 'package:erestorante_desktop/providers/role_provider.dart';
 import 'package:erestorante_desktop/providers/userRole_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
@@ -12,7 +13,8 @@ void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => UserProvider()),
     ChangeNotifierProvider(create: (_) => RoleProvider()),
-    ChangeNotifierProvider(create: (_) => UserRoleProvider())
+    ChangeNotifierProvider(create: (_) => UserRoleProvider()),
+    ChangeNotifierProvider(create: (_) => CustomerProvider()),
 
   ],
   child: const MyApp(),

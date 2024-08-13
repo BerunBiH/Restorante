@@ -52,74 +52,82 @@ class _UserScreenState extends State<UserScreen> {
     isRezervacijePressed: false,
     isUposleniciPressed: true,
       child: 
-      Container(
-          child: (!authorised)? 
-        Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: Container(
-              width: 400,
-              height: 100,
-              padding: EdgeInsets.all(16.0),
-              child: Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Center(
-                  child: Text(
-                    "Nemate privilegije da pristupite ovoj stranici.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
+      _buildAuthorisation(context)
+    );
+  }
+
+  Container _buildAuthorisation(BuildContext context) {
+    return Container(
+        child: (!authorised)? 
+      Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 400,
+            height: 100,
+            padding: EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 4.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Center(
+                child: Text(
+                  "Nemate privilegije da pristupite ovoj stranici.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ): 
-          Column(
-            children: [ 
-              _buildSearch(),
-              _buildDataListView(),
-              Container(
-        width: 400,
-        height: 100,
-        child: Card(
-          child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                        onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterScreen()
-                                ),
-                            );
-                        },
-                        child: Text('Registriraj Novog Radnika'),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          surfaceTintColor:  Colors.green,
-                          overlayColor: Colors.green,
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                        ),
-              )
-          )
-        )
-        )
-            ],
-          ),
-      )
+        ),
+      ],
+    ): 
+        Column(
+          children: [ 
+            _buildSearch(),
+            _buildDataListView(),
+            _buildRegisterButton(context)
+          ],
+        ),
     );
+  }
+
+  Container _buildRegisterButton(BuildContext context) {
+    return Container(
+      width: 400,
+      height: 100,
+      child: Card(
+        child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: ElevatedButton(
+                      onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegisterScreen()
+                              ),
+                          );
+                      },
+                      child: Text('Registriraj Novog Radnika'),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        surfaceTintColor:  Colors.green,
+                        overlayColor: Colors.green,
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      ),
+            )
+        )
+      )
+      );
   }
 
   Widget _buildSearch() {
@@ -456,7 +464,7 @@ class _UserScreenState extends State<UserScreen> {
                                       },
                                     );
                                                       },
-                                                      child: const Text("Ok"),
+                                                      child: const Text("Izbriši"),
                                                     ),
                                                     SizedBox(width: 10,),
                                                                                                     ElevatedButton(
