@@ -31,7 +31,7 @@ namespace eRestorante.Services.Services
 
             if (!string.IsNullOrWhiteSpace(search?.CustomerFTS))
             {
-                query = query.Where(x => x.CustomerName.Contains(search.CustomerFTS));
+                query = query.Where(x => x.CustomerName.Contains(search.CustomerFTS) || x.CustomerSurname.Contains(search.CustomerFTS));
             }
 
             return base.AddFilter(query, search);
