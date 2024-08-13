@@ -1,3 +1,5 @@
+import 'package:erestorante_desktop/models/commentStaffs.dart';
+import 'package:erestorante_desktop/models/ratingStaffs.dart';
 import 'package:erestorante_desktop/models/userRole.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,6 +15,8 @@ class User{
   int? userStatus;
   String? userImage;
   List<UserRole>? userRoles;
+  List<CommentStaffs>? commentStaffs;
+  List<RatingStaffs>? ratingStaffs;
 
   User(this.userId, this.userName, this.userSurname, this.userEmail, this.userPhone, this.userStatus, this.userImage, this.userRoles);
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
