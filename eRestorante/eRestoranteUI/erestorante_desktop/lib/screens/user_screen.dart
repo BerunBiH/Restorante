@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:cross_scroll/cross_scroll.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
@@ -164,7 +163,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: SingleChildScrollView(
+        child:CrossScroll(
         child: 
         DataTable(
         showCheckboxColumn: false,  
@@ -212,6 +211,22 @@ class _UserScreenState extends State<UserScreen> {
             const DataColumn(
           label: Expanded(
           child: Text(
+            'Prosječna ocjena radnika',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
+            ),
+            const DataColumn(
+          label: Expanded(
+          child: Text(
+            'Komentari radnika',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
+            ),
+            const DataColumn(
+          label: Expanded(
+          child: Text(
             'Slika',
             style: TextStyle(fontStyle: FontStyle.italic),
            ),
@@ -251,6 +266,93 @@ class _UserScreenState extends State<UserScreen> {
                 ? const Text("") 
                 : Text(e.userRoles![0].role!.roleName!)
             ),
+            DataCell(
+            Text(
+              e.ratingStaffs != null && e.ratingStaffs!.isNotEmpty
+                  ? (e.ratingStaffs!.map((rating) => rating.ratingNumber ?? 0)
+                          .reduce((a, b) => a + b) /
+                      e.ratingStaffs!.length)
+                      .toStringAsFixed(2)
+                  : '0',
+            ),
+          ),
+            DataCell(IconButton(
+            icon: Icon(Icons.info_outline_rounded),     
+            onPressed: () {
+             showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return AlertDialog(
+          title: Text(
+            "Pregled komentara za odabranog radnika",
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Komentari za radnika ${e.userName} su:",
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                if (e.commentStaffs != null && e.commentStaffs!.isNotEmpty)
+                  SizedBox(
+                    height: 200.0,
+                    width: double.maxFinite,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: e.commentStaffs!.length,
+                      itemBuilder: (context, index) {
+                        final commentText = e.commentStaffs![index].commentText ?? ''; 
+                        return ListTile(
+                          leading: Icon(Icons.comment),
+                          title: Text(
+                            commentText,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                else
+                  Text(
+                    'Nema dostupnih komentara.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+              ],
+            ),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Ok"),
+                ),
+                SizedBox(width: 10),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  },
+);
+},
+          ),),
             DataCell((e.userImage=="") == true ? const Text("Nema slike")
             : Container( 
               width: 200,
@@ -366,7 +468,7 @@ class _UserScreenState extends State<UserScreen> {
                           surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
                           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                         ),
-                                                      onPressed: () async {
+                                                      onPressed: () {
                                                         Navigator.pop(context);
                                                       },
                                                       child: const Text("Odustani"),
