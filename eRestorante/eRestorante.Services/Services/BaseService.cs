@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace eRestorante.Services.Services
 {
@@ -57,9 +58,16 @@ namespace eRestorante.Services.Services
             return query;
         }
 
+        public virtual async Task<TDb> AddIncludeId(IQueryable<TDb> query, int id)
+        {
+            return (TDb)query;
+        }
+
         public virtual async Task<T> GetById(int id)
         {
-            var entity = await _context.Set<TDb>().FindAsync(id);
+            var query = _context.Set<TDb>().AsQueryable();
+
+            var entity = await AddIncludeId(query, id);
 
             return _mapper.Map<T>(entity);
         }

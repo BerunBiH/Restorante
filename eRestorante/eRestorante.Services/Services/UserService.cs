@@ -58,6 +58,16 @@ namespace eRestorante.Services.Services
 
             return base.AddInclude(query,search);
         }
+
+        public override async Task<User> AddIncludeId(IQueryable<User> query, int id)
+        {
+            query = query.Include("UserRoles.Role");
+            query = query.Include("CommentStaffs.Customer");
+            query = query.Include("RatingStaffs");
+            var entity = await query.FirstOrDefaultAsync(x => x.UserId == id);
+            return entity;
+        }
+
         public override async Task<Task> BeforeRemove(User db)
         {
 

@@ -12,7 +12,7 @@ class Info {
   static String? name;
   static String? surname;
   static String? image;
-
+  static int? id;
 }
 
 Image imageFromBase64String(String base64Image){

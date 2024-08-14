@@ -20,6 +20,7 @@ class _UserScreenState extends State<UserScreen> {
   late UserProvider _userProvider;
   SearchResult<User>? result;
   bool authorised=false;
+  bool _isLoading = true;
  @override
   void initState() {
     super.initState();
@@ -40,6 +41,7 @@ class _UserScreenState extends State<UserScreen> {
       else{
         authorised=true;
       }
+      _isLoading = false;
     });
   }
   @override
@@ -52,6 +54,8 @@ class _UserScreenState extends State<UserScreen> {
     isRezervacijePressed: false,
     isUposleniciPressed: true,
       child: 
+      (_isLoading) ?
+      Center(child: CircularProgressIndicator()):
       _buildAuthorisation(context)
     );
   }

@@ -4,7 +4,6 @@ import 'package:erestorante_desktop/models/role.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/models/userInsert.dart';
-import 'package:erestorante_desktop/models/userRole.dart';
 import 'package:erestorante_desktop/models/userRoleInsert.dart';
 import 'package:erestorante_desktop/models/userRoleUpdate.dart';
 import 'package:erestorante_desktop/providers/role_provider.dart';
@@ -13,7 +12,6 @@ import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/user_screen.dart';
 import 'package:erestorante_desktop/widgets/master_login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -46,6 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   SearchResult<Role>? result;
   String? selectedRole;
   late List<Role> roles;
+  bool _isLoading = true;
 
   bool validateEmail(TextEditingController controller) {
     final emailRegex = RegExp(r"[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+");
@@ -162,12 +161,16 @@ Future<void> _loadData() async {
   setState(() {
     result = data;
     roles = result!.result;
+    _isLoading = false;
   });
 }
 
   @override
   Widget build(BuildContext context) {
-    return MasterLoginScreenWidget(
+    return 
+    (_isLoading) ?
+      Center(child: CircularProgressIndicator()):
+    MasterLoginScreenWidget(
       child: Container(
           width: 400,
           child: 
