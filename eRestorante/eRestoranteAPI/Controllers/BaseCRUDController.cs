@@ -26,7 +26,7 @@ namespace eRestoranteAPI.Controllers
             return await _service.Insert(insert);
         }
 
-        [Authorize(Roles = "Menedzer, Konobar, Kuhar, Šanker")]
+        [Authorize(Roles = "Menedzer, Konobar, Kuhar, Šanker, Gost")]
         [HttpPut("{id}")]
         public virtual async Task<T> Update(int id, [FromBody]Tupdate update)
         {
