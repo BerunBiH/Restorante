@@ -25,6 +25,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
   SearchResult<User>? resultU;
   SearchResult<Customer>? resultC;
   bool authorised=false;
+  bool _isLoading = true;
  @override
   void initState() {
     super.initState();
@@ -48,6 +49,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
       else{
         authorised=true;
       }
+      _isLoading = false;
     });
   }
   @override
@@ -60,6 +62,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
     isRezervacijePressed: false,
     isUposleniciPressed: false,
       child: 
+      (_isLoading) ?
+      Center(child: CircularProgressIndicator()):
       _buildAuthorisation()
     );
   }

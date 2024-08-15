@@ -174,6 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                               {
                                 Info.image=user.userImage;
                               }
+                              Info.id=user.userId;
                             } on Exception catch (e) {
                               showDialog(context: context, builder: (BuildContext context)=> 
                               AlertDialog(
