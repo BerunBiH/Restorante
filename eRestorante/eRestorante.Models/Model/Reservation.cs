@@ -28,5 +28,7 @@ namespace eRestorante.Models.Model
         public string ContactPhone { get; set; } = null!;
 
         public string SpecialWishes { get; set; } = null!;
+
+        public virtual Customer? Customer { get; set; }
     }
 }

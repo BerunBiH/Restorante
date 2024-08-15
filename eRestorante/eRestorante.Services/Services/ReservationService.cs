@@ -59,5 +59,12 @@ namespace eRestorante.Services.Services
             }
             await base.BeforeInsert(db, insert);
         }
+
+        public override IQueryable<Database.Reservation> AddInclude(IQueryable<Database.Reservation> query, ReservationSearchObject? search = null)
+        {
+            query = query.Include("Customer");
+
+            return base.AddInclude(query, search);
+        }
     }
 }
