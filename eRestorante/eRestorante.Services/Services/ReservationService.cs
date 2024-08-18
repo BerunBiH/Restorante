@@ -43,8 +43,20 @@ namespace eRestorante.Services.Services
                                  arguments: null);
         }
 
+        public override IQueryable<Database.Reservation> AddFilter(IQueryable<Database.Reservation> query, ReservationSearchObject? search = null)
+        {
+            if (search.ReservationDate!=null)
+            {
+                query = query.Where(x => x.ReservationDate==search.ReservationDate);
+            }
+            return base.AddFilter(query, search);
+        }
+
         public override async Task BeforeInsert(Database.Reservation db, ReservationInsertRequest insert)
         {
+
+            insert.ReservationStatus = 0;
+
             var customer = await _context.Customers.FirstOrDefaultAsync(x=>x.CustomerId==db.CustomerId);
 
             var userEmail = customer.CustomerEmail;
@@ -58,6 +70,13 @@ namespace eRestorante.Services.Services
                                       body: body);
             }
             await base.BeforeInsert(db, insert);
+        }
+
+        public override IQueryable<Database.Reservation> AddInclude(IQueryable<Database.Reservation> query, ReservationSearchObject? search = null)
+        {
+            query = query.Include("Customer");
+
+            return base.AddInclude(query, search);
         }
     }
 }

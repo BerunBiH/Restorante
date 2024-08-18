@@ -4,8 +4,6 @@ import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/customer_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
-import 'package:erestorante_desktop/screens/register_screen.dart';
-import 'package:erestorante_desktop/screens/user_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:flutter/material.dart';

@@ -419,6 +419,9 @@ namespace eRestorante.Services.Migrations
                     b.Property<string>("ReservationReason")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ReservationStatus")
+                        .HasColumnType("int");
+
                     b.Property<TimeOnly>("ReservationTime")
                         .HasColumnType("time");
 
