@@ -19,6 +19,8 @@ namespace eRestorante.Models.Model
 
         public int NumberOfHours { get; set; }
 
+        public int ReservationStatus { get; set; }
+
         public int? CustomerId { get; set; }
 
         public string? ReservationReason { get; set; }

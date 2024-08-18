@@ -10,6 +10,7 @@ class Reservation{
   String? reservationTime;
   int? numberOfGuests;
   int? numberOfHours;
+  int? reservationStatus;
   int? customerId;
   String? reservationReason;
   int? numberOfMinors;
@@ -17,7 +18,7 @@ class Reservation{
   String? specialWishes;
   Customer? customer;
 
-  Reservation(this.reservationId, this.reservationDate, this.reservationTime, this.numberOfGuests, this.numberOfHours, this.customerId, this.reservationReason, this.numberOfMinors, this.contactPhone, this.specialWishes, this.customer);
+  Reservation(this.reservationId, this.reservationDate, this.reservationTime, this.numberOfGuests, this.numberOfHours, this.reservationStatus, this.customerId, this.reservationReason, this.numberOfMinors, this.contactPhone, this.specialWishes, this.customer);
   factory Reservation.fromJson(Map<String, dynamic> json) => _$ReservationFromJson(json);
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.

@@ -1,9 +1,8 @@
 import 'package:cross_scroll/cross_scroll.dart';
-import 'package:erestorante_desktop/models/customer.dart';
 import 'package:erestorante_desktop/models/reservation.dart';
+import 'package:erestorante_desktop/models/reservationUpdate.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
-import 'package:erestorante_desktop/providers/customer_provider.dart';
 import 'package:erestorante_desktop/providers/reservation_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/customer_screen.dart';
@@ -137,13 +136,13 @@ class _ReservationScreenState extends State<ReservationScreen> {
           String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
           _searchController.text = formattedDate;
 
-          // var data = await _customerProvider.get(filter: {
-          //   'CustomerFTS': _searchController.text
-          // });
+          var data = await _reservationProvider.get(filter: {
+            'ReservationDate': _searchController.text
+          });
 
-          // setState(() {
-          //   resultC = data;
-          // });
+          setState(() {
+            resultR = data;
+          });
         }
       },
       child: AbsorbPointer(
@@ -160,12 +159,39 @@ class _ReservationScreenState extends State<ReservationScreen> {
     ),
     const SizedBox(height: 20.0),
     const Text("Pretrazite po datumu rezervacije."),
+     const SizedBox(height: 20.0),
+          ElevatedButton(
+        onPressed: () async {
+
+          if(_searchController.text.isEmpty)
+            {
+              return;
+            }
+
+            var data = await _reservationProvider.get();
+            
+          setState(() {
+            _searchController.text = "";
+            resultR = data;
+          });
+          },
+        child: Text('Obriši pretragu'),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          overlayColor: Colors.green,
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+        ),
+      ),
+    const SizedBox(height: 5.0),
   ],
 ),
           )
         )
       ),
-    ],);
+    ],
+    );
   }
 
   Widget _buildDataListView() {
@@ -242,6 +268,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
             const DataColumn(
           label: Expanded(
           child: Text(
+            'Status rezervacije',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
+            ),
+            const DataColumn(
+          label: Expanded(
+          child: Text(
             'Prihvati rezervaciju',
             style: TextStyle(fontStyle: FontStyle.italic),
            ),
@@ -254,6 +288,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
             style: TextStyle(fontStyle: FontStyle.italic),
            ),
            ),
+            ),
+                         const DataColumn(
+          label: Expanded(
+          child: Text(
+            'Izbriši rezervaciju',
+            style: TextStyle(fontStyle: FontStyle.italic),
+           ),
+           ),
             )
       ], 
       rows: resultR?.result.map((Reservation e)=>
@@ -263,6 +305,16 @@ class _ReservationScreenState extends State<ReservationScreen> {
             
           }
         },
+        color: WidgetStateProperty.resolveWith<Color?>(
+        (Set<WidgetState> states) {
+          if (e.reservationStatus == 1) {
+            return Colors.green.withOpacity(0.2); 
+          } else if (e.reservationStatus == 2) {
+            return Colors.red.withOpacity(0.2); 
+          }
+          return null; 
+        },
+      ),
           cells: [
             DataCell(Text("${e.customer!.customerName} ${e.customer!.customerSurname}" ?? "")),
             DataCell(Text(e.contactPhone ?? "")),
@@ -272,10 +324,22 @@ class _ReservationScreenState extends State<ReservationScreen> {
             DataCell(Text(e.numberOfGuests.toString() ?? "")),
             DataCell(Text(e.numberOfMinors.toString() ?? "")),
             DataCell(Text(e.specialWishes ?? "")),
+            DataCell(Text(
+              e.reservationStatus == 0
+                  ? "Rezervacija nije pregledana"
+                  : e.reservationStatus == 1
+                      ? "Rezervacija odobrena"
+                      : e.reservationStatus == 2
+                          ? "Rezervacija odbijena"
+                          : "Nepoznat status",
+              ),
+            ),
             DataCell(IconButton(
             icon: Icon(Icons.check),
             color: Colors.green,      
             onPressed: () {
+              if(e.reservationStatus==1)
+                return;
              showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -283,14 +347,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Da li ste sigurni da želite izbrisati korisnika?",
+                                                "Da li ste sigurni da želite prihvatiti rezervaciju?",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Ako želite izbrisati korisnika pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
+                                                    "Ako želite prihvatiti rezervaciju pritisnite dugme ${"Prihvati"} ako ne želite, pritisnite dugme ${"Odustani"}",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -310,7 +374,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
                           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                         ),
                                                       onPressed: () async {
-                                                        await _reservationProvider.delete(e.reservationId!);
+                                                        ReservationUpdate res = new ReservationUpdate(e.reservationDate, e.reservationTime, e.numberOfGuests, e.numberOfHours, 1, e.reservationReason, e.numberOfMinors, e.contactPhone, e.specialWishes);
+                                                        await _reservationProvider.update(e.reservationId!,res);
                                                         showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -318,14 +383,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Uspješno izbrisan korisnik",
+                                                "Uspješno prihvaćena rezervacija",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Uspješno ste izbrisali izabranog korisnika!",
+                                                    "Uspješno ste prihvatili odabranu rezervaciju!",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -341,7 +406,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                                         Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                builder: (context) => CustomerScreen(),
+                                                                builder: (context) => ReservationScreen(),
                                                               ),
                                                             );
                                                       },
@@ -356,7 +421,121 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                       },
                                     );
                                                       },
-                                                      child: const Text("Izbriši"),
+                                                      child: const Text("Prihvati"),
+                                                    ),
+                                                    SizedBox(width: 10,),
+                                                                                                    ElevatedButton(
+                                                                                                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.red,
+                          surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text("Odustani"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+            },
+          ),),
+            DataCell(IconButton(
+            icon: Icon(Icons.close_sharp),
+            color: Colors.redAccent,      
+            onPressed: () {
+              if(e.reservationStatus==2)
+                return;
+             showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Da li ste sigurni da želite odbiti rezervaciju?",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Ako želite odbiti rezervaciju pritisnite dugme ${"Odbij"} ako ne želite, pritisnite dugme ${"Odustani"}",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                ],
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+                                                      onPressed: () async {
+                                                        ReservationUpdate res = new ReservationUpdate(e.reservationDate, e.reservationTime, e.numberOfGuests, e.numberOfHours, 2, e.reservationReason, e.numberOfMinors, e.contactPhone, e.specialWishes);
+                                                        await _reservationProvider.update(e.reservationId!,res);
+                                                        showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Uspješno odbijena rezervacija",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Uspješno ste odbili odabranu rezervaciju!",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                ],
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => ReservationScreen(),
+                                                              ),
+                                                            );
+                                                      },
+                                                      child: const Text("Ok"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                                      },
+                                                      child: const Text("Odbij"),
                                                     ),
                                                     SizedBox(width: 10,),
                                                                                                     ElevatedButton(
@@ -394,14 +573,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Da li ste sigurni da želite izbrisati korisnika?",
+                                                "Da li ste sigurni da želite izbrisati rezervaciju?",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Ako želite izbrisati korisnika pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
+                                                    "Ako želite izbrisati rezervaciju pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -429,14 +608,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Uspješno izbrisan korisnik",
+                                                "Uspješno izbrisana rezervacija",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Uspješno ste izbrisali izabranog korisnika!",
+                                                    "Uspješno ste izbrisali rezervaciju!",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -452,7 +631,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                                         Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                builder: (context) => CustomerScreen(),
+                                                                builder: (context) => ReservationScreen(),
                                                               ),
                                                             );
                                                       },

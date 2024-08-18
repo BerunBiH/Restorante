@@ -12,8 +12,8 @@ using eRestorante.Services.Database;
 namespace eRestorante.Services.Migrations
 {
     [DbContext(typeof(Ib200192Context))]
-    [Migration("20240610132314_Init")]
-    partial class Init
+    [Migration("20240817122841_AddNewPropertyToYourEntity")]
+    partial class AddNewPropertyToYourEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -421,6 +421,9 @@ namespace eRestorante.Services.Migrations
 
                     b.Property<string>("ReservationReason")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReservationStatus")
+                        .HasColumnType("int");
 
                     b.Property<TimeOnly>("ReservationTime")
                         .HasColumnType("time");

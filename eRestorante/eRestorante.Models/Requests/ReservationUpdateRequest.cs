@@ -23,6 +23,9 @@ namespace eRestorante.Models.Requests
         [Range(1, 16, ErrorMessage = "The number of hours of the reservation can be in a range from 1 to 16")]
         public int NumberOfHours { get; set; }
 
+        [Range(0, 2, ErrorMessage = "The number of hours of the reservation can be in a range from 0 to 2")]
+        public int? ReservationStatus { get; set; }
+
         [MaxLength(1000, ErrorMessage = "The reservation reason can't have more than 1000 characters.")]
         public string? ReservationReason { get; set; }
 
