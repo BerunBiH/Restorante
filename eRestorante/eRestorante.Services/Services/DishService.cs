@@ -33,6 +33,17 @@ namespace eRestorante.Services.Services
 
         }
 
+        public override IQueryable<Dish> AddFilter(IQueryable<Dish> query, DishSearchObject? search = null)
+        {
+
+            if (!string.IsNullOrWhiteSpace(search?.DishName))
+            {
+                query = query.Where(x => x.DishName.Contains(search.DishName));
+            }
+
+            return base.AddFilter(query, search);
+        }
+
         public override async Task<Task> BeforeRemove(Dish db)
         {
             var entityRatingD = await _context.RatingDishes.Where(x => x.DishId == db.DishId).ToListAsync();

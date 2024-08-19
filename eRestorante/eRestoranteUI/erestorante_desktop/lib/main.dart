@@ -1,6 +1,7 @@
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/customer_provider.dart';
+import 'package:erestorante_desktop/providers/dish_provider.dart';
 import 'package:erestorante_desktop/providers/reservation_provider.dart';
 import 'package:erestorante_desktop/providers/role_provider.dart';
 import 'package:erestorante_desktop/providers/userRole_provider.dart';
@@ -17,7 +18,7 @@ void main() {
     ChangeNotifierProvider(create: (_) => UserRoleProvider()),
     ChangeNotifierProvider(create: (_) => CustomerProvider()),
     ChangeNotifierProvider(create: (_) => ReservationProvider()),
-
+    ChangeNotifierProvider(create: (_) => DishProvider()),
   ],
   child: const MyApp(),
   ));
