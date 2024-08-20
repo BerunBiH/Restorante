@@ -1,25 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'dish.dart';
+part of 'dishUpdate.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Dish _$DishFromJson(Map<String, dynamic> json) => Dish(
-      (json['dishID'] as num?)?.toInt(),
+DishUpdate _$DishUpdateFromJson(Map<String, dynamic> json) => DishUpdate(
       json['dishName'] as String?,
       json['dishDescription'] as String?,
       (json['dishCost'] as num?)?.toDouble(),
-      (json['categoryID'] as num?)?.toInt(),
       json['dishImage'] as String?,
     );
 
-Map<String, dynamic> _$DishToJson(Dish instance) => <String, dynamic>{
-      'dishID': instance.dishID,
+Map<String, dynamic> _$DishUpdateToJson(DishUpdate instance) =>
+    <String, dynamic>{
       'dishName': instance.dishName,
       'dishDescription': instance.dishDescription,
       'dishCost': instance.dishCost,
-      'categoryID': instance.categoryID,
       'dishImage': instance.dishImage,
     };

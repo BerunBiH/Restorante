@@ -13,7 +13,7 @@ namespace eRestorante.Models.Model
         public string DishName { get; set; }
         public string DishDescription { get; set; }
         public decimal DishCost { get; set; }
-        public int CategoryID { get; set; }
-        public byte[] DishImageID { get; set; }
+        public int CategoryId { get; set; }
+        public byte[] DishImage { get; set; }
     }
 }

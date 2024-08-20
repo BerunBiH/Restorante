@@ -1,5 +1,6 @@
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
+import 'package:erestorante_desktop/providers/category_provider.dart';
 import 'package:erestorante_desktop/providers/customer_provider.dart';
 import 'package:erestorante_desktop/providers/dish_provider.dart';
 import 'package:erestorante_desktop/providers/reservation_provider.dart';
@@ -19,6 +20,7 @@ void main() {
     ChangeNotifierProvider(create: (_) => CustomerProvider()),
     ChangeNotifierProvider(create: (_) => ReservationProvider()),
     ChangeNotifierProvider(create: (_) => DishProvider()),
+    ChangeNotifierProvider(create: (_) => CategoryProvider()),
   ],
   child: const MyApp(),
   ));

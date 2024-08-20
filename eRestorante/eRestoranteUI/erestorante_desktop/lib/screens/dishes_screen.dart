@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:erestorante_desktop/models/dish.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/dish_provider.dart';
 import 'package:erestorante_desktop/providers/reservation_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
+import 'package:erestorante_desktop/screens/dish_add_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +85,7 @@ class _DishesScreenState extends State<DishesScreen> {
                 itemBuilder: (context, index) {
                   if (resultD != null && index < resultD!.result.length) {
                     final dish = resultD!.result[index];
-                    return _foodCardBuilder(dish.dishName!, dish.dishDescription!, dish.dishCost!, dish.dishID!);
+                    return _foodCardBuilder(dish);
                   } else {
                     return SizedBox.shrink();
                    }
@@ -130,18 +133,12 @@ class _DishesScreenState extends State<DishesScreen> {
    const SizedBox(height: 20.0),
           ElevatedButton(
         onPressed: () async {
-
-          // if(_searchController.text.isEmpty)
-          //   {
-          //     return;
-          //   }
-
-          //   // var data = await _reservationProvider.get();
-            
-          // setState(() {
-          //   _searchController.text = "";
-          //   resultR = data;
-          // });
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DishAddScreen(),
+              ),
+            );
           },
         child: Text('Dodaj jelo'),
         style: ElevatedButton.styleFrom(
@@ -163,7 +160,7 @@ class _DishesScreenState extends State<DishesScreen> {
   }
 
 
-  Widget _foodCardBuilder(String dishName, String dishDescription, double dishCost, int dishId) {
+  Widget _foodCardBuilder(Dish dish) {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -179,12 +176,19 @@ class _DishesScreenState extends State<DishesScreen> {
               child: AnimatedOpacity(
                 opacity: _isHovered ? 0.2 : 1.0,
                 duration: Duration(milliseconds: 300),
-                child: Image.asset(
-                  'assets/images/RestoranteLogo.png',
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child: dish.dishImage != null && dish.dishImage!.isNotEmpty
+                ? Image.memory(
+                    base64Decode(dish.dishImage!),
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    'assets/images/RestoranteLogo.png',
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
               ),
             ),
             Center(
@@ -195,7 +199,7 @@ class _DishesScreenState extends State<DishesScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      dishName,
+                      dish.dishName!,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24.0,
@@ -205,7 +209,7 @@ class _DishesScreenState extends State<DishesScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      dishDescription,
+                      dish.dishDescription!,
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.black,
@@ -214,7 +218,7 @@ class _DishesScreenState extends State<DishesScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Cijena: ${dishCost.toString()}KM",
+                      "Cijena: ${dish.dishCost!.toString()}KM",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20.0,
@@ -271,7 +275,7 @@ class _DishesScreenState extends State<DishesScreen> {
                           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                         ),
                                                       onPressed: () async {
-                                                        await _dishProvider.delete(dishId);
+                                                        await _dishProvider.delete(dish.dishID!);
                                                         showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -380,8 +384,13 @@ class _DishesScreenState extends State<DishesScreen> {
                           overlayColor: Colors.green,
                           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                         ),
-                                                      onPressed: () async {
-
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => DishAddScreen(dish: dish,),
+                                                              ),
+                                                            );
                                                     },
                                                       child: const Text("Uredi"),
                                                     ),

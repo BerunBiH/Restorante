@@ -23,6 +23,6 @@ namespace eRestorante.Models.Requests
         [Range(0, 1000, ErrorMessage = "The dish cost can be in a range from 0 to 1000")]
         public decimal? DishCost { get; set; }
 
-        public byte[]? DishImageID { get; set; }
+        public byte[]? DishImage { get; set; }
     }
 }
