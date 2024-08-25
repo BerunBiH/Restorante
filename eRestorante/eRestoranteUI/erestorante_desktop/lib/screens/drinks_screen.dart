@@ -1,31 +1,31 @@
 import 'dart:convert';
 
-import 'package:erestorante_desktop/models/dish.dart';
+
+import 'package:erestorante_desktop/models/drink.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
-import 'package:erestorante_desktop/providers/dish_provider.dart';
-import 'package:erestorante_desktop/providers/reservation_provider.dart';
+import 'package:erestorante_desktop/providers/drink_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
-import 'package:erestorante_desktop/screens/dish_add_screen.dart';
-import 'package:erestorante_desktop/screens/drinks_screen.dart';
+import 'package:erestorante_desktop/screens/dishes_screen.dart';
+import 'package:erestorante_desktop/screens/drink_add_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DishesScreen extends StatefulWidget {
-  const DishesScreen({super.key});
+class DrinksScreen extends StatefulWidget {
+  const DrinksScreen({super.key});
 
   @override
-  State<DishesScreen> createState() => _DishesScreenState();
+  State<DrinksScreen> createState() => _DrinksScreenState();
 }
 
-class _DishesScreenState extends State<DishesScreen> {
+class _DrinksScreenState extends State<DrinksScreen> {
   final TextEditingController _searchController = TextEditingController();
   late UserProvider _userProvider;
-  late DishProvider _dishProvider;
+  late DrinkProvider _drinkProvider;
   SearchResult<User>? resultU;
-  SearchResult<Dish>? resultD;
+  SearchResult<Drink>? resultD;
   bool authorised=false;
   bool _isLoading = true;
   bool _isHovered = false;
@@ -34,12 +34,12 @@ class _DishesScreenState extends State<DishesScreen> {
   void initState() {
     super.initState();
     _userProvider = context.read<UserProvider>();
-    _dishProvider = context.read<DishProvider>();
+    _drinkProvider = context.read<DrinkProvider>();
     _loadData();
   }
   Future<void> _loadData() async {
     var dataU = await _userProvider.get();
-    var dataD = await _dishProvider.get();
+    var dataD = await _drinkProvider.get();
 
     setState(() {
       resultU = dataU;
@@ -85,8 +85,8 @@ class _DishesScreenState extends State<DishesScreen> {
                 itemCount: resultD!.result.length,
                 itemBuilder: (context, index) {
                   if (resultD != null && index < resultD!.result.length) {
-                    final dish = resultD!.result[index];
-                    return _foodCardBuilder(dish);
+                    final drink = resultD!.result[index];
+                    return _foodCardBuilder(drink);
                   } else {
                     return SizedBox.shrink();
                    }
@@ -115,14 +115,14 @@ class _DishesScreenState extends State<DishesScreen> {
                       TextField(
                       decoration: const InputDecoration(
                         labelText: 'Pretraga',
-                        hintText: 'Pretrazite po imenu jela.',
+                        hintText: 'Pretrazite po imenu pića.',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.search),
                       ),
                       controller: _searchController,
                       onChanged: (text) async {
-                        var data = await _dishProvider.get(filter: {
-                            'DishName': _searchController.text
+                        var data = await _drinkProvider.get(filter: {
+                            'DrinkName': _searchController.text
                           });
                           setState(() {
                             resultD = data;
@@ -130,7 +130,7 @@ class _DishesScreenState extends State<DishesScreen> {
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    const Text("Pretrazite po nazivu jela"),
+                    const Text("Pretrazite po nazivu pića"),
    const SizedBox(height: 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -141,11 +141,11 @@ class _DishesScreenState extends State<DishesScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DishAddScreen(),
+                    builder: (context) => DrinkAddScreen(),
                   ),
                 );
               },
-                      child: Text('Dodaj jelo'),
+                      child: Text('Dodaj piće'),
                       style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -160,11 +160,11 @@ class _DishesScreenState extends State<DishesScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DrinksScreen(),
+                builder: (context) => DishesScreen(),
               ),
             );
           },
-        child: Text('Pića'),
+        child: Text('Jela'),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -186,7 +186,7 @@ class _DishesScreenState extends State<DishesScreen> {
   }
 
 
-  Widget _foodCardBuilder(Dish dish) {
+  Widget _foodCardBuilder(Drink drink) {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -202,9 +202,9 @@ class _DishesScreenState extends State<DishesScreen> {
               child: AnimatedOpacity(
                 opacity: _isHovered ? 0.2 : 1.0,
                 duration: Duration(milliseconds: 300),
-                child: dish.dishImage != null && dish.dishImage!.isNotEmpty
+                child: drink.drinkImage != null && drink.drinkImage!.isNotEmpty
                 ? Image.memory(
-                    base64Decode(dish.dishImage!),
+                    base64Decode(drink.drinkImage!),
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.cover,
@@ -225,7 +225,7 @@ class _DishesScreenState extends State<DishesScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      dish.dishName!,
+                      drink.drinkName!,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24.0,
@@ -235,7 +235,7 @@ class _DishesScreenState extends State<DishesScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      dish.dishDescription!,
+                      drink.drinkDescription!,
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.black,
@@ -244,7 +244,16 @@ class _DishesScreenState extends State<DishesScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Cijena: ${dish.dishCost!.toString()}KM",
+                      "Postotak alkohola: ${drink.drinkAlcoholPerc!}%",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Cijena: ${drink.drinkCost!.toString()}KM",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20.0,
@@ -274,14 +283,14 @@ class _DishesScreenState extends State<DishesScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Da li ste sigurni da želite izbrisati jelo?",
+                                                "Da li ste sigurni da želite izbrisati piće?",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Ako želite izbrisati jelo pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
+                                                    "Ako želite izbrisati piće pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -301,7 +310,7 @@ class _DishesScreenState extends State<DishesScreen> {
                           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                         ),
                                                       onPressed: () async {
-                                                        await _dishProvider.delete(dish.dishID!);
+                                                        await _drinkProvider.delete(drink.drinkId!);
                                                         showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -309,14 +318,14 @@ class _DishesScreenState extends State<DishesScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Uspješno izbrisano jelo",
+                                                "Uspješno izbrisano piće",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Uspješno ste izbrisali jelo!",
+                                                    "Uspješno ste izbrisali piće!",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -332,7 +341,7 @@ class _DishesScreenState extends State<DishesScreen> {
                                                         Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                builder: (context) => DishesScreen(),
+                                                                builder: (context) => DrinksScreen(),
                                                               ),
                                                             );
                                                       },
@@ -384,14 +393,14 @@ class _DishesScreenState extends State<DishesScreen> {
                                           builder: (context, setState) {
                                             return AlertDialog(
                                               title: Text(
-                                                "Da li ste sigurni da želite urediti jelo?",
+                                                "Da li ste sigurni da želite urediti piće?",
                                                 textAlign: TextAlign.center,
                                               ),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    "Ako želite urediti jelo pritisnite dugme ${"Uredu"} ako ne želite, pritisnite dugme ${"Odustani"}",
+                                                    "Ako želite urediti piće pritisnite dugme ${"Uredu"} ako ne želite, pritisnite dugme ${"Odustani"}",
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 20),
@@ -414,7 +423,7 @@ class _DishesScreenState extends State<DishesScreen> {
                                                         Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                builder: (context) => DishAddScreen(dish: dish,),
+                                                                builder: (context) => DrinkAddScreen(drink: drink,),
                                                               ),
                                                             );
                                                     },

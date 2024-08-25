@@ -20,6 +20,16 @@ namespace eRestorante.Services.Services
             
         }
 
+        public override IQueryable<Drink> AddFilter(IQueryable<Drink> query, DrinkSearchObject? search = null)
+        {
+            if (!string.IsNullOrWhiteSpace(search?.DrinkName))
+            {
+                query = query.Where(x => x.DrinkName.Contains(search.DrinkName));
+            }
+
+            return base.AddFilter(query, search);
+        }
+
         public override async Task<Task> BeforeRemove(Drink db)
         {
 
