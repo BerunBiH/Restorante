@@ -22,7 +22,7 @@ namespace eRestorante.Models.Requests
         [Required(ErrorMessage = "This field can not be empty.")]
         [Range(0, 1000, ErrorMessage ="The dish cost can be in a range from 0 to 1000")]
         public decimal DishCost { get; set; }
-        public int CategoryID { get; set; }
-        public byte[] DishImageID { get; set; }
+        public int CategoryId { get; set; }
+        public byte[] DishImage { get; set; }
     }
 }
