@@ -13,6 +13,7 @@ Dish _$DishFromJson(Map<String, dynamic> json) => Dish(
       (json['dishCost'] as num?)?.toDouble(),
       (json['categoryID'] as num?)?.toInt(),
       json['dishImage'] as String?,
+      json['speciality'] as bool?,
     );
 
 Map<String, dynamic> _$DishToJson(Dish instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$DishToJson(Dish instance) => <String, dynamic>{
       'dishCost': instance.dishCost,
       'categoryID': instance.categoryID,
       'dishImage': instance.dishImage,
+      'speciality': instance.speciality,
     };
