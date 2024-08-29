@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/profile_screen.dart';
@@ -36,23 +37,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _isLoading = true;
   late User user;
   String? base64Image;
+  SearchResult<User>? resultU;
+  late List<User> users;
 
   @override
   void initState() {
     super.initState();
-
     _userProvider = context.read<UserProvider>();
-    _loadData();
+    _loadData().then((_) {
+      print("Users after _loadData completes: $users");
+    });
   }
 
-Future<void> _loadData() async {
-  var data = await _userProvider.getById(Info.id!);
-  setState(() {
-    user = data;
-    _isLoading = false;
-  });
-}
-
+  Future<void> _loadData() async {
+    var dataU = await _userProvider.get();
+    setState(() {
+      resultU = dataU;
+      users = resultU!.result;
+      user = users.firstWhere((x) => x.userId == Info.id);
+      _isLoading = false;
+    });
+  }
 Future<void> _pickImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
 
@@ -83,6 +88,67 @@ Future<void> _pickImage() async {
     });
     return true; // No error
   }
+
+  bool validateEmailExistance(TextEditingController controller)
+  {
+    if (users.isEmpty) {
+      print("Users list is empty");
+      return false;
+    }
+    users.removeWhere((userNow)=> userNow.userEmail == user.userEmail);
+    bool mailExists=false;
+    for (var userNow in users) {
+      if(userNow.userEmail==controller.text)
+        {
+        print("I'm here");
+      mailExists=true;
+      _emailColor = Colors.red;
+                                          showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Upss, nešto nije okay!",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Ovaj mail se vec koristi, pokusajte sa drugim!",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text("Ok"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+    }
+    }
+    if(mailExists)
+    {
+      _emailColor = Colors.red;
+      return false;
+    }
+    setState(() {
+      _emailColor = Colors.black; // Reset color to black on valid input
+    });
+    return true; // No error
+  }
+
 
   bool validateName(TextEditingController controller, bool isName)
   {
@@ -410,11 +476,7 @@ Widget _buildButtonRow() {
       SizedBox(width: 50.0),
       ElevatedButton(
         onPressed: () async {
-          // if( !validatePasswords(widget._passwordController, widget._passwordRepeatController))
-          // {
-          //   return;
-          // }
-          if((!validateName(widget._nameController,true) || !validateName(widget._surenameController,false)) || (!validateEmail(widget._emailController) ||(!validatePhoneNumber(widget._phoneController))))
+          if((!validateName(widget._nameController,true) || !validateName(widget._surenameController,false)) || (!validateEmail(widget._emailController) ||(!validatePhoneNumber(widget._phoneController))) || !validateEmailExistance(widget._emailController))
           {
             return;
           }
@@ -428,7 +490,9 @@ Widget _buildButtonRow() {
             newUser=User(null, widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text, 1, base64Image, user.userRoles);
           }
           await _userProvider.update(user.userId!,newUser);
+          Authorization.email=newUser.userEmail;
            showDialog(
+            barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(

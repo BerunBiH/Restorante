@@ -13,6 +13,8 @@ public partial class Dish
 
     public decimal DishCost { get; set; }
 
+    public bool Speciality { get; set; }
+
     public byte[]? DishImage { get; set; }
 
     public int? CategoryId { get; set; }

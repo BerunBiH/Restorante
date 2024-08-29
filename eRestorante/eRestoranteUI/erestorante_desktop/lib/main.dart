@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               Info.id=user.userId;
                             } on Exception catch (e) {
-                              showDialog(context: context, builder: (BuildContext context)=> 
+                              showDialog(barrierDismissible: false,context: context, builder: (BuildContext context)=> 
                               AlertDialog(
                                 title: Text("Greška u prijavi",textAlign: TextAlign.center,),
                                 content: Text("Unjeli ste pogresne podatke, pokusajte opet sa ipsravnim!", textAlign: TextAlign.center,),

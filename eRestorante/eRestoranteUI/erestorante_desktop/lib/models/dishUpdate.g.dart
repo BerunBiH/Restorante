@@ -11,6 +11,7 @@ DishUpdate _$DishUpdateFromJson(Map<String, dynamic> json) => DishUpdate(
       json['dishDescription'] as String?,
       (json['dishCost'] as num?)?.toDouble(),
       json['dishImage'] as String?,
+      json['speciality'] as bool?,
     );
 
 Map<String, dynamic> _$DishUpdateToJson(DishUpdate instance) =>
@@ -19,4 +20,5 @@ Map<String, dynamic> _$DishUpdateToJson(DishUpdate instance) =>
       'dishDescription': instance.dishDescription,
       'dishCost': instance.dishCost,
       'dishImage': instance.dishImage,
+      'speciality': instance.speciality,
     };

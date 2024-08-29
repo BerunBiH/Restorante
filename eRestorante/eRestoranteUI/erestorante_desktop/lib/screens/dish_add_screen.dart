@@ -40,6 +40,7 @@ class _DishAddScreenState extends State<DishAddScreen> {
   Color _descriptionColor= Colors.black;
   late DishProvider _dishProvider;
   bool _isLoading = true;
+  late bool _isSpeciality;
   late User user;
   String? base64Image;
   String? selectedCategory;
@@ -61,6 +62,7 @@ Future<void> _loadData() async {
     result = data;
     category = result!.result;
     _isLoading = false;
+    _isSpeciality = widget.dish?.speciality ?? false;
   });
 }
 
@@ -285,6 +287,20 @@ Stack(
                         "Cijena je bila: ${widget.dish!.dishCost.toString()}"
                       ):
                        SizedBox.shrink(),
+                       SizedBox(height: 10.0),
+                         _buildBoolField(
+                        isSpeciality: _isSpeciality,
+                        onChanged: (value) {
+                          setState(() {
+                            _isSpeciality = value;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 5.0),
+                      if (widget.dish != null)
+                        Text(
+                          "Jelo: ${_isSpeciality ? 'Jest specijalitet' : 'Nije specijalitet'}",
+                        ),
                       SizedBox(height: 10.0),
                       (widget.dish!=null)?
                       SizedBox.shrink():
@@ -316,6 +332,76 @@ Stack(
     ),
   );
 }
+Widget _buildBoolField({
+    required bool isSpeciality,
+    required Function(bool) onChanged,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              onChanged(true);
+            },
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              decoration: BoxDecoration(
+                color: isSpeciality ? Colors.green : Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(
+                  color: isSpeciality ? Colors.green : Colors.grey,
+                  width: 2.0,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Jest specijalitet',
+                  style: TextStyle(
+                    color: isSpeciality ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 10.0),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              onChanged(false);
+            },
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              decoration: BoxDecoration(
+                color: !isSpeciality ? Colors.red : Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(
+                  color: !isSpeciality ? Colors.red : Colors.grey,
+                  width: 2.0,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Nije specijalitet',
+                  style: TextStyle(
+                    color: !isSpeciality ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 
 Widget _buildTextField({
   required TextEditingController controller,
@@ -404,14 +490,15 @@ Widget _buildButtonRow() {
           {
             if(base64Image==null)
             {
-              newDish=DishUpdate(widget._nameController.text, widget._descriptionController.text, double.parse(widget._costController.text), widget.dish!.dishImage);
+              newDish=DishUpdate(widget._nameController.text, widget._descriptionController.text, double.parse(widget._costController.text), widget.dish!.dishImage,_isSpeciality);
             }
             else
             {
-              newDish=DishUpdate(widget._nameController.text, widget._descriptionController.text, double.parse(widget._costController.text), base64Image);
+              newDish=DishUpdate(widget._nameController.text, widget._descriptionController.text, double.parse(widget._costController.text), base64Image,_isSpeciality);
             }
             await _dishProvider.update(widget.dish!.dishID!,newDish);
             showDialog(
+              barrierDismissible: false,
                                         context: context,
                                         builder: (BuildContext context) {
                                           return StatefulBuilder(
@@ -466,9 +553,10 @@ Widget _buildButtonRow() {
             base64Image ??= "";
             double cost = double.parse(widget._costController.text);
             int categoryId= int.parse(selectedCategory!);
-            DishInsert newDish=DishInsert(widget._nameController.text, widget._descriptionController.text,cost, categoryId, base64Image);
+            DishInsert newDish=DishInsert(widget._nameController.text, widget._descriptionController.text,cost, categoryId, base64Image,_isSpeciality);
             await _dishProvider.insert(newDish);
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
                 return StatefulBuilder(

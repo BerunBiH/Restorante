@@ -24,5 +24,6 @@ namespace eRestorante.Models.Requests
         public decimal? DishCost { get; set; }
 
         public byte[]? DishImage { get; set; }
+        public bool Speciality { get; set; }
     }
 }

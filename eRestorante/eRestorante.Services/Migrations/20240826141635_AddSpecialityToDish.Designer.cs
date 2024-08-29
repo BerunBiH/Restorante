@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eRestorante.Services.Database;
 
@@ -11,9 +12,11 @@ using eRestorante.Services.Database;
 namespace eRestorante.Services.Migrations
 {
     [DbContext(typeof(Ib200192Context))]
-    partial class Ib200192ContextModelSnapshot : ModelSnapshot
+    [Migration("20240826141635_AddSpecialityToDish")]
+    partial class AddSpecialityToDish
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

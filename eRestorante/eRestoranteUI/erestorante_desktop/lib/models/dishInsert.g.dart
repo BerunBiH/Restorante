@@ -12,6 +12,7 @@ DishInsert _$DishInsertFromJson(Map<String, dynamic> json) => DishInsert(
       (json['dishCost'] as num?)?.toDouble(),
       (json['categoryId'] as num?)?.toInt(),
       json['dishImage'] as String?,
+      json['speciality'] as bool?,
     );
 
 Map<String, dynamic> _$DishInsertToJson(DishInsert instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$DishInsertToJson(DishInsert instance) =>
       'dishCost': instance.dishCost,
       'categoryId': instance.categoryId,
       'dishImage': instance.dishImage,
+      'speciality': instance.speciality,
     };
