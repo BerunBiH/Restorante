@@ -11,6 +11,7 @@ import 'package:erestorante_desktop/providers/category_provider.dart';
 import 'package:erestorante_desktop/providers/dish_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/dishes_screen.dart';
+import 'package:erestorante_desktop/screens/main_menu_sreen.dart';
 import 'package:erestorante_desktop/screens/profile_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
@@ -22,12 +23,13 @@ import 'package:provider/provider.dart';
 
 class DishAddScreen extends StatefulWidget {
   Dish? dish;
+  bool? backMain=false;
   final TextEditingController _costController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  DishAddScreen({super.key, this.dish});
+  DishAddScreen({super.key, this.dish, this.backMain});
 
   @override
   State<DishAddScreen> createState() => _DishAddScreenState();
@@ -461,12 +463,24 @@ Widget _buildButtonRow() {
     children: [
       ElevatedButton(
         onPressed: () {
+          if(widget.backMain!=null && widget.backMain!)
+          {
+            Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainMenuSreen(),
+            ),
+          );
+          }
+          else{
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => DishesScreen(),
             ),
           );
+
+          }
         },
         child: Text('Odustani'),
         style: ElevatedButton.styleFrom(
