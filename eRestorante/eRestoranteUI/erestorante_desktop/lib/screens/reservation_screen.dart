@@ -341,6 +341,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               if(e.reservationStatus==1)
                 return;
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -377,6 +378,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                                         ReservationUpdate res = new ReservationUpdate(e.reservationDate, e.reservationTime, e.numberOfGuests, e.numberOfHours, 1, e.reservationReason, e.numberOfMinors, e.contactPhone, e.specialWishes);
                                                         await _reservationProvider.update(e.reservationId!,res);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -455,6 +457,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               if(e.reservationStatus==2)
                 return;
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -491,6 +494,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                                         ReservationUpdate res = new ReservationUpdate(e.reservationDate, e.reservationTime, e.numberOfGuests, e.numberOfHours, 2, e.reservationReason, e.numberOfMinors, e.contactPhone, e.specialWishes);
                                                         await _reservationProvider.update(e.reservationId!,res);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -567,6 +571,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
             color: Colors.red,      
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -602,6 +607,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                                       onPressed: () async {
                                                         await _reservationProvider.delete(e.reservationId!);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(

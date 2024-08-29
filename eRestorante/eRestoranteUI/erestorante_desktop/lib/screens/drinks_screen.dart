@@ -277,6 +277,7 @@ class _DrinksScreenState extends State<DrinksScreen> {
             color: Colors.red,      
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -312,6 +313,7 @@ class _DrinksScreenState extends State<DrinksScreen> {
                                                       onPressed: () async {
                                                         await _drinkProvider.delete(drink.drinkId!);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -387,6 +389,7 @@ class _DrinksScreenState extends State<DrinksScreen> {
             icon: Icon(Icons.edit_rounded),   
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(

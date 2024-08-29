@@ -268,6 +268,7 @@ class _DishesScreenState extends State<DishesScreen> {
             color: Colors.red,      
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -303,6 +304,7 @@ class _DishesScreenState extends State<DishesScreen> {
                                                       onPressed: () async {
                                                         await _dishProvider.delete(dish.dishID!);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -378,6 +380,7 @@ class _DishesScreenState extends State<DishesScreen> {
             icon: Icon(Icons.edit_rounded),   
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(

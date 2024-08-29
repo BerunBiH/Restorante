@@ -236,6 +236,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             color: Colors.red,      
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -271,6 +272,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                                       onPressed: () async {
                                                         await _customerProvider.delete(e.customerId!);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(

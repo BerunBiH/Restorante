@@ -498,6 +498,7 @@ Widget _buildButtonRow() {
             }
             await _dishProvider.update(widget.dish!.dishID!,newDish);
             showDialog(
+              barrierDismissible: false,
                                         context: context,
                                         builder: (BuildContext context) {
                                           return StatefulBuilder(
@@ -555,6 +556,7 @@ Widget _buildButtonRow() {
             DishInsert newDish=DishInsert(widget._nameController.text, widget._descriptionController.text,cost, categoryId, base64Image,_isSpeciality);
             await _dishProvider.insert(newDish);
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
                 return StatefulBuilder(

@@ -42,8 +42,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late UserRoleProvider _userRoleProvider;
   late RoleProvider _roleProvider;
   SearchResult<Role>? result;
+  SearchResult<User>? resultU;
   String? selectedRole;
   late List<Role> roles;
+  late List<User> users;
   bool _isLoading = true;
 
   bool validateEmail(TextEditingController controller) {
@@ -57,6 +59,65 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _emailColor = Colors.red; // Change color to red on invalid format
       });
+      return false;
+    }
+    setState(() {
+      _emailColor = Colors.black; // Reset color to black on valid input
+    });
+    return true; // No error
+  }
+
+  bool validateEmailExistance(TextEditingController controller)
+  {
+    if(widget.user!=null)
+    {
+      users.removeWhere((user)=> user.userEmail == widget.user!.userEmail);
+    }
+    bool mailExists=false;
+    users.forEach((user){
+      
+      if(user.userEmail==controller.text)
+        {
+      mailExists=true;
+      _emailColor = Colors.red;
+                                          showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Upss, nešto nije okay!",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "Ovaj mail se vec koristi, pokusajte sa drugim!",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text("Ok"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+    }
+    });
+    if(mailExists)
+    {
+      _emailColor = Colors.red;
       return false;
     }
     setState(() {
@@ -158,9 +219,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 Future<void> _loadData() async {
   var data = await _roleProvider.get();
+  var dataU = await _userProvider.get();
   setState(() {
     result = data;
     roles = result!.result;
+
+    resultU=dataU;
+    users=resultU!.result;
+
     _isLoading = false;
   });
 }
@@ -353,6 +419,10 @@ Future<void> _loadData() async {
                       SizedBox(width: 50.0),
                       ElevatedButton(
                         onPressed: () async {
+                          if(!validateEmailExistance(widget._emailController))
+                          {
+                            return;
+                          }
                           if(widget.user==null && !validatePasswords(widget._passwordController, widget._passwordRepeatController))
                           {
                             return;
@@ -378,6 +448,7 @@ Future<void> _loadData() async {
                                     }
                                     await _userProvider.update(widget.user!.userId!,newUser);
                                     showDialog(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -446,6 +517,7 @@ Future<void> _loadData() async {
                                     UserInsert newUser=UserInsert(widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text,widget._passwordController.text,widget._passwordRepeatController.text, 1, "");
                                     await _userProvider.insert(newUser);
                                     showDialog(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -507,7 +579,7 @@ Future<void> _loadData() async {
                                   }
                                 }
                                 on Exception catch (e) {
-                              showDialog(context: context, builder: (BuildContext context)=> 
+                              showDialog(barrierDismissible: false,context: context, builder: (BuildContext context)=> 
                               AlertDialog(
                                 title: Text("Greška u registraciji",textAlign: TextAlign.center,),
                                 content: Text("Upps, nešto nije okay, pokušajte ponovo!", textAlign: TextAlign.center,),

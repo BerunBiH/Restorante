@@ -458,6 +458,7 @@ Widget _buildButtonRow() {
             }
             await _drinkProvider.update(widget.drink!.drinkId!,newDrink);
             showDialog(
+              barrierDismissible: false,
                                         context: context,
                                         builder: (BuildContext context) {
                                           return StatefulBuilder(
@@ -516,6 +517,7 @@ Widget _buildButtonRow() {
             DrinkInsert newDrink=DrinkInsert(widget._nameController.text, widget._descriptionController.text,cost,alco,base64Image,categoryId);
             await _drinkProvider.insert(newDrink);
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
                 return StatefulBuilder(

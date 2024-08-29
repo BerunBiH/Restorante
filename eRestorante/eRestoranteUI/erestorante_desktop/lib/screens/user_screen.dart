@@ -292,6 +292,7 @@ class _UserScreenState extends State<UserScreen> {
             icon: Icon(Icons.info_outline_rounded),     
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
   context: context,
   builder: (BuildContext context) {
     return StatefulBuilder(
@@ -389,6 +390,7 @@ class _UserScreenState extends State<UserScreen> {
             color: Colors.red,      
             onPressed: () {
              showDialog(
+              barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
@@ -424,6 +426,7 @@ class _UserScreenState extends State<UserScreen> {
                                                       onPressed: () async {
                                                         await _userProvider.delete(e.userId!);
                                                         showDialog(
+                                                          barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return StatefulBuilder(
