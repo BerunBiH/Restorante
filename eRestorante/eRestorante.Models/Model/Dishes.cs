@@ -16,5 +16,10 @@ namespace eRestorante.Models.Model
         public int CategoryId { get; set; }
         public byte[] DishImage { get; set; }
         public bool Speciality { get; set; }
+        public virtual ICollection<CommentDish> CommentDishes { get; set; } = new List<CommentDish>();
+
+        public virtual ICollection<OrderDishes> OrderDishes { get; set; } = new List<OrderDishes>();
+
+        public virtual ICollection<RatingDish> RatingDishes { get; set; } = new List<RatingDish>();
     }
 }

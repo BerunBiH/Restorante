@@ -21,6 +21,15 @@ namespace eRestorante.Services.Services
         {  
         }
 
+        public override IQueryable<Dish> AddInclude(IQueryable<Dish> query, DishSearchObject? search = null)
+        {
+            query = query.Include("CommentDishes");
+            query = query.Include("OrderDishes");
+            query = query.Include("RatingDishes");
+
+            return base.AddInclude(query, search);
+        }
+
         public override Task BeforeUpdate(Dish db, DishUpdateRequest update)
         {
             if (update.DishCost<=0)

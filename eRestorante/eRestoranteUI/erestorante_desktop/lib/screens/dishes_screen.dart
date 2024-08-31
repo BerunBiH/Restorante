@@ -8,6 +8,7 @@ import 'package:erestorante_desktop/providers/reservation_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
 import 'package:erestorante_desktop/screens/dish_add_screen.dart';
 import 'package:erestorante_desktop/screens/drinks_screen.dart';
+import 'package:erestorante_desktop/screens/review_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
@@ -374,6 +375,18 @@ class _DishesScreenState extends State<DishesScreen> {
                                         );
                                       },
                                     );
+            },
+          ),
+                                           IconButton(
+            icon: Icon(Icons.info_outline),
+            color: Colors.deepPurpleAccent,      
+            onPressed: () {
+              Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => ReviewScreen(dish: dish,),
+                                                              ),
+                                                            );
             },
           ),
               IconButton(
