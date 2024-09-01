@@ -45,6 +45,11 @@ dependencies:
   adaptive_scrollbar: ^2.1.2
   cross_scroll: ^0.1.1
   file_picker: ^8.1.1
+  fl_chart: ^0.69.0
+  pdf: ^3.11.1
+  printing: ^5.13.2
+  path_provider: ^2.1.4
+  open_file: ^3.5.3
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +80,7 @@ flutter:
     - assets/images/RestoranteLogo.png
     - assets/images/eRestoranteDefault.jpg
     - assets/images/RestoranteProfilePicturePlaceholder.png
+    - assets/fonts/ARIAL.TTF
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

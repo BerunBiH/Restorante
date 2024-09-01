@@ -17,9 +17,5 @@ namespace eRestorante.Models.Model
         public int? CustomerId { get; set; }
 
         public int? DishId { get; set; }
-
-        public virtual Customer? Customer { get; set; }
-
-        public virtual Dishes? Dish { get; set; }
     }
 }
