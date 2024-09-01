@@ -14,7 +14,7 @@ Dish _$DishFromJson(Map<String, dynamic> json) => Dish(
       (json['categoryId'] as num?)?.toInt(),
       json['dishImage'] as String?,
       json['speciality'] as bool?,
-      (json['CommentDishes'] as List<dynamic>?)
+      (json['commentDishes'] as List<dynamic>?)
           ?.map((e) => CommentDish.fromJson(e as Map<String, dynamic>))
           .toList(),
       (json['ratingDishes'] as List<dynamic>?)
@@ -33,7 +33,7 @@ Map<String, dynamic> _$DishToJson(Dish instance) => <String, dynamic>{
       'categoryId': instance.categoryId,
       'dishImage': instance.dishImage,
       'speciality': instance.speciality,
-      'CommentDishes': instance.CommentDishes?.map((e) => e.toJson()).toList(),
+      'commentDishes': instance.commentDishes?.map((e) => e.toJson()).toList(),
       'orderDishes': instance.orderDishes?.map((e) => e.toJson()).toList(),
       'ratingDishes': instance.ratingDishes?.map((e) => e.toJson()).toList(),
     };

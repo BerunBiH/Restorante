@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -9,6 +10,7 @@ import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/category_provider.dart';
 import 'package:erestorante_desktop/providers/dish_provider.dart';
 import 'package:erestorante_desktop/providers/user_provider.dart';
+import 'package:erestorante_desktop/screens/dishes_screen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:erestorante_desktop/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:erestorante_desktop/models/dish.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
@@ -47,6 +50,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late List<CategoryC> category;
   late CategoryProvider _categoryProvider;
   String? selCategory;
+  bool speciality = false;
+  double avgRating=0.0;
+  int numRating=0;
+  int numOrder=0;
 
   @override
   void initState() {
@@ -59,12 +66,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   Future<void> _loadData() async {
     var dataU = await _userProvider.get();
-    var dataD = await _dishProvider.get();
     var data = await _categoryProvider.get();
 
     setState(() {
       resultU = dataU;
-      resultD = dataD;
       result = data;
       category = result!.result;
       var user = resultU!.result.firstWhere((u) => u.userEmail!.contains(Authorization.email!));
@@ -77,6 +82,25 @@ class _ReviewScreenState extends State<ReviewScreen> {
       {
         var catObj =category.firstWhere((x) => x.categoryId==widget.dish!.categoryId);
         selCategory=catObj.categoryName;
+        speciality=widget.dish!.speciality!;
+
+        if(widget.dish!.ratingDishes !=null && widget.dish!.ratingDishes!.isNotEmpty)
+        {
+          for(var rating in widget.dish!.ratingDishes!)
+          {
+            avgRating+=rating.ratingNumber!;
+            numRating++;
+          }
+          avgRating/=numRating;
+        }
+
+        if(widget.dish!.orderDishes !=null && widget.dish!.ratingDishes!.isNotEmpty)
+        {
+          for(var order in widget.dish!.orderDishes!)
+          {
+            numOrder+=order.orderQuantity!;
+          }
+        }
       }
       _isLoading = false;
     });
@@ -99,11 +123,61 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: (widget.dish != null)
-                        ? _foodCardBuilder(widget.dish!)
-                        : Text("Nema jela"),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: (widget.dish != null)
+                            ? _foodCardBuilder(widget.dish!)
+                            : Container(
+                              height: 200,
+                              width: 400,
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Dobrodošli na dio stranice za recenzije!',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        style: TextStyle(fontSize: 16, color: Colors.black), // Base text style
+                                        children: [
+                                          TextSpan(
+                                            text: 'Da biste pregledali recenzije za neko jelo, pritisnite ikonu ',
+                                          ),
+                                          WidgetSpan(
+                                            child: Icon(Icons.info_outline, size: 16, color: Colors.deepPurple),
+                                          ),
+                                          TextSpan(
+                                            text: ' Ta se ikona zajedno sa ikonama za uređivanje i brisanje jela nalazi na svakom jelu. Idite na \n',
+                                          ),
+                                          WidgetSpan(
+                                            child: TextButton(
+                                              onPressed: () { Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => DishesScreen(),
+                                                              ),
+                                                            );
+                                              },
+                                              child: Text('jelovnik'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ),
+                            ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -113,134 +187,279 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   // _foodCardBuilder function
 Widget _foodCardBuilder(Dish dish) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      // Rounded box for dish image
-      ClipRRect(
-        borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
-        child: Container(
-          width: 300,
-          height: 150,
-          color: Colors.grey[300],
-          child: dish.dishImage != null && dish.dishImage!.isNotEmpty
-                ? Image.memory(
-                    base64Decode(dish.dishImage!),
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  )
-                : Image.asset(
-                    'assets/images/RestoranteLogo.png',
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-        ),
-      ),
-      SizedBox(height: 20),
-      // Dish name
-      Text(
-        dish.dishName ?? 'Unnamed Dish',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      SizedBox(height: 5),
-      // Dish description
-      Text(
-        dish.dishDescription ?? 'No description available',
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.grey,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(height: 20,),
-      Text(
-        'Komentari',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      Text(
-                  "Komentari za jelo ${dish.dishName} su:",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-                ),
-                SizedBox(height: 20),
-                if (dish.CommentDishes != null && dish.CommentDishes!.isNotEmpty)
-                  SizedBox(
-                    height: 200.0,
-                    width: double.maxFinite,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: dish.CommentDishes!.length,
-                      itemBuilder: (context, index) {
-                        final commentText = dish.CommentDishes![index].commentText ?? ''; 
-                        return ListTile(
-                          leading: Icon(Icons.comment),
-                          title: Text(
-                            commentText,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                else
-                  Text(
-                    'Nema dostupnih komentara.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-      Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RepaintBoundary(
-                  key: _pieChartKey,
-                  child: _buildPieChart(),
-                ),
-                VerticalDivider(thickness: 2),
-                // RepaintBoundary(
-                //   key: _barChartKey,
-                //   child: _buildBarChart(),
-                // ),
-              ],
-      ),
-      Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('NAZAD'),
-                  style: ElevatedButton.styleFrom(foregroundColor: Colors.grey),
-                ),
-                ElevatedButton(
-                  onPressed: _generatePdf,
-                  child: Text('PREUZMI'),
-                  style: ElevatedButton.styleFrom(foregroundColor: Colors.grey),
-                ),
-              ],
+  return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Rounded box for dish image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
+            child: Container(
+              width: 300,
+              height: 150,
+              color: Colors.grey[300],
+              child: dish.dishImage != null && dish.dishImage!.isNotEmpty
+                    ? Image.memory(
+                        base64Decode(dish.dishImage!),
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/images/RestoranteLogo.png',
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
             ),
           ),
-          if (_isPdfReady) 
-            TextButton(
-              onPressed: _viewPdf,
-              child: Text('PDF je spreman. Kliknite za pregled.'),
+          SizedBox(height: 20),
+          // Dish name
+          Text(
+            dish.dishName ?? 'Unnamed Dish',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-    ],
+          ),
+          SizedBox(height: 5),
+          // Dish description
+          Text(
+            dish.dishDescription ?? 'No description available',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Cijena jela je: ${dish.dishCost}KM',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Jelo: ${((speciality)? "jest specijalitet": "nije specijalitet")}',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Jelo pripada kategoriji: ${selCategory}',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Prosjecna ocjena za jelo je: ${avgRating}/5',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Jelo ima ukupno: $numRating ${(numRating==1)?'recenziju':'recenzija'}',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Jelo je ukupno ${numOrder} puta naručeno',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Divider(
+                  indent: 400,
+                  endIndent: 400,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+          Text(
+            'Komentari',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+                      "Komentari za jelo ${dish.dishName} su:",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                    ),
+                    SizedBox(height: 20),
+                    if (dish.commentDishes != null && dish.commentDishes!.isNotEmpty)
+                      Container(
+                        height: 200.0,
+                        width: 400.0,
+                        child: Card(
+                          child: SingleChildScrollView(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: dish.commentDishes!.length,
+                              itemBuilder: (context, index) {
+                                final commentText = dish.commentDishes![index].commentText ?? ''; 
+                                return ListTile(
+                                  leading: Icon(Icons.comment),
+                                  title: Text(
+                                    commentText,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      Text(
+                        'Nema dostupnih komentara.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    Divider(
+                  indent: 400,
+                  endIndent: 400,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+          Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    RepaintBoundary(
+                      key: _pieChartKey,
+                      child: _buildPieChart(),
+                    ),
+                    VerticalDivider(thickness: 2),
+                    // RepaintBoundary(
+                    //   key: _barChartKey,
+                    //   child: _buildBarChart(),
+                    // ),
+                  ],
+          ),
+          Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DishesScreen(),
+                          ),
+                        );
+                        },
+                      child: Text('NAZAD'),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                        overlayColor: Colors.red,
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _generatePdf,
+                      child: Text('GENERIŠI PDF'),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        overlayColor: Colors.green,
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        ],
+      ),
+    );
+}
+
+void _showPdfAlertDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('PDF je spreman', textAlign: TextAlign.center,),
+        content: Text('Kliknite OK da spremite PDF na željenu lokaciju na računaru.', textAlign: TextAlign.center,),
+        actions: <Widget>[
+          Center(
+            child: ElevatedButton(
+              onPressed: (){
+                _viewPdf();
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                overlayColor: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
   );
 }
+
+void _showPDFOpenAlertDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Upss', textAlign: TextAlign.center,),
+        content: Text('Desio se problem, probajte zatvoriti prvo PDF ako vam je otvoren pa onda pokušajte opet.', textAlign: TextAlign.center,),
+        actions: <Widget>[
+          Center(
+            child: ElevatedButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                overlayColor: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 Widget _buildPieChart() {
     return SizedBox(
       height: 200,
@@ -282,8 +501,6 @@ Widget _buildPieChart() {
     final pieChartBytes = await _capturePng(_pieChartKey);
     // final barChartBytes = await _capturePng(_barChartKey);
 
-    print("we are here");
-
     // Add the dish details
     pdf.addPage(
       pw.Page(
@@ -294,13 +511,17 @@ Widget _buildPieChart() {
             pw.SizedBox(height: 8),
             pw.Text('Opis jela: ${widget.dish!.dishDescription}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 8),
-            pw.Text('Jelo: ${((widget.dish!.speciality!)? "jest specijalitet": "nije specijalitet")}', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            pw.Text('Jelo: ${((speciality)? "jest specijalitet": "nije specijalitet")}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 8),
             pw.Text('Cijena: ${widget.dish!.dishCost}KM', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 8),
             pw.Text('Kategorija jela: ${selCategory}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 8),
-            pw.Text('Broj puta koje je jelo prodano: 111', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            pw.Text('Broj recenzija za jelo: ${numRating}', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            pw.SizedBox(height: 8),
+            pw.Text('Broj prosječna ocjena za jelo na skali od 1 do 5: ${avgRating}', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            pw.SizedBox(height: 8),
+            pw.Text('Broj puta koje je jelo prodano: ${numOrder}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 16),
 
             // Display the dish image
@@ -347,6 +568,10 @@ Widget _buildPieChart() {
     setState(() {
       _isPdfReady = true;
       _pdfFile = file;
+
+      if(_isPdfReady) {
+        _showPdfAlertDialog(context);
+      }
     });
  }
   Future<void> _viewPdf() async {
@@ -361,10 +586,15 @@ Widget _buildPieChart() {
 
       if (outputFilePath != null) {
         // Copy the generated PDF to the selected location
+        try{
         await _pdfFile!.copy(outputFilePath);
 
         // Open the saved PDF
         await OpenFile.open(outputFilePath);
+        }
+        catch(e){
+          _showPDFOpenAlertDialog(context);
+        }
       }
     }
   }

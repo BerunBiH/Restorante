@@ -16,11 +16,11 @@ class Dish{
   int? categoryId;
   String? dishImage;
   bool? speciality;
-  List<CommentDish>? CommentDishes;
+  List<CommentDish>? commentDishes;
   List<OrderDishes>? orderDishes;
   List<RatingDishes>? ratingDishes;
 
-  Dish(this.dishID, this.dishName, this.dishDescription, this.dishCost, this.categoryId, this.dishImage, this.speciality, this.CommentDishes, this.ratingDishes, this.orderDishes);
+  Dish(this.dishID, this.dishName, this.dishDescription, this.dishCost, this.categoryId, this.dishImage, this.speciality, this.commentDishes, this.ratingDishes, this.orderDishes);
   factory Dish.fromJson(Map<String, dynamic> json) => _$DishFromJson(json);
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
