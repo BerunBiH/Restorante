@@ -53,124 +53,126 @@ Future<void> _loadData() async {
   Scaffold _userPageBuilder() {
     return Scaffold(
     body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircleAvatar(
-            radius: 70,
-             backgroundImage: Info.image !=""
-                ? imageFromBase64String(Info.image!).image
-                : AssetImage('assets/images/RestoranteProfilePicturePlaceholder.png') as ImageProvider,
-          ),
-          SizedBox(height: 30),
-          Card(
-            elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+      child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-          Container(
-            padding: EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purpleAccent),
-              borderRadius: BorderRadius.circular(8.0),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 70,
+               backgroundImage: Info.image !=""
+                  ? imageFromBase64String(Info.image!).image
+                  : AssetImage('assets/images/RestoranteProfilePicturePlaceholder.png') as ImageProvider,
             ),
-            child: Text(
-              '${user.userName} ${user.userSurname}',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            SizedBox(height: 30),
+            Card(
+              elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+            Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.purpleAccent),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                '${user.userName} ${user.userSurname}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Ime i prezime',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-            ),
-          ),
-          SizedBox(height: 20),
-          Container(
-            padding: EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purpleAccent),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              Authorization.email!,
+            SizedBox(height: 8),
+            Text(
+              'Ime i prezime',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.grey[700],
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Email',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.purpleAccent),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                Authorization.email!,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                ),
+              ),
             ),
-          ),
-          SizedBox(height: 20),
-
-          Container(
-            padding: EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purpleAccent),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              user.userPhone!,
+            SizedBox(height: 8),
+            Text(
+              'Email',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.grey[700],
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Telefon',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
+            SizedBox(height: 20),
+        
+            Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.purpleAccent),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                user.userPhone!,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                ),
+              ),
             ),
-          ),
-          
-          SizedBox(height: 20),
-          Container(
-            padding: EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purpleAccent),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              user.userRoles![0].role!.roleName!,
+            SizedBox(height: 8),
+            Text(
+              'Telefon',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.grey[700],
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Uloga',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
+            
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.purpleAccent),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                user.userRoles![0].role!.roleName!,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                ),
+              ),
             ),
-          ),
-          ]
+            SizedBox(height: 8),
+            Text(
+              'Uloga',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[700],
+              ),
+            ),
+            ]
+          )
         )
-      )
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     ),
     );
