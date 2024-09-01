@@ -60,93 +60,95 @@ class _MainMenuSreenState extends State<MainMenuSreen> {
     isUposleniciPressed: false,
       child:(_isLoading) ?
       Center(child: CircularProgressIndicator()):
-      Column(
-        children: [
-          Container(
-            height: 400,
-            child:
-              !_hasItems?
-              Scaffold(
+      SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 400,
+              child:
+                !_hasItems?
+                Scaffold(
+                  body: Stack(
+                    children: [
+                      _dishesNotFoundBuilder(1),
+                    ],
+                  ),
+                ):
+                Scaffold(
                 body: Stack(
+                    children: [
+                      PageView.builder(
+                        controller: _pageController,
+                        itemCount: dishes.length,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentIndex = index;
+                          });
+                        },
+                        itemBuilder: (context, index) 
+                        {
+                          return _mainMethodeBuilder(index);
+                        },
+                      ),
+                      // Left Arrow
+                      _leftArrow(context),
+                      // Right Arrow
+                      _rightArrow(context),
+                      // Indicator Dots
+                      _indicatorDots(),
+                    ],
+                  ),
+                 ),
+            ),
+            SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _dishesNotFoundBuilder(1),
-                  ],
-                ),
-              ):
-              Scaffold(
-              body: Stack(
-                  children: [
-                    PageView.builder(
-                      controller: _pageController,
-                      itemCount: dishes.length,
-                      onPageChanged: (index) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
-                      },
-                      itemBuilder: (context, index) 
-                      {
-                        return _mainMethodeBuilder(index);
-                      },
-                    ),
-                    // Left Arrow
-                    _leftArrow(context),
-                    // Right Arrow
-                    _rightArrow(context),
-                    // Indicator Dots
-                    _indicatorDots(),
-                  ],
-                ),
-               ),
-          ),
-          SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                Container(
-                  width: 1000,
-                  child: Card(
-                    child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(20.0),
-            child: Column(
-            children: [
-                              
-                              const SizedBox(height: 20.0),
-                              const Text("Ako želite dodati novo jelo, idite do jelovnika, dok za pregled jela idite na Recenzije. Uposlenicima upravljate pomoću uposlenici tab-a, isto važi i za rezervacije i korisinike. Vašim profilom upravljate tako što koristite lijevi slide-bar.",
-                                              style: TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
-                              ),
-                  
-            const SizedBox(height: 20.0),
-            const Text("Uživajte u Restorante!",
-            style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(111, 63, 189, 0.612),
-                ),
-                textAlign: TextAlign.center,
-                              ),
-                  
-            const SizedBox(height: 20.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                ),
-              const SizedBox(height: 5.0),
-            ],
-          ),
+                  Container(
+                    width: 1000,
+                    child: Card(
+                      child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(20.0),
+              child: Column(
+              children: [
+                                
+                                const SizedBox(height: 20.0),
+                                const Text("Ako želite dodati novo jelo, idite do jelovnika, dok za pregled jela idite na Recenzije. Uposlenicima upravljate pomoću uposlenici tab-a, isto važi i za rezervacije i korisinike. Vašim profilom upravljate tako što koristite lijevi slide-bar.",
+                                                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                                ),
+                    
+              const SizedBox(height: 20.0),
+              const Text("Uživajte u Restorante!",
+              style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(111, 63, 189, 0.612),
+                  ),
+                  textAlign: TextAlign.center,
+                                ),
+                    
+              const SizedBox(height: 20.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
+                const SizedBox(height: 5.0),
+              ],
+            ),
+                      )
                     )
-                  )
+                  ),
+                ],
                 ),
               ],
-              ),
-            ],
-          ),
+            ),
+      ),
       );
   }
 

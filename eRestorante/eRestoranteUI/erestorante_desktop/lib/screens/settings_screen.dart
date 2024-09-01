@@ -45,7 +45,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _userProvider = context.read<UserProvider>();
     _loadData().then((_) {
-      print("Users after _loadData completes: $users");
     });
   }
 
@@ -92,7 +91,6 @@ Future<void> _pickImage() async {
   bool validateEmailExistance(TextEditingController controller)
   {
     if (users.isEmpty) {
-      print("Users list is empty");
       return false;
     }
     users.removeWhere((userNow)=> userNow.userEmail == user.userEmail);
@@ -100,7 +98,6 @@ Future<void> _pickImage() async {
     for (var userNow in users) {
       if(userNow.userEmail==controller.text)
         {
-        print("I'm here");
       mailExists=true;
       _emailColor = Colors.red;
                                           showDialog(

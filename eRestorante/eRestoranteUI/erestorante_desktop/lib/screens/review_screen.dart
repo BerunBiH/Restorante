@@ -144,11 +144,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
               default:
             }
           }
-          print(rating1);
-          print(rating2);
-          print(rating3);
-          print(rating4);
-          print(rating5);
           avgRating/=numRating;
         }
 
