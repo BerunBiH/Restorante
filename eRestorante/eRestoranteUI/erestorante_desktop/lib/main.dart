@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/category_provider.dart';
@@ -12,8 +14,17 @@ import 'package:erestorante_desktop/screens/main_menu_sreen.dart';
 import 'package:erestorante_desktop/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  // Must add this line.
+  await windowManager.ensureInitialized();
+
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(1100, 400));
+    WindowManager.instance.setMaximumSize(const Size(2048, 1080));
+  }
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => UserProvider()),
     ChangeNotifierProvider(create: (_) => RoleProvider()),
@@ -143,26 +154,26 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MainMenuSreen()
-                                ),
-                            );
-                        },
-                        child: Text('Nazad'),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
-                          overlayColor: Colors.red,
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                        ),
-                      ),
-                      SizedBox(width: 50.0),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //       Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //           builder: (context) => MainMenuSreen()
+                      //           ),
+                      //       );
+                      //   },
+                      //   child: Text('Nazad'),
+                      //   style: ElevatedButton.styleFrom(
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(10.0),
+                      //     ),
+                      //     surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                      //     overlayColor: Colors.red,
+                      //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      //   ),
+                      // ),
+                      // SizedBox(width: 50.0),
                       ElevatedButton(
                         onPressed: () async {
                             if(!validateEmail(widget._emailController))
