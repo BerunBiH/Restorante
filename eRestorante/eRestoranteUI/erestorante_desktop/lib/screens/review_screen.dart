@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:erestorante_desktop/models/categoryC.dart';
+import 'package:erestorante_desktop/models/ratingDishes.dart';
 import 'package:erestorante_desktop/models/search_result.dart';
 import 'package:erestorante_desktop/models/user.dart';
 import 'package:erestorante_desktop/providers/category_provider.dart';
@@ -20,6 +21,7 @@ import 'package:erestorante_desktop/models/dish.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
@@ -45,7 +47,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   bool _isPdfReady = false;
   File? _pdfFile;
   final GlobalKey _pieChartKey = GlobalKey();
-  final GlobalKey _barChartKey = GlobalKey();
+  final GlobalKey _lineChartKey = GlobalKey();
   SearchResult<CategoryC>? result;
   late List<CategoryC> category;
   late CategoryProvider _categoryProvider;
@@ -54,6 +56,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
   double avgRating=0.0;
   int numRating=0;
   int numOrder=0;
+  List<RatingDishes> ratingDishes = [];
+  List<String> dates=[];
+  List<double> averageReviews=[];
+  double rating1=0;
+  double rating2=0;
+  double rating3=0;
+  double rating4=0;
+  double rating5=0;
 
   @override
   void initState() {
@@ -86,15 +96,63 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
         if(widget.dish!.ratingDishes !=null && widget.dish!.ratingDishes!.isNotEmpty)
         {
+
+          ratingDishes = widget.dish!.ratingDishes!;
+
+          for(var date in ratingDishes)
+          {
+            if(!dates.contains(date.ratingDate)) {
+              dates.add(date.ratingDate!);
+            }
+          }
+
+          double oneRating=0.0;
+          int oneNumRating=0;
+
+          for(var date in dates)
+          {
+            for(var rating in ratingDishes)
+            {
+              if(rating.ratingDate==date)
+              {
+                oneRating+=rating.ratingNumber!;
+                oneNumRating++;
+              }
+            }
+            if(oneNumRating!=0)
+            {
+              oneRating/=oneNumRating;
+              averageReviews.add(oneRating);
+            }
+
+            oneRating=0.0;
+            oneNumRating=0;
+          }
+          
           for(var rating in widget.dish!.ratingDishes!)
           {
             avgRating+=rating.ratingNumber!;
             numRating++;
+
+            switch (rating.ratingNumber) {
+              case 1: rating1++;
+              case 2: rating2++;
+              case 3: rating3++;
+              case 4: rating4++;
+              case 5: rating5++;
+                break;
+              default:
+            }
           }
+          print(rating1);
+          print(rating2);
+          print(rating3);
+          print(rating4);
+          print(rating5);
           avgRating/=numRating;
         }
 
-        if(widget.dish!.orderDishes !=null && widget.dish!.ratingDishes!.isNotEmpty)
+        if(widget.dish!.orderDishes !=null && widget.dish!.orderDishes!.isNotEmpty)
         {
           for(var order in widget.dish!.orderDishes!)
           {
@@ -344,6 +402,13 @@ Widget _foodCardBuilder(Dish dish) {
                   thickness: 2,
                   color: Colors.black,
                 ),
+                Text(
+            'Pie Chart i Line Chart za jelo',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -351,12 +416,69 @@ Widget _foodCardBuilder(Dish dish) {
                       key: _pieChartKey,
                       child: _buildPieChart(),
                     ),
-                    VerticalDivider(thickness: 2),
-                    // RepaintBoundary(
-                    //   key: _barChartKey,
-                    //   child: _buildBarChart(),
-                    // ),
+                  const VerticalDivider(
+                  width: 10,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+                    RepaintBoundary(
+                      key: _lineChartKey,
+                      child: _buildLineChart(),
+                    ),
                   ],
+          ),
+                             Divider(
+                  indent: 400,
+                  endIndent: 400,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+                Text(
+            'Objašnjenje chartova',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20.0,),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Na Pie Chartu imamo prikazane ukupne ocjene na skali od 1 do 5 koje jelo ima. \n Boja koja stoji za određenu ocjenu prikazana je na legendi iznad pie charta. \n Unutar određene sekcije piše broj recenzija koje ima sa tom ocjenom. \n Ako neke boje tj. sekcije nema to znači da tu ocjenu jelo još nije dobilo. Ako je pie chart prazan, to znači da jelo nikako nije ocjenjeno.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(width: 10), // Add some space between the texts if needed
+              Expanded(
+                child: Text(
+                  'Na x osi su prikazani datumi kada su ostavljene recenzije, dok su na y osi prosjecne ocjene recenzija na tim datumima. \n Linija predstavlja prosjecnu ocjenu kroz vrijeme. \n Ako je graf prazan to znaci da jelo nema još recenzija.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20.0,),
+                                       Divider(
+                  indent: 400,
+                  endIndent: 400,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+                Text(
+            'Generisanje PDF-a',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -461,34 +583,175 @@ void _showPDFOpenAlertDialog(BuildContext context) {
 }
 
 Widget _buildPieChart() {
-    return SizedBox(
-      height: 200,
-      width: 200,
-      child: PieChart(
-        PieChartData(
-          sections: [
-            PieChartSectionData(
-              value: 5,
-              title: 'Sektor 1',
-              color: Colors.greenAccent,
+    return Container(
+      height: 500,
+      width: 500,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: SizedBox(
+              height: 200,
+              width: 200,
+              child: PieChart(
+                PieChartData(
+                  sections: [
+                    PieChartSectionData(
+                      value: rating1,
+                      title: (rating1.toInt()).toString(),
+                      color: Color.fromARGB(255, 216, 7, 7),
+                    ),
+                    PieChartSectionData(
+                      value: rating2,
+                      title: (rating2.toInt()).toString(),
+                      color: Color.fromARGB(255, 192, 21, 207),
+                    ),
+                    PieChartSectionData(
+                      value: rating3,
+                      title: (rating3.toInt()).toString(),
+                      color: Color.fromARGB(255, 85, 93, 129),
+                    ),
+                    PieChartSectionData(
+                      value: rating4,
+                      title: (rating4.toInt()).toString(),
+                      color: Color.fromARGB(255, 14, 190, 190),
+                    ),
+                    PieChartSectionData(
+                      value: rating5,
+                      title: (rating5.toInt()).toString(),
+                      color: Color.fromARGB(255, 7, 185, 37),
+                    ),
+                  ],
+                  sectionsSpace: 0,
+                  centerSpaceRadius: 40,
+                ),
+              ),
             ),
-            PieChartSectionData(
-              value: 3,
-              title: 'Sektor 2',
-              color: Colors.lightGreen,
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                Text("Ocjene koje su predstavljene bojom su:"),
+                _buildLegend(),
+              ],
             ),
-            PieChartSectionData(
-              value: 2,
-              title: 'Sektor 3',
-              color: Colors.green,
-            ),
-          ],
-          sectionsSpace: 0,
-          centerSpaceRadius: 40,
-        ),
+          ),
+        ],
       ),
     );
   }
+
+Widget _buildLegend() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLegendItem('Ocjena 1', Color.fromARGB(255, 216, 7, 7)),
+        _buildLegendItem('Ocjena 2', Color.fromARGB(255, 192, 21, 207)),
+        _buildLegendItem('Ocjena 3', Color.fromARGB(255, 85, 93, 129)),
+        _buildLegendItem('Ocjena 4', Color.fromARGB(255, 14, 190, 190)),
+        _buildLegendItem('Ocjena 5', Color.fromARGB(255, 7, 185, 37)),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(String title, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          Container(
+            width: 16,
+            height: 16,
+            color: color,
+          ),
+          SizedBox(width: 8),
+          Text(title),
+        ],
+      ),
+    );
+  }
+
+Widget _buildLineChart() {
+  return Container(
+    width: 400, // Ensure the chart has a fixed width
+    height: 200, // Ensure the chart has a fixed height
+    child: LineChart(
+      LineChartData(
+        gridData: FlGridData(show: true),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              interval: 1,
+              reservedSize: 40,
+              getTitlesWidget: (value, meta) {
+                // Ensure the value is valid before converting to text
+                if (value.isNaN || value.isInfinite) {
+                  return const Text('');  // Return an empty string for invalid values
+                }
+                return Text(value.toString(), style: const TextStyle(fontSize: 12));
+              },
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              interval: 1,
+              reservedSize: 40,
+              getTitlesWidget: (value, meta) {
+                int index = value.toInt();
+
+                // Defensive check: Ensure index is within the range
+                if (index < 0 || index >= dates.length) {
+                  return const Text('');  // Return empty string for invalid indices
+                }
+
+                DateTime? date;
+                try {
+                  date = DateFormat('yyyy-MM-dd').parse(dates[index]);
+                } catch (e) {
+                  return const Text('Invalid Date'); // Handle invalid date formats
+                }
+
+                return Text(DateFormat('dd/MM/yyyy').format(date), style: const TextStyle(fontSize: 12));
+              },
+            ),
+          ),
+        ),
+        borderData: FlBorderData(show: true),
+        minX: 0,
+        maxX: dates.length - 1,
+        minY: 0,
+        maxY: 5,
+        lineBarsData: [
+          LineChartBarData(
+            spots: List.generate(
+              dates.length,
+              (index) {
+                final x = index.toDouble();
+                final y = averageReviews[index];
+
+                // Validate that neither x nor y is NaN or Infinity
+                if (x.isNaN || x.isInfinite || y.isNaN || y.isInfinite) {
+                  return FlSpot.nullSpot; // Use nullSpot for invalid data
+                }
+
+                return FlSpot(x, y);
+              },
+            ),
+            isCurved: true,
+            color: const Color.fromARGB(255, 37, 125, 197),
+            barWidth: 4,
+            belowBarData: BarAreaData(show: false),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
 
  Future<void> _generatePdf() async {
     final pdf = pw.Document();
@@ -499,7 +762,7 @@ Widget _buildPieChart() {
 
     // Capture the pie chart image
     final pieChartBytes = await _capturePng(_pieChartKey);
-    // final barChartBytes = await _capturePng(_barChartKey);
+    final lineChartBytes = await _capturePng(_lineChartKey);
 
     // Add the dish details
     pdf.addPage(
@@ -537,8 +800,16 @@ Widget _buildPieChart() {
                 ),
               ),
             pw.SizedBox(height: 16),
-
-            // Render Pie Chart
+            ],
+        ),
+      ),
+    );
+      pdf.addPage(
+      pw.Page(
+        build: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+                        // Render Pie Chart
             pw.Text('Pie Chart', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.Container(
               height: 200,
@@ -546,20 +817,22 @@ Widget _buildPieChart() {
                 child: pw.Image(pw.MemoryImage(pieChartBytes)),
               ),
             ),
+            pw.Text('Na Pie Chartu imamo prikazane ukupne ocjene na skali od 1 do 5 koje jelo ima. \n Boja koja stoji za određenu ocjenu prikazana je na legendi iznad pie charta. \n Unutar određene sekcije piše broj recenzija koje ima sa tom ocjenom. \n Ako neke boje tj. sekcije nema to znači da tu ocjenu jelo još nije dobilo. Ako je pie chart prazan, to znači da jelo nikako nije ocjenjeno.', style: pw.TextStyle(font: ttf, fontSize: 11)),
             pw.Divider(),
-
-            // Render Bar Chart
-            // pw.Text('Bar Chart', style: pw.TextStyle(font: ttf, fontSize: 16)),
-            // pw.Container(
-            //   height: 200,
-            //   child: pw.Center(
-            //     child: pw.Image(pw.MemoryImage(barChartBytes)),
-            //   ),
-            // ),
-          ],
+             // Render Bar Chart
+            pw.Text('Line Chart', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            pw.Container(
+              height: 200,
+              child: pw.Center(
+                child: pw.Image(pw.MemoryImage(lineChartBytes)),
+              ),
+            ),
+            pw.Text('Na x osi su prikazani datumi kada su ostavljene recenzije, dok su na y osi prosjecne ocjene recenzija na tim datumima. \n Linija predstavlja prosjecnu ocjenu kroz vrijeme. \n Ako je graf prazan to znaci da jelo nema još recenzija.', style: pw.TextStyle(font: ttf, fontSize: 11)),
+          
+          ]
         ),
       ),
-    );
+      );
     final directory = await getTemporaryDirectory();
     final path = '${directory.path}/charts.pdf';
     final file = File(path);
