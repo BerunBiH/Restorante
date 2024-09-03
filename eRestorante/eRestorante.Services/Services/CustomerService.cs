@@ -46,6 +46,13 @@ namespace eRestorante.Services.Services
             return base.BeforeInsert(db, insert);
         }
 
+        public override Task BeforeUpdate(Database.Customer db, CustomerUpdateRequest update)
+        {
+            db.CustomerPassSalt = GenerateSalt();
+            db.CustomerPassHash = GenerateHash(db.CustomerPassSalt, update.CustomerPassword);
+            return base.BeforeUpdate(db, update);
+        }
+
         public override async Task<Task> BeforeRemove(Database.Customer db)
         {
 
@@ -120,5 +127,21 @@ namespace eRestorante.Services.Services
             return base.BeforeRemove(db);
         }
 
+        public async Task<Models.Model.Customer> Login(string email, string password)
+        {
+            var entity = await _context.Customers.FirstOrDefaultAsync(x => x.CustomerEmail == email);
+
+            if (entity == null)
+                return null;
+
+            var hash = GenerateHash(entity.CustomerPassSalt, password);
+
+            if (hash != entity.CustomerPassHash)
+            {
+                return null;
+            }
+
+            return _mapper.Map<Models.Model.Customer>(entity);
+        }
     }
 }

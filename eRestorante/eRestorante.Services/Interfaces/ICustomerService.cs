@@ -11,5 +11,6 @@ namespace eRestorante.Services.Interfaces
 {
     public interface ICustomerService : IBaseCRUDService<Models.Model.Customer, CustomerSearchObject, CustomerInsertRequest, CustomerUpdateRequest>
     {
+        public Task<Models.Model.Customer> Login(string email, string password);
     }
 }

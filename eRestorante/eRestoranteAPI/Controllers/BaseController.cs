@@ -17,7 +17,7 @@ namespace eRestoranteAPI.Controllers
             _logger = logger;
             _service = service;
         }
-        [Authorize(Roles = "Menedzer, Konobar, Gost, Kuhar, Šanker")]
+
         [HttpGet()]
         public async Task<PageResult<T>> Get([FromQuery]TSearch? search=null)
         {

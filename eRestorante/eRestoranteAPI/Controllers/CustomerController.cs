@@ -2,6 +2,7 @@ using eRestorante.Models.Requests;
 using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -12,6 +13,18 @@ namespace eRestoranteAPI.Controllers
     {
         public CustomerController(ILogger<BaseController<eRestorante.Models.Model.Customer, eRestorante.Models.SearchObjects.CustomerSearchObject>> logger, ICustomerService service) : base(logger, service)
         {
+        }
+
+        [AllowAnonymous]
+        public override Task<eRestorante.Models.Model.Customer> Insert([FromBody] CustomerInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [AllowAnonymous]
+        public override Task<eRestorante.Models.Model.Customer> Update(int id, [FromBody] CustomerUpdateRequest update)
+        {
+            return base.Update(id, update);
         }
     }
 }

@@ -12,10 +12,12 @@ namespace eRestoranteAPI.Authentication
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         IUserService _userService;
+        ICustomerService _customerService;
 
-        public BasicAuthenticationHandler(IUserService userService, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public BasicAuthenticationHandler(IUserService userService, ICustomerService customerService,IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
             _userService = userService;
+            _customerService = customerService;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -35,7 +37,23 @@ namespace eRestoranteAPI.Authentication
 
             if (user==null)
             {
-                return AuthenticateResult.Fail("Email or Password was null");
+                var customer = await _customerService.Login(email, password);
+                if(customer==null)
+                    return AuthenticateResult.Fail("Email or Password was null");
+                else
+                {
+                    var claim = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Email, customer.CustomerEmail),
+                    new Claim(ClaimTypes.NameIdentifier, customer.CustomerName, customer.CustomerSurname)
+                };
+
+                    var identity = new ClaimsIdentity(claim, Scheme.Name);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    var ticket = new AuthenticationTicket(principal, Scheme.Name);
+                    return AuthenticateResult.Success(ticket);
+                }
             }
 
             else
