@@ -1,16 +1,18 @@
 import 'dart:io';
 
+import 'package:erestorante_mobile/models/customer.dart';
 import 'package:erestorante_mobile/models/search_result.dart';
 import 'package:erestorante_mobile/models/user.dart';
 import 'package:erestorante_mobile/providers/category_provider.dart';
 import 'package:erestorante_mobile/providers/customer_provider.dart';
 import 'package:erestorante_mobile/providers/dish_provider.dart';
 import 'package:erestorante_mobile/providers/drink_provider.dart';
+import 'package:erestorante_mobile/providers/register_screen.dart';
 import 'package:erestorante_mobile/providers/reservation_provider.dart';
 import 'package:erestorante_mobile/providers/role_provider.dart';
 import 'package:erestorante_mobile/providers/userRole_provider.dart';
 import 'package:erestorante_mobile/providers/user_provider.dart';
-// import 'package:erestorante_mobile/screens/main_menu_sreen.dart';
+import 'package:erestorante_mobile/screens/main_menu_sreen.dart';
 import 'package:erestorante_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,8 +50,8 @@ class MyApp extends StatelessWidget {
 class LoginPage extends StatefulWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  late UserProvider _userProvider;
-  late SearchResult<User> _searchResult;
+  late CustomerProvider _customerProvider;
+  late SearchResult<Customer> _searchResult;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -80,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-   widget._userProvider = context.read<UserProvider>();
+   widget._customerProvider = context.read<CustomerProvider>();
 
     return Scaffold(
       body: Center(
@@ -150,6 +152,26 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
+                        onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen()
+                                ),
+                            );
+                        },
+                        child: Text('Registrirajte se'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                          overlayColor: Colors.red,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        ),
+                      ),
+                      SizedBox(width: 50.0),
+                      ElevatedButton(
                         onPressed: () async {
                             if(!validateEmail(widget._emailController))
                             {
@@ -159,16 +181,30 @@ class _LoginPageState extends State<LoginPage> {
                             Authorization.password=widget._passwordController.text;
 
                             try{
-                              widget._searchResult= await widget._userProvider.get();
-                              var user= widget._searchResult.result.firstWhere((user)=> user.userEmail!.startsWith(Authorization.email!));
-                              Info.name=user.userName!;
-                              Info.surname=user.userSurname!;
-                              if(user.userImage!=null)
+                              widget._searchResult= await widget._customerProvider.get();
+                              var customers= widget._searchResult.result;
+                              late Customer customer;
+                              bool auth=false;
+                              for(var cust in customers)
                               {
-                                Info.image=user.userImage;
+                                if(cust.customerEmail==Authorization.email!) {
+                                  customer=cust;
+                                  auth=true;
+                                }
                               }
-                              Info.id=user.userId;
+                              if(!auth)
+                              {
+                                throw Exception("Nije pronašlo nijedan mail");
+                              }
+                              Info.name=customer.customerName!;
+                              Info.surname=customer.customerSurname!;
+                              if(customer.customerImage!=null)
+                              {
+                                Info.image=customer.customerImage;
+                              }
+                              Info.id=customer.customerId;
                             } on Exception catch (e) {
+                              print(e);
                               showDialog(barrierDismissible: false,context: context, builder: (BuildContext context)=> 
                               AlertDialog(
                                 title: Text("Greška u prijavi",textAlign: TextAlign.center,),
@@ -179,13 +215,12 @@ class _LoginPageState extends State<LoginPage> {
                               ));
                               return;
                             }
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => MainMenuSreen()
-                            //     ),
-                            // );
-                            print("Yeyyy, prijavljeni ste");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MainMenuSreen()
+                                ),
+                            );
                         },
                         child: Text('Login'),
                         style: ElevatedButton.styleFrom(

@@ -46,6 +46,13 @@ namespace eRestorante.Services.Services
             return base.BeforeInsert(db, insert);
         }
 
+        public override Task BeforeUpdate(Database.Customer db, CustomerUpdateRequest update)
+        {
+            db.CustomerPassSalt = GenerateSalt();
+            db.CustomerPassHash = GenerateHash(db.CustomerPassSalt, update.CustomerPassword);
+            return base.BeforeUpdate(db, update);
+        }
+
         public override async Task<Task> BeforeRemove(Database.Customer db)
         {
 
