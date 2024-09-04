@@ -30,6 +30,7 @@ class _DishesScreenState extends State<DishesScreen> {
   bool authorised=false;
   bool _isLoading = true;
   bool _isHovered = false;
+  late List<ImageProvider> _dishImages;
 
    @override
   void initState() {
@@ -53,6 +54,19 @@ class _DishesScreenState extends State<DishesScreen> {
       else{
         authorised=true;
       }
+
+      _dishImages = resultD!.result.map((dish) {
+        if (dish.dishImage != null && dish.dishImage!.isNotEmpty) {
+          final image = Image.memory(base64Decode(dish.dishImage!));
+          precacheImage(image.image, context);
+          return image.image;
+        } else {
+          final image = AssetImage('assets/images/RestoranteLogo.png');
+          precacheImage(image, context);
+          return image;
+        }
+      }).toList();
+      
       _isLoading = false;
     });
   }
@@ -87,7 +101,7 @@ class _DishesScreenState extends State<DishesScreen> {
                 itemBuilder: (context, index) {
                   if (resultD != null && index < resultD!.result.length) {
                     final dish = resultD!.result[index];
-                    return _foodCardBuilder(dish);
+                    return _foodCardBuilder(dish, _dishImages[index]);
                   } else {
                     return SizedBox.shrink();
                    }
@@ -127,6 +141,18 @@ class _DishesScreenState extends State<DishesScreen> {
                           });
                           setState(() {
                             resultD = data;
+
+                            _dishImages = resultD!.result.map((dish) {
+                          if (dish.dishImage != null && dish.dishImage!.isNotEmpty) {
+                            final image = Image.memory(base64Decode(dish.dishImage!));
+                            precacheImage(image.image, context);
+                            return image.image;
+                          } else {
+                            final image = AssetImage('assets/images/RestoranteLogo.png');
+                            precacheImage(image, context);
+                            return image;
+                          }
+                        }).toList();
                           });
                       },
                     ),
@@ -187,7 +213,7 @@ class _DishesScreenState extends State<DishesScreen> {
   }
 
 
-  Widget _foodCardBuilder(Dish dish) {
+  Widget _foodCardBuilder(Dish dish, ImageProvider image) {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -203,19 +229,12 @@ class _DishesScreenState extends State<DishesScreen> {
               child: AnimatedOpacity(
                 opacity: _isHovered ? 0.2 : 1.0,
                 duration: Duration(milliseconds: 300),
-                child: dish.dishImage != null && dish.dishImage!.isNotEmpty
-                ? Image.memory(
-                    base64Decode(dish.dishImage!),
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  )
-                : Image.asset(
-                    'assets/images/RestoranteLogo.png',
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+                child: Image(
+                  image: image,  // Use cached image
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Center(

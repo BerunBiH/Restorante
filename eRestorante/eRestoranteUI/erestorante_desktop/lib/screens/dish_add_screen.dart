@@ -49,13 +49,18 @@ class _DishAddScreenState extends State<DishAddScreen> {
   SearchResult<CategoryC>? result;
   late List<CategoryC> category;
   late CategoryProvider _categoryProvider;
+  late ImageProvider _dishImage;
 
   @override
   void initState() {
     super.initState();
     _dishProvider = context.read<DishProvider>();
     _categoryProvider = context.read<CategoryProvider>();
-    _loadData();
+    _loadData().then((_) {
+      _dishImage = (widget.dish!=null && (widget.dish!.dishImage != "" && base64Image == null))
+          ? imageFromBase64String(widget.dish!.dishImage!).image
+          : AssetImage('assets/images/eRestoranteDefault.jpg') as ImageProvider;
+    });
   }
 
 Future<void> _loadData() async {
@@ -76,6 +81,7 @@ Future<void> _pickImage() async {
       final bytes = file.readAsBytesSync();
       setState(() {
         base64Image = base64Encode(bytes);
+        _dishImage = imageFromBase64String(base64Image!).image;
       });
     }
   }
@@ -187,11 +193,7 @@ Stack(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(10), // Optional for rounded corners
         image: DecorationImage(
-          image: ((widget.dish!=null && widget.dish!.dishImage!= null) && (widget.dish!.dishImage!= "" && base64Image == null))
-              ? imageFromBase64String(widget.dish!.dishImage!).image
-              : (base64Image != null)
-                  ? imageFromBase64String(base64Image!).image
-                  : AssetImage('assets/images/eRestoranteDefault.jpg') as ImageProvider,
+          image: _dishImage,
           fit: BoxFit.cover,
         ),
       ),

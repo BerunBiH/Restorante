@@ -24,6 +24,7 @@ class _MainMenuSreenState extends State<MainMenuSreen> {
   int _currentIndex = 0;
   bool _isLoading = true;
   bool _hasItems = true;
+  late List<ImageProvider> _dishImages;
 
     @override
   void initState() {
@@ -46,6 +47,18 @@ class _MainMenuSreenState extends State<MainMenuSreen> {
       else
         dishes=newList;
       _isLoading = false;
+
+      _dishImages = dishes.map((dish) {
+        if (dish.dishImage != null && dish.dishImage!.isNotEmpty) {
+          final image = Image.memory(base64Decode(dish.dishImage!));
+          precacheImage(image.image, context);
+          return image.image;
+        } else {
+          final image = AssetImage('assets/images/RestoranteLogo.png');
+          precacheImage(image, context);
+          return image;
+        }
+      }).toList();
     });
   }
 
@@ -296,19 +309,12 @@ Stack _mainMethodeBuilder(int index) {
       children: <Widget>[
         // Background Image
         Positioned.fill(
-          child: dishes[index].dishImage != null && dishes[index].dishImage!.isNotEmpty
-              ? Image.memory(
-                  base64Decode(dishes[index].dishImage!),
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                )
-              : Image.asset(
-                  'assets/images/RestoranteLogo.png',
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+          child: Image(
+            image: _dishImages[index],
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          ),
         ),
         // Semi-transparent Overlay
         Positioned.fill(

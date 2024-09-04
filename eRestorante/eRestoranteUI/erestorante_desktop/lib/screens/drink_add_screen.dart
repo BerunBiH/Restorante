@@ -45,13 +45,18 @@ class _DrinkAddScreenState extends State<DrinkAddScreen> {
   SearchResult<CategoryC>? result;
   late List<CategoryC> category;
   late CategoryProvider _categoryProvider;
+  late ImageProvider _drinkImage;
 
   @override
   void initState() {
     super.initState();
     _drinkProvider = context.read<DrinkProvider>();
     _categoryProvider = context.read<CategoryProvider>();
-    _loadData();
+    _loadData().then((_) {
+      _drinkImage = (widget.drink!=null && (widget.drink!.drinkImage != "" && base64Image == null))
+          ? imageFromBase64String(widget.drink!.drinkImage!).image
+          : AssetImage('assets/images/eRestoranteDefault.jpg') as ImageProvider;
+    });
   }
 
 Future<void> _loadData() async {
@@ -71,6 +76,7 @@ Future<void> _pickImage() async {
       final bytes = file.readAsBytesSync();
       setState(() {
         base64Image = base64Encode(bytes);
+        _drinkImage = imageFromBase64String(base64Image!).image;
       });
     }
   }
@@ -212,11 +218,7 @@ Stack(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(10), // Optional for rounded corners
         image: DecorationImage(
-          image: ((widget.drink!=null && widget.drink!.drinkImage!= null) && (widget.drink!.drinkImage!= "" && base64Image == null))
-              ? imageFromBase64String(widget.drink!.drinkImage!).image
-              : (base64Image != null)
-                  ? imageFromBase64String(base64Image!).image
-                  : AssetImage('assets/images/eRestoranteDefault.jpg') as ImageProvider,
+          image: _drinkImage,
           fit: BoxFit.cover,
         ),
       ),

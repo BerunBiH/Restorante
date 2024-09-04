@@ -39,12 +39,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? base64Image;
   SearchResult<User>? resultU;
   late List<User> users;
+  late ImageProvider _profileImage;
 
   @override
   void initState() {
     super.initState();
     _userProvider = context.read<UserProvider>();
     _loadData().then((_) {
+      _profileImage = (Info.image != "" && base64Image == null)
+          ? imageFromBase64String(Info.image!).image
+          : AssetImage('assets/images/RestoranteProfilePicturePlaceholder.png') as ImageProvider;
     });
   }
 
@@ -65,6 +69,7 @@ Future<void> _pickImage() async {
       final bytes = file.readAsBytesSync();
       setState(() {
         base64Image = base64Encode(bytes);
+        _profileImage = imageFromBase64String(base64Image!).image;
       });
     }
   }
@@ -255,11 +260,7 @@ Scaffold _settingsPageBuilder() {
               children: [
                 CircleAvatar(
                   radius: 70,
-                  backgroundImage: (Info.image != "" && base64Image == null)
-              ? imageFromBase64String(Info.image!).image
-              : (base64Image != null)
-                  ? imageFromBase64String(base64Image!).image
-                  : AssetImage('assets/images/RestoranteProfilePicturePlaceholder.png') as ImageProvider,
+                  backgroundImage: _profileImage,
                 ),
                 Positioned(
                   bottom: 0,
@@ -488,6 +489,9 @@ Widget _buildButtonRow() {
           }
           await _userProvider.update(user.userId!,newUser);
           Authorization.email=newUser.userEmail;
+          Info.name=widget._nameController.text;
+          Info.surname=widget._surenameController.text;
+          Info.image=newUser.userImage;
            showDialog(
             barrierDismissible: false,
                                       context: context,
