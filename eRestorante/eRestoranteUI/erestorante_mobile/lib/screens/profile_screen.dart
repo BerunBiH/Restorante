@@ -46,12 +46,11 @@ Future<void> _loadData() async {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(isJelovnikPressed: false,
-    isKorisniciPressed: false,
+    isKorpaPressed: false,
     isMojProfilPressed: true,
     isPostavkePressed: false,
     isRecenzijePressed: false,
     isRezervacijePressed: false,
-    isUposleniciPressed: false,
       child: 
       (_isLoading) ?
       Center(child: CircularProgressIndicator()):

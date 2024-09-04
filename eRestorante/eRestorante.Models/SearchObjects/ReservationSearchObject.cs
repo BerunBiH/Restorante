@@ -9,5 +9,7 @@ namespace eRestorante.Models.SearchObjects
     public class ReservationSearchObject : BaseSearchObject
     {
         public DateOnly? ReservationDate { get; set; }
+
+        public int? CustomerId { get; set; }
     }
 }

@@ -70,12 +70,12 @@ Future<T> getById(int id) async {
 
     var jsonRequest = jsonEncode(request);
     var response = await http.post(uri, headers: headers, body: jsonRequest);
-
+    print(response.body);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
   T fromJson(data){

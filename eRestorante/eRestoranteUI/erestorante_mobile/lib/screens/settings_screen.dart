@@ -241,12 +241,11 @@ Future<void> _pickImage() async {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(isJelovnikPressed: false,
-    isKorisniciPressed: false,
+    isKorpaPressed: false,
     isMojProfilPressed: false,
     isPostavkePressed: true,
     isRecenzijePressed: false,
     isRezervacijePressed: false,
-    isUposleniciPressed: false,
       child: (_isLoading) ?
       Center(child: CircularProgressIndicator()):
        _settingsPageBuilder(),
