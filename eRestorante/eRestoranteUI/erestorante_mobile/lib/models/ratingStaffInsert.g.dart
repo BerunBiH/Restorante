@@ -1,22 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ratingStaffs.dart';
+part of 'ratingStaffInsert.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-RatingStaffs _$RatingStaffsFromJson(Map<String, dynamic> json) => RatingStaffs(
-      (json['ratingStaffId'] as num?)?.toInt(),
+RatingStaffInsert _$RatingStaffInsertFromJson(Map<String, dynamic> json) =>
+    RatingStaffInsert(
+      (json['customerId'] as num?)?.toInt(),
       (json['userId'] as num?)?.toInt(),
       (json['ratingNumber'] as num?)?.toInt(),
-      json['ratingDate'] as String?,
     );
 
-Map<String, dynamic> _$RatingStaffsToJson(RatingStaffs instance) =>
+Map<String, dynamic> _$RatingStaffInsertToJson(RatingStaffInsert instance) =>
     <String, dynamic>{
-      'ratingStaffId': instance.ratingStaffId,
+      'customerId': instance.customerId,
       'userId': instance.userId,
       'ratingNumber': instance.ratingNumber,
-      'ratingDate': instance.ratingDate,
     };

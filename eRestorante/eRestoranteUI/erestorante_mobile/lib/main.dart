@@ -4,9 +4,13 @@ import 'package:erestorante_mobile/models/customer.dart';
 import 'package:erestorante_mobile/models/search_result.dart';
 import 'package:erestorante_mobile/models/user.dart';
 import 'package:erestorante_mobile/providers/category_provider.dart';
+import 'package:erestorante_mobile/providers/comment_dish_provider.dart';
+import 'package:erestorante_mobile/providers/comment_staff_provider.dart';
 import 'package:erestorante_mobile/providers/customer_provider.dart';
 import 'package:erestorante_mobile/providers/dish_provider.dart';
 import 'package:erestorante_mobile/providers/drink_provider.dart';
+import 'package:erestorante_mobile/providers/rating_dish_provider.dart';
+import 'package:erestorante_mobile/providers/rating_staff_provider.dart';
 import 'package:erestorante_mobile/providers/register_screen.dart';
 import 'package:erestorante_mobile/providers/reservation_provider.dart';
 import 'package:erestorante_mobile/providers/role_provider.dart';
@@ -29,6 +33,10 @@ void main() async {
     ChangeNotifierProvider(create: (_) => DishProvider()),
     ChangeNotifierProvider(create: (_) => DrinkProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),
+    ChangeNotifierProvider(create: (_) => RatingDishProvider()),
+    ChangeNotifierProvider(create: (_) => RatingStaffProvider()),
+    ChangeNotifierProvider(create: (_) => CommentDishProvider()),
+    ChangeNotifierProvider(create: (_) => CommentStaffProvider()),
   ],
   child: 
   const MyApp(),

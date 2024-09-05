@@ -4,6 +4,7 @@ import 'package:erestorante_mobile/screens/dishes_screen.dart';
 import 'package:erestorante_mobile/screens/main_menu_sreen.dart';
 import 'package:erestorante_mobile/screens/profile_screen.dart';
 import 'package:erestorante_mobile/screens/reservation_screen.dart';
+import 'package:erestorante_mobile/screens/review_screen.dart';
 // import 'package:erestorante_mobile/screens/reservation_screen.dart';
 // import 'package:erestorante_mobile/screens/review_screen.dart';
 import 'package:erestorante_mobile/screens/settings_screen.dart';
@@ -230,12 +231,12 @@ GestureDetector(
             _isKorpaPressed = false;
             _isPostavkePressed = false;
           });
-          // Navigator.push(
-          //                     context,
-          //                     MaterialPageRoute(
-          //                       builder: (context) => ReviewScreen()
-          //                       ),
-          //                   );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReviewScreen()
+              ),
+          );
         },
         selectedColor: Colors.white,
         selectedTileColor: Color.fromRGBO(111, 63, 189, 0.281),

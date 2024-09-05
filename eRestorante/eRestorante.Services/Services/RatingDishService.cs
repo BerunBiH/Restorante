@@ -24,9 +24,14 @@ namespace eRestorante.Services.Services
 
         public override IQueryable<Database.RatingDish> AddFilter(IQueryable<Database.RatingDish> query, RatingDishSearchObject? search = null)
         {
-            if (search?.RatingNumber!=null)
+            if (search?.RatingNumber != null)
             {
-                query = query.Where(x => x.RatingNumber==search.RatingNumber);
+                query = query.Where(x => x.RatingNumber == search.RatingNumber);
+            }
+
+            if (search?.CustomerId != null)
+            {
+                query = query.Where(x => x.CustomerId == search.CustomerId);
             }
 
             return base.AddFilter(query, search);

@@ -497,7 +497,8 @@ class _UserScreenState extends State<UserScreen> {
                                       },
                                     );
             },
-          ),),
+          ),
+          ),
           ] 
         )
       ).toList() ?? []

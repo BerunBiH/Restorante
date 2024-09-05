@@ -29,6 +29,11 @@ namespace eRestorante.Services.Services
                 query = query.Where(x => x.CommentText.Contains(search.CommentFTS));
             }
 
+            if (search?.CustomerId != null)
+            {
+                query = query.Where(x => x.CustomerId == search.CustomerId);
+            }
+
             return base.AddFilter(query, search);
         }
 

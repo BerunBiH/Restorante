@@ -1,23 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'commentStaffs.dart';
+part of 'commentStaffInsert.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-CommentStaffs _$CommentStaffsFromJson(Map<String, dynamic> json) =>
-    CommentStaffs(
-      (json['commentStaffId'] as num?)?.toInt(),
+CommentStaffInsert _$CommentStaffInsertFromJson(Map<String, dynamic> json) =>
+    CommentStaffInsert(
+      (json['customerId'] as num?)?.toInt(),
       (json['userId'] as num?)?.toInt(),
-      json['commentDate'] as String?,
       json['commentText'] as String?,
     );
 
-Map<String, dynamic> _$CommentStaffsToJson(CommentStaffs instance) =>
+Map<String, dynamic> _$CommentStaffInsertToJson(CommentStaffInsert instance) =>
     <String, dynamic>{
-      'commentStaffId': instance.commentStaffId,
+      'customerId': instance.customerId,
       'userId': instance.userId,
-      'commentDate': instance.commentDate,
       'commentText': instance.commentText,
     };

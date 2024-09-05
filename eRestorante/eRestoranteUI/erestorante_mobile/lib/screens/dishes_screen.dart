@@ -101,44 +101,46 @@ class _DishesScreenState extends State<DishesScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Card(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {},
-                      child: Text('Pića'),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+        Expanded(
+          child: Card(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {},
+                        child: Text('Pića'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                          minimumSize: Size(120, 50),
                         ),
-                        overlayColor: Colors.green,
-                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                        minimumSize: Size(120, 50),
                       ),
-                    ),
-                    SizedBox(width: 20.0),
-                    ElevatedButton(
-                      onPressed: () async {},
-                      child: Text('Korpa'),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                      SizedBox(width: 20.0),
+                      ElevatedButton(
+                        onPressed: () async {},
+                        child: Text('Korpa'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          overlayColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                          minimumSize: Size(120, 50),
                         ),
-                        overlayColor: Colors.green,
-                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                        minimumSize: Size(120, 50),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 5.0),
-              ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 5.0),
+                ],
+              ),
             ),
           ),
         ),
