@@ -93,6 +93,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
       isPostavkePressed: false,
       isRecenzijePressed: true,
       isRezervacijePressed: false,
+      orderExists: false,
       child: (_isLoading)
           ? Center(child: CircularProgressIndicator())
           : Scaffold(
@@ -115,7 +116,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             final dish = newListDish[index];
                             return _foodCardBuilder(dish, _dishImages[index], index);
                           } else {
-                            return SizedBox.shrink();
+                            Text("Još niste recenzirali nijedno jelo, zato je sve prazno!");
                           }
                         },
                       ),
@@ -175,6 +176,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         WidgetSpan(
                           child: Icon(Icons.info_outline, size: 16, color: Colors.deepPurple),
                         ),
+                        TextSpan(text: 'Ako je ispod teksta sve prazno to znaci da niste nijedno jelo jos recenzirali.'),
                       ],
                     ),
                   )

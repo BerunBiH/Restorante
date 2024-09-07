@@ -9,6 +9,9 @@ import 'package:erestorante_mobile/providers/comment_staff_provider.dart';
 import 'package:erestorante_mobile/providers/customer_provider.dart';
 import 'package:erestorante_mobile/providers/dish_provider.dart';
 import 'package:erestorante_mobile/providers/drink_provider.dart';
+import 'package:erestorante_mobile/providers/order_dish_provider.dart';
+import 'package:erestorante_mobile/providers/order_drink_provider.dart';
+import 'package:erestorante_mobile/providers/order_provider.dart';
 import 'package:erestorante_mobile/providers/rating_dish_provider.dart';
 import 'package:erestorante_mobile/providers/rating_staff_provider.dart';
 import 'package:erestorante_mobile/providers/register_screen.dart';
@@ -37,6 +40,9 @@ void main() async {
     ChangeNotifierProvider(create: (_) => RatingStaffProvider()),
     ChangeNotifierProvider(create: (_) => CommentDishProvider()),
     ChangeNotifierProvider(create: (_) => CommentStaffProvider()),
+    ChangeNotifierProvider(create: (_) => OrderDishesProvider()),
+    ChangeNotifierProvider(create: (_) => OrderDrinksProvider()),
+    ChangeNotifierProvider(create: (_) => OrderProvider()),
   ],
   child: 
   const MyApp(),
@@ -211,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Info.image=customer.customerImage;
                               }
                               Info.id=customer.customerId;
-                            } on Exception catch (e) {
+                            } catch (e) {
                               print(e);
                               showDialog(barrierDismissible: false,context: context, builder: (BuildContext context)=> 
                               AlertDialog(

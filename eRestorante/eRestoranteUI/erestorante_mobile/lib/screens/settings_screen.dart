@@ -246,6 +246,7 @@ Future<void> _pickImage() async {
     isPostavkePressed: true,
     isRecenzijePressed: false,
     isRezervacijePressed: false,
+    orderExists: false,
       child: (_isLoading) ?
       Center(child: CircularProgressIndicator()):
        _settingsPageBuilder(),

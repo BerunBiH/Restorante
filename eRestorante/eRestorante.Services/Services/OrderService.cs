@@ -46,6 +46,7 @@ namespace eRestorante.Services.Services
         public override async Task<Task> BeforeInsert(Database.Order entity, OrderInsertRequest request)
         {
             DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+
             entity.OrderDate = currentDate;
 
             entity.OrderNullified = 0;
@@ -70,12 +71,12 @@ namespace eRestorante.Services.Services
                     }
                     entity.OrderNumber = dateCalc + orderNum+1;
                 }
+                else
+                {
+                    entity.OrderNumber = dateCalc + 1; 
+                }
             }
 
-            else
-            {
-                entity.OrderNumber = dateCalc + 1; 
-            }
             return base.BeforeInsert(entity, request);
         }
 

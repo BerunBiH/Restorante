@@ -53,6 +53,7 @@ class _UserScreenState extends State<UserScreen> {
     isRecenzijePressed: false,
     isRezervacijePressed: false,
     isUposleniciPressed: true,
+    isOrdersPressed: false,
       child: 
       (_isLoading) ?
       Center(child: CircularProgressIndicator()):

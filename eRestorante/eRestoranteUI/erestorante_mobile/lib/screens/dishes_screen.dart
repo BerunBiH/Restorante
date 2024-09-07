@@ -1,15 +1,26 @@
 import 'dart:convert';
 
 import 'package:erestorante_mobile/models/dish.dart';
+import 'package:erestorante_mobile/models/orderDishInsert.dart';
+import 'package:erestorante_mobile/models/orderDishes.dart';
+import 'package:erestorante_mobile/models/orderInsert.dart';
+import 'package:erestorante_mobile/models/orders.dart';
 import 'package:erestorante_mobile/models/search_result.dart';
 import 'package:erestorante_mobile/providers/dish_provider.dart';
+import 'package:erestorante_mobile/providers/order_dish_provider.dart';
+import 'package:erestorante_mobile/providers/order_provider.dart';
+import 'package:erestorante_mobile/screens/drinks_screen.dart';
+import 'package:erestorante_mobile/screens/order_screen.dart';
 import 'package:erestorante_mobile/utils/util.dart';
 import 'package:erestorante_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DishesScreen extends StatefulWidget {
-  const DishesScreen({super.key});
+  Order? lastOrder;
+  int? cartCount;
+
+  DishesScreen({super.key, this.cartCount, this.lastOrder});
 
   @override
   State<DishesScreen> createState() => _DishesScreenState();
@@ -18,23 +29,56 @@ class DishesScreen extends StatefulWidget {
 class _DishesScreenState extends State<DishesScreen> {
   final TextEditingController _searchController = TextEditingController();
   late DishProvider _dishProvider;
+  late OrderProvider _orderProvider;
+  late OrderDishesProvider _orderDishesProvider;
   SearchResult<Dish>? resultD;
+  SearchResult<Order>? resultO;
+  SearchResult<OrderDishes>? resultOD;
   bool authorised = false;
   bool _isLoading = true;
   late List<ImageProvider> _dishImages;
   List<bool> _isExpandedList = [];
+  List<int> _dishCounts = [];
+  late OrderInsert orderInsert;
+  List<OrderDishes> dishes=[];
+  late Order lastOrder;
+  int cartCount = 0; // Cart count
 
   @override
   void initState() {
     super.initState();
     _dishProvider = context.read<DishProvider>();
+    _orderProvider = context.read<OrderProvider>();
+    _orderDishesProvider = context.read<OrderDishesProvider>();
     _loadData();
   }
 
   Future<void> _loadData() async {
     var dataD = await _dishProvider.get();
+    OrderInsert newOrder=OrderInsert(Info.id);
+    if(widget.lastOrder==null)
+    {
+      await _orderProvider.insert(newOrder);
+      
+    }
+    var dataO = await _orderProvider.get(filter: {
+            'CustomerId': Info.id
+          });
+    
+
 
     setState(() {
+      if(widget.cartCount!=null)
+      {
+        cartCount=widget.cartCount!;
+      }
+      if(widget.lastOrder!=null)
+      {
+        lastOrder=widget.lastOrder!;
+      }
+      else {
+        lastOrder=dataO.result.last;
+      }  
       resultD = dataD;
       _dishImages = resultD!.result.map((dish) {
         if (dish.dishImage != null && dish.dishImage!.isNotEmpty) {
@@ -55,16 +99,18 @@ class _DishesScreenState extends State<DishesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
+    return (_isLoading)
+          ? Center(child: CircularProgressIndicator())
+          :MasterScreenWidget(
       isJelovnikPressed: true,
       isKorpaPressed: false,
       isMojProfilPressed: false,
       isPostavkePressed: false,
       isRecenzijePressed: false,
       isRezervacijePressed: false,
-      child: (_isLoading)
-          ? Center(child: CircularProgressIndicator())
-          : Scaffold(
+      orderExists: true,
+      activeOrderId: lastOrder.ordersId,
+      child: Scaffold(
               body: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -112,7 +158,15 @@ class _DishesScreenState extends State<DishesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed: () async {},
+                        onPressed: () async {
+                          Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DrinksScreen(cartCount: cartCount, lastOrder: lastOrder,),
+                      ),
+                    );
+
+                        },
                         child: Text('Pića'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -124,18 +178,45 @@ class _DishesScreenState extends State<DishesScreen> {
                         ),
                       ),
                       SizedBox(width: 20.0),
-                      ElevatedButton(
-                        onPressed: () async {},
-                        child: Text('Korpa'),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                      Stack(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.shopping_cart),
+                            iconSize: 30.0,
+                            onPressed: () {
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderScreen(cartCount: cartCount, lastOrder: lastOrder,),
+                              ),
+                              );
+                            },
                           ),
-                          overlayColor: Colors.green,
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                          minimumSize: Size(120, 50),
-                        ),
-                      )
+                          if (cartCount > 0) // Show badge if cartCount > 0
+                            Positioned(
+                              right: 0,
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                constraints: BoxConstraints(
+                                  minWidth: 20,
+                                  minHeight: 20,
+                                ),
+                                child: Text(
+                                  '$cartCount',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ],
                   ),
                   const SizedBox(height: 5.0),
@@ -208,39 +289,20 @@ class _DishesScreenState extends State<DishesScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _showInfoDialog(dish);
+                          },
+                          child: const Text("+",
+                          style: TextStyle(fontSize: 20),),
+                        )
+                      ],
+                    ),
                   ],
                 ),
-              ),
-            ),
-            Positioned(
-              bottom: 8,
-              left: 8,
-              right: 8,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    color: Colors.red,
-                    onPressed: () {
-                      _showDeleteDialog(dish);
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.info_outline),
-                    color: Colors.deepPurpleAccent,
-                    onPressed: () {
-                      // Navigator.push to the details screen
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.check),
-                    color: Colors.green,
-                    onPressed: () {
-                      _showEditDialog(dish);
-                    },
-                  ),
-                ],
               ),
             ),
           ],
@@ -249,132 +311,146 @@ class _DishesScreenState extends State<DishesScreen> {
     );
   }
 
-  void _showDeleteDialog(Dish dish) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Da li ste sigurni da želite izbrisati jelo?"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Ako želite izbrisati jelo pritisnite dugme ${"Izbriši"} ako ne želite, pritisnite dugme ${"Odustani"}",
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+void _showInfoDialog(Dish dish) {
+  int _counter = 1; // Initialize counter variable
+
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Odaberite kolicinu"),
+        content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    overlayColor: Colors.green,
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                  ),
-                  onPressed: () async {
-                    await _dishProvider.delete(dish.dishID!);
-                    Navigator.pop(context);
-                    _showSuccessDialog();
-                  },
-                  child: const Text("Izbriši"),
+                Text(
+                  "Odaberite koliko puta želite jelo naručiti:",
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Minus Button
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (_counter > 1) {
+                            _counter--;
+                          }
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(15.0),
+                        backgroundColor: Colors.white,
+                        side: BorderSide(color: Colors.blueAccent),
+                        overlayColor: Colors.blueAccent.withOpacity(0.2),
+                      ),
+                      child: Icon(Icons.remove, color: Colors.blueAccent),
                     ),
-                    overlayColor: Colors.red,
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Odustani"),
+
+                    // Number Display
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(
+                        '$_counter',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    // Plus Button
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (_counter < 100) {
+                            _counter++;
+                          }
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(15.0),
+                        backgroundColor: Colors.white,
+                        side: BorderSide(color: Colors.blueAccent),
+                        overlayColor: Colors.blueAccent.withOpacity(0.2),
+                      ),
+                      child: Icon(Icons.add, color: Colors.blueAccent),
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showEditDialog(Dish dish) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Da li ste sigurni da želite urediti jelo?"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+            );
+          },
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "Ako želite urediti jelo pritisnite dugme ${"Uredi"} ako ne želite, pritisnite dugme ${"Odustani"}",
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    overlayColor: Colors.green,
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  onPressed: () {
-                    // Navigate to the edit screen
-                  },
-                  child: const Text("Uredi"),
+                  surfaceTintColor: Color.fromARGB(255, 0, 255, 21),
+                  overlayColor: Colors.green,
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                 ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    overlayColor: Colors.red,
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                  ),
-                  onPressed: () {
+                onPressed: () async {
+                  try {
+                    OrderDishInsert newOrderDish=OrderDishInsert(_counter, lastOrder.ordersId, dish.dishID);
+                    await _orderDishesProvider.insert(newOrderDish);
+                    setState(() {
+                      cartCount++;
+                    });
                     Navigator.pop(context);
-                  },
-                  child: const Text("Odustani"),
+                  } catch (e) {
+                    _showFailureDialog();
+                  }
+                },
+                child: const Text("Odaberi"),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                  overlayColor: Colors.red,
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                 ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Odustani"),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
 
-  void _showSuccessDialog() {
+  void _showFailureDialog() {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Uspješno izbrisano jelo"),
+          title: Text("Upsss, nesto nije okay!"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Uspješno ste izbrisali jelo!",
+                "Probajte opet kasnije!",
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
@@ -386,9 +462,11 @@ class _DishesScreenState extends State<DishesScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DishesScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => DishesScreen(),
+                      ),
                     );
                   },
                   child: const Text("Ok"),

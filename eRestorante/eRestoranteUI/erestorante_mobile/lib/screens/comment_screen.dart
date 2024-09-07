@@ -59,7 +59,12 @@ Widget build(BuildContext context) {
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StaffReviewScreen(),
+            ),
+          );
         },
       ),
     ),
@@ -93,7 +98,7 @@ Widget build(BuildContext context) {
             ),
             keyboardType: TextInputType.text,
             style: TextStyle(color: _commentColor),
-            onChanged: (value) => validateComment(widget.commentController),
+            onSubmitted: (value) => validateComment(widget.commentController),
           ),
           SizedBox(height: 20),
           Row(

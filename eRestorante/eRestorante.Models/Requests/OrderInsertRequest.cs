@@ -11,5 +11,6 @@ namespace eRestorante.Models.Requests
     public class OrderInsertRequest
     {
         public int? CustomerId { get; set; }
+
     }
 }

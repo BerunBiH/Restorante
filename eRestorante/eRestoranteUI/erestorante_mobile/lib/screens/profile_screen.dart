@@ -51,6 +51,7 @@ Future<void> _loadData() async {
     isPostavkePressed: false,
     isRecenzijePressed: false,
     isRezervacijePressed: false,
+    orderExists: false,
       child: 
       (_isLoading) ?
       Center(child: CircularProgressIndicator()):

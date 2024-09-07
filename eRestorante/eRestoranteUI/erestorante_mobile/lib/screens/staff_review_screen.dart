@@ -103,6 +103,7 @@ class _StaffReviewScreenState extends State<StaffReviewScreen> {
       isPostavkePressed: false,
       isRecenzijePressed: true,
       isRezervacijePressed: false,
+      orderExists: false,
       child: (_isLoading)
           ? Center(child: CircularProgressIndicator())
           : Container(

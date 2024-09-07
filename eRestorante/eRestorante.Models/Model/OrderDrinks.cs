@@ -16,7 +16,5 @@ namespace eRestorante.Models.Model
 
         public int? DrinkId { get; set; }
 
-        public virtual Drink? Drink { get; set; }
-
     }
 }

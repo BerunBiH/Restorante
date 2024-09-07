@@ -236,8 +236,19 @@ class _ReservationAddScreenState extends State<ReservationAddScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Reservation'),
+      title: Text("Rezervacija"),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReservationScreen(),
+            ),
+          );
+        },
       ),
+    ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Padding(

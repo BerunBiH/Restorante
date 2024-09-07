@@ -10,6 +10,7 @@ OrderDishes _$OrderDishesFromJson(Map<String, dynamic> json) => OrderDishes(
       (json['orderDishId'] as num?)?.toInt(),
       (json['orderQuantity'] as num?)?.toInt(),
       (json['orderId'] as num?)?.toInt(),
+      (json['dishId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$OrderDishesToJson(OrderDishes instance) =>
@@ -17,4 +18,5 @@ Map<String, dynamic> _$OrderDishesToJson(OrderDishes instance) =>
       'orderDishId': instance.orderDishId,
       'orderQuantity': instance.orderQuantity,
       'orderId': instance.orderId,
+      'dishId': instance.dishId,
     };

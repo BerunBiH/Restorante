@@ -20,8 +20,6 @@ namespace eRestorante.Models.Model
 
         public int? CustomerId { get; set; }
 
-        public virtual Customer? Customer { get; set; }
-
         public virtual ICollection<OrderDishes> OrderDishes { get; set; } = new List<OrderDishes>();
 
         public virtual ICollection<OrderDrinks> OrderDrinks { get; set; } = new List<OrderDrinks>();

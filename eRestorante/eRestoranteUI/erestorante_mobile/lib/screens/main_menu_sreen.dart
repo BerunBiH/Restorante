@@ -66,6 +66,7 @@ class _MainMenuSreenState extends State<MainMenuSreen> {
       isPostavkePressed: false,
       isRecenzijePressed: false,
       isRezervacijePressed: false,
+      orderExists: false,
       child: _isLoading
           ? Center(child: CircularProgressIndicator())
           : !_hasItems

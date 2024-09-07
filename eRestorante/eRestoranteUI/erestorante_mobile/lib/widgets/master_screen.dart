@@ -1,5 +1,8 @@
 // import 'package:erestorante_mobile/screens/customer_screen.dart';
 // import 'package:erestorante_mobile/screens/dishes_screen.dart';
+import 'package:erestorante_mobile/models/orders.dart';
+import 'package:erestorante_mobile/providers/order_provider.dart';
+import 'package:erestorante_mobile/screens/archive_order_screen.dart';
 import 'package:erestorante_mobile/screens/dishes_screen.dart';
 import 'package:erestorante_mobile/screens/main_menu_sreen.dart';
 import 'package:erestorante_mobile/screens/profile_screen.dart';
@@ -12,6 +15,7 @@ import 'package:erestorante_mobile/screens/settings_screen.dart';
 import 'package:erestorante_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:erestorante_mobile/main.dart';
+import 'package:provider/provider.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -21,7 +25,9 @@ class MasterScreenWidget extends StatefulWidget {
   final bool isRezervacijePressed;
   final bool isMojProfilPressed;
   final bool isPostavkePressed;
-   MasterScreenWidget({required this.isJelovnikPressed,required this.isRecenzijePressed,required this.isKorpaPressed,required this.isRezervacijePressed,required this.isMojProfilPressed,required this.isPostavkePressed,this.child, super.key});
+  bool? orderExists;
+  int? activeOrderId;
+   MasterScreenWidget({required this.isJelovnikPressed,required this.isRecenzijePressed,required this.isKorpaPressed,required this.isRezervacijePressed,required this.isMojProfilPressed,required this.isPostavkePressed,this.child, super.key, this.orderExists, this.activeOrderId});
 
   @override
   State<MasterScreenWidget> createState() => _MasterScreenWidgetState();
@@ -35,6 +41,13 @@ late bool _isKorpaPressed = widget.isKorpaPressed;
 late bool _isRezervacijePressed = widget.isRezervacijePressed;
 late bool _isMojProfilPressed = widget.isMojProfilPressed;
 late bool _isPostavkePressed = widget.isPostavkePressed;
+late OrderProvider _orderProvider;
+
+ @override
+  void initState() {
+    super.initState();
+    _orderProvider = context.read<OrderProvider>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +63,14 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
 GestureDetector(
               child: 
               TextButton(
-                  onPressed: (){
+                  onPressed: () async {
+                     if (widget.orderExists!) {
+                      bool shouldProceed = await _showDecisionDialog();
+
+                      if (!shouldProceed) {
+                        return;
+                      }
+                    }
                     setState(() {
                       _isJelovnikPressed = false;
                       _isRecenzijePressed = false;
@@ -137,14 +157,20 @@ GestureDetector(
             Text('Jelovnik'),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          if (widget.orderExists!) {
+            bool shouldProceed = await _showDecisionDialog();
+
+            if (!shouldProceed) {
+              return;
+            }
+          }
           setState(() {
             _isMojProfilPressed=false;
             _isJelovnikPressed = true;
             _isRecenzijePressed = false;
             _isKorpaPressed = false;
             _isRezervacijePressed = false;
-            _isKorpaPressed = false;
             _isPostavkePressed = false;
           });
           Navigator.push(
@@ -165,14 +191,20 @@ GestureDetector(
             Text('Rezervacije'),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          if (widget.orderExists!) {
+            bool shouldProceed = await _showDecisionDialog();
+
+            if (!shouldProceed) {
+              return;
+            }
+          }
           setState(() {
             _isMojProfilPressed=false;
             _isJelovnikPressed = false;
             _isRecenzijePressed = false;
             _isKorpaPressed = false;
             _isRezervacijePressed = true;
-            _isKorpaPressed = false;
             _isPostavkePressed = false;
           });
           Navigator.push(
@@ -193,14 +225,20 @@ GestureDetector(
             Text('Moj Profil'),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          if (widget.orderExists!) {
+            bool shouldProceed = await _showDecisionDialog();
+
+            if (!shouldProceed) {
+              return;
+            }
+          }
           setState(() {
             _isMojProfilPressed=true;
             _isJelovnikPressed = false;
             _isRecenzijePressed = false;
             _isKorpaPressed = false;
             _isRezervacijePressed = false;
-            _isKorpaPressed = false;
             _isPostavkePressed = false;
           });
           Navigator.push(
@@ -221,14 +259,20 @@ GestureDetector(
             Text('Recenzije'),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          if (widget.orderExists!) {
+            bool shouldProceed = await _showDecisionDialog();
+
+            if (!shouldProceed) {
+              return;
+            }
+          }
           setState(() {
             _isMojProfilPressed=false;
             _isJelovnikPressed = false;
             _isRecenzijePressed = true;
             _isKorpaPressed = false;
             _isRezervacijePressed = false;
-            _isKorpaPressed = false;
             _isPostavkePressed = false;
           });
           Navigator.push(
@@ -246,25 +290,31 @@ GestureDetector(
         leading: Icon(Icons.shopping_basket), 
         title: Row( 
           children: [
-            Text('Korpa'),
+            Text('Arhiva Korpe'),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          if (widget.orderExists!) {
+            bool shouldProceed = await _showDecisionDialog();
+
+            if (!shouldProceed) {
+              return;
+            }
+          }
           setState(() {
             _isMojProfilPressed=false;
             _isJelovnikPressed = false;
             _isRecenzijePressed = false;
-            _isKorpaPressed = false;
-            _isRezervacijePressed = false;
             _isKorpaPressed = true;
+            _isRezervacijePressed = false;
             _isPostavkePressed = false;
           });
-          // Navigator.push(
-          //                     context,
-          //                     MaterialPageRoute(
-          //                       builder: (context) => OrderScreen()
-          //                       ),
-          //                   );
+          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ArchiveOrderScreen()
+                                ),
+                            );
         },
         selectedColor: Colors.white,
         selectedTileColor: Color.fromRGBO(111, 63, 189, 0.281),
@@ -277,12 +327,18 @@ GestureDetector(
             Text('Postavke'),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          if (widget.orderExists!) {
+            bool shouldProceed = await _showDecisionDialog();
+
+            if (!shouldProceed) {
+              return;
+            }
+          }
           setState(() {
             _isMojProfilPressed=false;
             _isJelovnikPressed = false;
             _isRecenzijePressed = false;
-            _isKorpaPressed = false;
             _isRezervacijePressed = false;
             _isKorpaPressed = false;
             _isPostavkePressed = true;
@@ -320,5 +376,46 @@ GestureDetector(
 body: widget.child,
     );
   }
-
+ Future<bool> _showDecisionDialog() async {
+  return await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Napustate narudzbu!"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Da li ste sigurni da zelite da odete? Ako ne potvrdite narudzbu u korpi morate opet birati artikle.",
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: const Text("Ostani"),
+              ),
+              SizedBox(width: 20.0,),
+              ElevatedButton(
+                onPressed: () {
+                  _orderProvider.delete(widget.activeOrderId!);
+                  Navigator.pop(context, true);
+                },
+                child: const Text("Napusti"),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+ }
 }
