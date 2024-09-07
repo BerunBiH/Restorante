@@ -9,5 +9,7 @@ namespace eRestorante.Models.SearchObjects
     public class RatingDishSearchObject : BaseSearchObject
     {
         public int? RatingNumber { get; set; }
+
+        public int? CustomerId { get; set; }
     }
 }

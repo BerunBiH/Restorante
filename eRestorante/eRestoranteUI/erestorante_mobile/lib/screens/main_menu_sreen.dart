@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:erestorante_mobile/models/dish.dart';
 import 'package:erestorante_mobile/models/search_result.dart';
 import 'package:erestorante_mobile/providers/dish_provider.dart';
+import 'package:erestorante_mobile/screens/dishes_screen.dart';
 import 'package:erestorante_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -60,12 +61,12 @@ class _MainMenuSreenState extends State<MainMenuSreen> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       isJelovnikPressed: false,
-      isKorisniciPressed: false,
+      isKorpaPressed: false,
       isMojProfilPressed: false,
       isPostavkePressed: false,
       isRecenzijePressed: false,
       isRezervacijePressed: false,
-      isUposleniciPressed: false,
+      orderExists: false,
       child: _isLoading
           ? Center(child: CircularProgressIndicator())
           : !_hasItems
@@ -153,7 +154,14 @@ class _MainMenuSreenState extends State<MainMenuSreen> {
               ),
               SizedBox(height: 24.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DishesScreen()
+                                ),
+                            );
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),

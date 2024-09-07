@@ -47,7 +47,7 @@ class _DishesScreenState extends State<DishesScreen> {
       resultU = dataU;
       resultD = dataD;
       var user=resultU!.result.firstWhere((u)=> u.userEmail!.contains(Authorization.email!));
-      if(user.userRoles![0].role!.roleName!="Menedzer" || user.userRoles![0].role!.roleName!="Kuhar")
+      if(user.userRoles![0].role!.roleName!="Menedzer" && user.userRoles![0].role!.roleName!="Kuhar")
       {
         authorised=false;
       }
@@ -80,6 +80,7 @@ class _DishesScreenState extends State<DishesScreen> {
     isRecenzijePressed: false,
     isRezervacijePressed: false,
     isUposleniciPressed: false,
+    isOrdersPressed: false,
       child: 
       (_isLoading) ?
       Center(child: CircularProgressIndicator()):

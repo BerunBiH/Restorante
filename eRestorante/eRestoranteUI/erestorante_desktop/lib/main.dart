@@ -6,6 +6,9 @@ import 'package:erestorante_desktop/providers/category_provider.dart';
 import 'package:erestorante_desktop/providers/customer_provider.dart';
 import 'package:erestorante_desktop/providers/dish_provider.dart';
 import 'package:erestorante_desktop/providers/drink_provider.dart';
+import 'package:erestorante_desktop/providers/order_dish_provider.dart';
+import 'package:erestorante_desktop/providers/order_drink_provider.dart';
+import 'package:erestorante_desktop/providers/order_provider.dart';
 import 'package:erestorante_desktop/providers/reservation_provider.dart';
 import 'package:erestorante_desktop/providers/role_provider.dart';
 import 'package:erestorante_desktop/providers/userRole_provider.dart';
@@ -34,6 +37,9 @@ void main() async {
     ChangeNotifierProvider(create: (_) => DishProvider()),
     ChangeNotifierProvider(create: (_) => DrinkProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),
+    ChangeNotifierProvider(create: (_) => OrderProvider()),
+    ChangeNotifierProvider(create: (_) => OrderDishesProvider()),
+    ChangeNotifierProvider(create: (_) => OrderDrinksProvider()),
   ],
   child: const MyApp(),
   ));
@@ -193,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Info.image=user.userImage;
                               }
                               Info.id=user.userId;
-                            } on Exception catch (e) {
+                            } catch (e) {
                               showDialog(barrierDismissible: false,context: context, builder: (BuildContext context)=> 
                               AlertDialog(
                                 title: Text("Greška u prijavi",textAlign: TextAlign.center,),

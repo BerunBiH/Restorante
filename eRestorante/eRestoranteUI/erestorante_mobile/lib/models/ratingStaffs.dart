@@ -6,10 +6,11 @@ part 'ratingStaffs.g.dart';
 @JsonSerializable(explicitToJson: true)
 class RatingStaffs{
   int? ratingStaffId;
+  int? userId;
   int? ratingNumber;
   String? ratingDate;
 
-  RatingStaffs(this.ratingStaffId, this.ratingNumber, this.ratingDate);
+  RatingStaffs(this.ratingStaffId, this.userId, this.ratingNumber, this.ratingDate);
 
   factory RatingStaffs.fromJson(Map<String, dynamic> json) => _$RatingStaffsFromJson(json);
 

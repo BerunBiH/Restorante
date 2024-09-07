@@ -63,6 +63,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
     isRecenzijePressed: false,
     isRezervacijePressed: true,
     isUposleniciPressed: false,
+    isOrdersPressed: false,
       child: (_isLoading) ?
       Center(child: CircularProgressIndicator()):
       _buildAuthorisation()

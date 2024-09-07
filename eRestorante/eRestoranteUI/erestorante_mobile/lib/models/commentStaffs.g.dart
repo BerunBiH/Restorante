@@ -9,6 +9,7 @@ part of 'commentStaffs.dart';
 CommentStaffs _$CommentStaffsFromJson(Map<String, dynamic> json) =>
     CommentStaffs(
       (json['commentStaffId'] as num?)?.toInt(),
+      (json['userId'] as num?)?.toInt(),
       json['commentDate'] as String?,
       json['commentText'] as String?,
     );
@@ -16,6 +17,7 @@ CommentStaffs _$CommentStaffsFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$CommentStaffsToJson(CommentStaffs instance) =>
     <String, dynamic>{
       'commentStaffId': instance.commentStaffId,
+      'userId': instance.userId,
       'commentDate': instance.commentDate,
       'commentText': instance.commentText,
     };

@@ -145,6 +145,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             }
           }
           avgRating/=numRating;
+          avgRating=double.parse(avgRating.toStringAsFixed(2));
         }
 
         if(widget.dish!.orderDishes !=null && widget.dish!.orderDishes!.isNotEmpty)
@@ -169,6 +170,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
       isRecenzijePressed: true,
       isRezervacijePressed: false,
       isUposleniciPressed: false,
+      isOrdersPressed: false,
       child: Container(
         child: (_isLoading)
             ? Center(child: CircularProgressIndicator())

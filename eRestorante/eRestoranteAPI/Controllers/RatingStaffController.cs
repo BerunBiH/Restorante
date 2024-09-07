@@ -2,6 +2,7 @@ using eRestorante.Models.Requests;
 using eRestorante.Models.SearchObjects;
 using eRestorante.Services.Database;
 using eRestorante.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -12,6 +13,24 @@ namespace eRestoranteAPI.Controllers
     {
         public RatingStaffController(ILogger<BaseController<eRestorante.Models.Model.RatingStaff, eRestorante.Models.SearchObjects.RatingStaffSearchObject>> logger, IRatingStaffService service) : base(logger, service)
         {
+        }
+
+        [AllowAnonymous]
+        public override Task<eRestorante.Models.Model.RatingStaff> Insert([FromBody] RatingStaffInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [AllowAnonymous]
+        public override Task<eRestorante.Models.Model.RatingStaff> Update(int id, [FromBody] RatingStaffUpdateRequest update)
+        {
+            return base.Update(id, update);
+        }
+
+        [AllowAnonymous]
+        public override Task<IActionResult> Delete(int id)
+        {
+            return base.Delete(id);
         }
     }
 }

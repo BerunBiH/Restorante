@@ -18,5 +18,23 @@ namespace eRestoranteAPI.Controllers
             :base(logger,service)
         {
         }
+
+        [AllowAnonymous]
+        public override Task<eRestorante.Models.Model.Order> Insert([FromBody] OrderInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [AllowAnonymous]
+        public override Task<eRestorante.Models.Model.Order> Update(int id, [FromBody] OrderUpdateRequest update)
+        {
+            return base.Update(id, update);
+        }
+
+        [AllowAnonymous]
+        public override Task<IActionResult> Delete(int id)
+        {
+            return base.Delete(id);
+        }
     }
 }

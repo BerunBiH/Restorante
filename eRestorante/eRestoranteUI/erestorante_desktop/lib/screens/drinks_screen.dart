@@ -74,6 +74,7 @@ class _DrinksScreenState extends State<DrinksScreen> {
       isRecenzijePressed: false,
       isRezervacijePressed: false,
       isUposleniciPressed: false,
+      isOrdersPressed: false,
       child: (_isLoading)
           ? Center(child: CircularProgressIndicator())
           : Scaffold(

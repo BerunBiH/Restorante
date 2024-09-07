@@ -1,6 +1,7 @@
 import 'package:erestorante_desktop/screens/customer_screen.dart';
 import 'package:erestorante_desktop/screens/dishes_screen.dart';
 import 'package:erestorante_desktop/screens/main_menu_sreen.dart';
+import 'package:erestorante_desktop/screens/orders_screen.dart';
 import 'package:erestorante_desktop/screens/profile_screen.dart';
 import 'package:erestorante_desktop/screens/reservation_screen.dart';
 import 'package:erestorante_desktop/screens/review_screen.dart';
@@ -19,7 +20,8 @@ class MasterScreenWidget extends StatefulWidget {
   final bool isKorisniciPressed;
   final bool isMojProfilPressed;
   final bool isPostavkePressed;
-   MasterScreenWidget({required this.isJelovnikPressed,required this.isRecenzijePressed,required this.isUposleniciPressed,required this.isRezervacijePressed,required this.isKorisniciPressed,required this.isMojProfilPressed,required this.isPostavkePressed,this.child, super.key});
+  final bool isOrdersPressed;
+   MasterScreenWidget({required this.isJelovnikPressed,required this.isRecenzijePressed,required this.isUposleniciPressed,required this.isRezervacijePressed,required this.isKorisniciPressed,required this.isMojProfilPressed,required this.isPostavkePressed,this.child, required this.isOrdersPressed, super.key});
 
   @override
   State<MasterScreenWidget> createState() => _MasterScreenWidgetState();
@@ -34,6 +36,7 @@ late bool _isRezervacijePressed = widget.isRezervacijePressed;
 late bool _isKorisniciPressed = widget.isKorisniciPressed;
 late bool _isMojProfilPressed = widget.isMojProfilPressed;
 late bool _isPostavkePressed = widget.isPostavkePressed;
+late bool _isOrdersPressed = widget.isOrdersPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +59,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                       _isKorisniciPressed = false;
                       _isMojProfilPressed = false;
                       _isPostavkePressed = false;
+                      _isOrdersPressed = false;
                 });
                       Navigator.push(
                               context,
@@ -87,6 +91,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                       _isKorisniciPressed = false;
                       _isMojProfilPressed = false;
                       _isPostavkePressed = false;
+                      _isOrdersPressed = false;
                   });
                   Navigator.push(
                               context,
@@ -120,6 +125,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                       _isKorisniciPressed = false;
                       _isMojProfilPressed = false;
                       _isPostavkePressed = false;
+                      _isOrdersPressed = false;
                      });
                      Navigator.push(
                               context,
@@ -153,6 +159,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                     _isKorisniciPressed = false;
                     _isMojProfilPressed = false;
                     _isPostavkePressed = false;
+                    _isOrdersPressed = false;
                      });
                      Navigator.push(
                               context,
@@ -186,6 +193,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                     _isKorisniciPressed = false;
                     _isMojProfilPressed = false;
                     _isPostavkePressed = false;
+                    _isOrdersPressed = false;
                      });
                      Navigator.push(
                               context,
@@ -219,6 +227,7 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                     _isKorisniciPressed = true;
                     _isMojProfilPressed = false;
                     _isPostavkePressed = false;
+                    _isOrdersPressed = false;
                      });
                      Navigator.push(
                               context,
@@ -235,6 +244,40 @@ late bool _isPostavkePressed = widget.isPostavkePressed;
                   ),
                   style: TextButton.styleFrom(
                     backgroundColor: _isKorisniciPressed ? Color.fromRGBO(111, 63, 189, 0.612) : Colors.transparent,
+                  ),
+                ),
+                const VerticalDivider(
+                  width: 10,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+                TextButton(
+                  onPressed: (){
+                     setState(() {
+                    _isJelovnikPressed = false;
+                    _isRecenzijePressed = false;
+                    _isUposleniciPressed = false;
+                    _isRezervacijePressed = false;
+                    _isKorisniciPressed = true;
+                    _isMojProfilPressed = false;
+                    _isPostavkePressed = false;
+                    _isOrdersPressed = true;
+                     });
+                     Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderScreen()
+                                ),
+                            );
+                  },
+                  child: Text('Narudzbe',
+                  style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: _isOrdersPressed ? Color.fromRGBO(111, 63, 189, 0.612) : Colors.transparent,
                   ),
                 ),
               ],
