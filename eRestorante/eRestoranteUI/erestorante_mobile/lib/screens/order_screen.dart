@@ -517,28 +517,24 @@ void _showDiningChoiceDialog() {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    OrderUpdate orderUpdate = OrderUpdate(1, lastOrder.orderStatus!);
-                    await _orderProvider.update(lastOrder.ordersId!, orderUpdate);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => PayPalPaymentScreen(),
-                    //   ),
-                    // );
-                    print("Na paypalu smo i imamo jelo za ponjeti!");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PayPalScreen(totalAmount: totalPrice, lastOrder: lastOrder, cartCount: cartCount, takeOut: true,),
+                      ),
+                    );
                   },
                   child: const Text("Za ponjeti"),
                 ),
                 SizedBox(width: 20.0,),
                 ElevatedButton(
-                  onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => PayPalScreen(cartCount: cartCount, lastOrder: lastOrder,),
-                    //   ),
-                    // );
-                    print("Na paypalu smo");
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PayPalScreen(totalAmount: totalPrice, lastOrder: lastOrder, cartCount: cartCount, takeOut: false,),
+                      ),
+                    );
                   },
                   child: const Text("U restoranu"),
                 ),
