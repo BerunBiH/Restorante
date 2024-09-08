@@ -57,6 +57,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   int numRating=0;
   int numOrder=0;
   List<RatingDishes> ratingDishes = [];
+  List<Dish> recommendedDishes = [];
   List<String> dates=[];
   List<double> averageReviews=[];
   double rating1=0;
@@ -77,11 +78,21 @@ class _ReviewScreenState extends State<ReviewScreen> {
   Future<void> _loadData() async {
     var dataU = await _userProvider.get();
     var data = await _categoryProvider.get();
+    var dataReco;
+    if(widget.dish!=null)
+    {
+      dataReco= await _dishProvider.getRecommended(widget.dish!.dishID!);
+
+    }
 
     setState(() {
       resultU = dataU;
       result = data;
       category = result!.result;
+      if(widget.dish!=null)
+      {
+        recommendedDishes=dataReco.result;
+      }
       var user = resultU!.result.firstWhere((u) => u.userEmail!.contains(Authorization.email!));
       if (user.userRoles![0].role!.roleName != "Menedzer" || user.userRoles![0].role!.roleName != "Kuhar") {
         var authorised = false;
@@ -336,6 +347,15 @@ Widget _foodCardBuilder(Dish dish) {
           SizedBox(height: 20,),
           Text(
             'Jelo je ukupno ${numOrder} puta naručeno',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20,),
+          Text(
+            'Uz ovo jelo, najviše su se prodavali iduća 3 jela: ${recommendedDishes[0].dishName},${recommendedDishes[1].dishName},${recommendedDishes[2].dishName}',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -782,8 +802,10 @@ Widget _buildLineChart() {
             pw.Text('Broj prosječna ocjena za jelo na skali od 1 do 5: ${avgRating}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 8),
             pw.Text('Broj puta koje je jelo prodano: ${numOrder}', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            pw.SizedBox(height: 8),
+            pw.Text('Uz ovo jelo, najviše su se prodavali iduća 3 jela: ${recommendedDishes[0].dishName},${recommendedDishes[1].dishName},${recommendedDishes[2].dishName}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 16),
-
+  
             // Display the dish image
             if (widget.dish!.dishImage != null && widget.dish!.dishImage!.isNotEmpty)
               pw.Center(

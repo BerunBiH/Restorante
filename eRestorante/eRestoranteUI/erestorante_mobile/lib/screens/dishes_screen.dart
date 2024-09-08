@@ -122,7 +122,7 @@ class _DishesScreenState extends State<DishesScreen> {
                           crossAxisCount: 1,
                           crossAxisSpacing: 16.0,
                           mainAxisSpacing: 16.0,
-                          childAspectRatio: 3 / 2,
+                          childAspectRatio: 3 / 3,
                         ),
                         itemCount: resultD!.result.length,
                         itemBuilder: (context, index) {
@@ -284,7 +284,16 @@ class _DishesScreenState extends State<DishesScreen> {
                       "Cijena: ${dish.dishCost!.toString()}KM",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Ako želite naše preporuke za ovo jelo, pritisnite ikonu za info, ako želite naruciti jelo pritisnite ikonu +",
+                      style: TextStyle(
+                        fontSize: 16.0,
                         color: Colors.black,
                       ),
                       textAlign: TextAlign.center,
@@ -298,7 +307,16 @@ class _DishesScreenState extends State<DishesScreen> {
                           },
                           child: const Text("+",
                           style: TextStyle(fontSize: 20),),
-                        )
+                        ),
+                        SizedBox(width: 20.0,),
+                                            IconButton(
+                      icon: Icon(Icons.info_outline),
+                      color: Colors.deepPurpleAccent,
+                      alignment: Alignment.center,
+                      onPressed: () {
+                        _recommendDialog(dish);
+                      }
+                    ),
                       ],
                     ),
                   ],
@@ -478,4 +496,43 @@ void _showInfoDialog(Dish dish) {
       },
     );
   }
+  Future<void> _recommendDialog(Dish dish) async {
+    List<Dish>recommendDishes=[];
+    var resultRec= await _dishProvider.getRecommended(dish.dishID!);
+    recommendDishes=resultRec.result!;
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Preporuke za jelo!', textAlign: TextAlign.center,),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Uz jelo ${dish.dishName} žeimo Vam srdačno također preporučiti da probate:', textAlign: TextAlign.center,),
+                Text('${recommendDishes[0].dishName},${recommendDishes[1].dishName},${recommendDishes[2].dishName},', textAlign: TextAlign.center,style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                        color: Colors.black,
+                ),),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
+

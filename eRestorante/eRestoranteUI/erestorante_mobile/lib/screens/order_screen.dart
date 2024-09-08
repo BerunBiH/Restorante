@@ -233,7 +233,12 @@ class _OrderScreenState extends State<OrderScreen> {
                 Text('Ukupno za platiti je $totalPrice KM'),
                 ElevatedButton(
                           onPressed: () {
-                            _showDiningChoiceDialog();
+                            if(cartCount>0) {
+                              _showDiningChoiceDialog();
+                            }
+                            else{
+                              _showErrorDialog();
+                            }
                           },
                           child: Text('Nastavi'),
                           style: ElevatedButton.styleFrom(
@@ -537,6 +542,41 @@ void _showDiningChoiceDialog() {
                     );
                   },
                   child: const Text("U restoranu"),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Greška!", textAlign: TextAlign.center,),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Ne možete dalje sa praznom narudzbom!",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: 20.0,),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("OK"),
                 ),
               ],
             ),
