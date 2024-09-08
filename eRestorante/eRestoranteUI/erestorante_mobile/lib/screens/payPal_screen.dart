@@ -1,198 +1,187 @@
-// import 'dart:convert';
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:webview_flutter/webview_flutter.dart';
+// File: paypal_screen.dart
 
-// void main() {
-//   runApp(MyApp());
-// }
+import 'dart:convert';
+import 'package:erestorante_mobile/models/orders.dart';
+import 'package:erestorante_mobile/screens/cancel_screen.dart';
+import 'package:erestorante_mobile/screens/order_screen.dart';
+import 'package:erestorante_mobile/screens/sucess_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:webview_flutter/webview_flutter.dart';
+class PayPalScreen extends StatefulWidget {
+  final double totalAmount;
+  final Order lastOrder;
+  final int cartCount;
+  final bool takeOut;
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'PayPal Payment Integration',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: PayPalPaymentScreen(),
-//     );
-//   }
-// }
+  PayPalScreen({super.key, required this.totalAmount, required this.lastOrder, required this.cartCount, required this.takeOut});
+  @override
+  _PayPalScreenState createState() => _PayPalScreenState();
+}
 
-// class PayPalPaymentScreen extends StatefulWidget {
-//   @override
-//   _PayPalPaymentScreenState createState() => _PayPalPaymentScreenState();
-// }
+class _PayPalScreenState extends State<PayPalScreen> {
+  bool isLoading = true;
+  late final double _totalAmount;
+  late final Order _lastOrder;
+  late final int _cartCount;
+  late final bool _takeOut;
+  late WebViewController _controller;
 
-// class _PayPalPaymentScreenState extends State<PayPalPaymentScreen> {
-//   final String clientId = 'YOUR_SANDBOX_CLIENT_ID';
-//   final String secret = 'YOUR_SANDBOX_SECRET';
-//   String? accessToken;
-//   String? approvalUrl;
-//   String? executeUrl;
+  final String clientId = 'AY2OUScscRr96J0OgR0P9z3m9MUIDcf9rL1yQiPDWZ7Km1qctQ3wkrtuNqBhTmx0YyGLK_Hn2HFPJegr';
+  final String clientSecret = 'EEX3oSKJP7U4DLIEwRSwkXFWZ4OfYOby3wIVy3D-h4X8M12YdGShgElb2K7X-MF_K97PQtBOOcTWFx34';
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _getAccessToken();
-//   }
+  final String _paypalBaseUrl = 'https://api.sandbox.paypal.com'; // Sandbox URL
 
-//   // Step 1: Get Access Token
-//   Future<void> _getAccessToken() async {
-//     final String authUrl = 'https://api.sandbox.paypal.com/v1/oauth2/token';
-//     final String credentials = '$clientId:$secret';
-//     final String encodedCredentials = base64Encode(utf8.encode(credentials));
+  @override
+  void initState() {
+    super.initState();
 
-//     final response = await http.post(
-//       Uri.parse(authUrl),
-//       headers: {
-//         'Authorization': 'Basic $encodedCredentials',
-//         'Content-Type': 'application/x-www-form-urlencoded',
-//       },
-//       body: {'grant_type': 'client_credentials'},
-//     );
+    _totalAmount=widget.totalAmount;
+    _lastOrder=widget.lastOrder;
+    _cartCount=widget.cartCount;
+    _takeOut=widget.takeOut;
+    _startPaymentProcess();
+  }
 
-//     if (response.statusCode == 200) {
-//       setState(() {
-//         accessToken = jsonDecode(response.body)['access_token'];
-//       });
-//     } else {
-//       print('Failed to get access token.');
-//     }
-//   }
+  Future<void> _startPaymentProcess() async {
+    try {
+      final accessToken = await _getAccessToken();
+      final orderUrl = await _createOrder(accessToken, _totalAmount);
+      _redirectToPayPal(orderUrl);
+    } catch (e) {
+      print("Error during PayPal payment process: $e");
+    }
+  }
 
-//   // Step 2: Create PayPal Payment
-//   Future<void> _createPayment() async {
-//     if (accessToken == null) {
-//       print('Access token is not available.');
-//       return;
-//     }
+  Future<String> _getAccessToken() async {
+    final response = await http.post(
+      Uri.parse('$_paypalBaseUrl/v1/oauth2/token'),
+      headers: {
+        'Authorization': 'Basic ${base64Encode(utf8.encode('$clientId:$clientSecret'))}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'grant_type=client_credentials',
+    );
 
-//     final String paymentUrl = 'https://api.sandbox.paypal.com/v1/payments/payment';
-//     final Map<String, dynamic> paymentData = {
-//       "intent": "sale",
-//       "payer": {
-//         "payment_method": "paypal"
-//       },
-//       "transactions": [
-//         {
-//           "amount": {
-//             "total": "10.00",
-//             "currency": "USD"
-//           },
-//           "description": "Test PayPal Payment"
-//         }
-//       ],
-//       "redirect_urls": {
-//         "return_url": "https://example.com/return",
-//         "cancel_url": "https://example.com/cancel"
-//       }
-//     };
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['access_token'];
+    } else {
+      throw Exception('Failed to obtain PayPal access token');
+    }
+  }
 
-//     final response = await http.post(
-//       Uri.parse(paymentUrl),
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': 'Bearer $accessToken',
-//       },
-//       body: jsonEncode(paymentData),
-//     );
+  Future<String> _createOrder(String accessToken, double total) async {
+    final response = await http.post(
+      Uri.parse('$_paypalBaseUrl/v2/checkout/orders'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+      body: jsonEncode({
+        'intent': 'CAPTURE',
+        'purchase_units': [
+          {
+            'amount': {
+              'currency_code': 'EUR',
+              'value': total,
+            },
+          },
+        ],
+        'application_context': {
+          'return_url': 'https://your-success-url.com',
+          'cancel_url': 'https://your-cancel-url.com',
+        }
+      }),
+    );
 
-//     if (response.statusCode == 201) {
-//       final paymentResponse = jsonDecode(response.body);
-//       setState(() {
-//         approvalUrl = paymentResponse['links']
-//             .firstWhere((link) => link['rel'] == 'approval_url')['href'];
-//         executeUrl = paymentResponse['links']
-//             .firstWhere((link) => link['rel'] == 'execute')['href'];
-//       });
-//       // Open WebView for user approval
-//       Navigator.of(context).push(MaterialPageRoute(
-//           builder: (context) => PayPalWebView(
-//                 approvalUrl: approvalUrl!,
-//                 onApproval: (payerId) {
-//                   _executePayment(payerId);
-//                 },
-//               )));
-//     } else {
-//       print('Failed to create payment.');
-//     }
-//   }
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      final approvalUrl = data['links']
+          .firstWhere((link) => link['rel'] == 'approve')['href'];
+      return approvalUrl;
+    } else {
+      throw Exception('Failed to create PayPal order');
+    }
+  }
 
-//   // Step 3: Execute Payment
-//   Future<void> _executePayment(String payerId) async {
-//     if (executeUrl == null) {
-//       print('Execute URL is not available.');
-//       return;
-//     }
+  void _redirectToPayPal(String approvalUrl) {
+    final webviewController = _createWebViewController(approvalUrl);
 
-//     final response = await http.post(
-//       Uri.parse(executeUrl!),
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': 'Bearer $accessToken',
-//       },
-//       body: jsonEncode({"payer_id": payerId}),
-//     );
+    Navigator.of(context).push(MaterialPageRoute(builder: (builder) {
+      return Scaffold(
+        body: WebViewWidget(
+          controller: webviewController,
+        ),
+      );
+    }));
+  }
 
-//     if (response.statusCode == 200) {
-//       print('Payment executed successfully.');
-//       // You can handle success here, e.g., show success screen or navigate back
-//     } else {
-//       print('Payment execution failed.');
-//     }
-//   }
+  WebViewController _createWebViewController(String approvalUrl) {
+    return WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (url) {
+            print("Page started loading: $url");
+            setState(() {
+              isLoading = true;
+            });
+          },
+          onPageFinished: (url) {
+            print("Page finished loading: $url");
+            setState(() {
+              isLoading = false;
+            });
+          },
+          onNavigationRequest: (request) {
+            final url = request.url;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('PayPal Payment'),
-//       ),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: _createPayment,
-//           child: Text('Pay with PayPal'),
-//         ),
-//       ),
-//     );
-//   }
-// }
+            if (url.startsWith('https://your-success-url.com')) {
+              print("Payment successful");
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => SuccessPage(lastOrder: _lastOrder, takeOut: _takeOut),
+                ),
+              );
+            }
 
-// class PayPalWebView extends StatefulWidget {
-//   final String approvalUrl;
-//   final Function(String payerId) onApproval;
+            if (url.startsWith('https://your-cancel-url.com')) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => CancelPage(lastOrder:_lastOrder, cartCount: _cartCount),
+                ),
+              );
+            }
 
-//   PayPalWebView({required this.approvalUrl, required this.onApproval});
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(approvalUrl));
+  }
 
-//   @override
-//   _PayPalWebViewState createState() => _PayPalWebViewState();
-// }
-
-// class _PayPalWebViewState extends State<PayPalWebView> {
-//   late WebViewController _webViewController;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('PayPal Checkout'),
-//       ),
-//       body: WebViewWidget(
-//         initialUrl: widget.approvalUrl,
-//         javascriptMode: JavascriptMode.unrestricted,
-//         onPageFinished: (String url) {
-//           if (url.contains('PayerID')) {
-//             final Uri uri = Uri.parse(url);
-//             final payerId = uri.queryParameters['PayerID'];
-//             if (payerId != null) {
-//               widget.onApproval(payerId);
-//               Navigator.of(context).pop();
-//             }
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => OrderScreen(lastOrder:_lastOrder, cartCount: _cartCount),
+                ),
+              );
+              },
+              child: const Text("Nazad"),
+            ),
+          ),
+          if (isLoading)
+            const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+    );
+  }
+}
