@@ -123,13 +123,11 @@ class _PayPalScreenState extends State<PayPalScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
-            print("Page started loading: $url");
             setState(() {
               isLoading = true;
             });
           },
           onPageFinished: (url) {
-            print("Page finished loading: $url");
             setState(() {
               isLoading = false;
             });
@@ -167,7 +165,7 @@ class _PayPalScreenState extends State<PayPalScreen> {
       body: Stack(
         children: [
           Center(
-            child: ElevatedButton(
+            child: (!isLoading)?ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
@@ -176,10 +174,9 @@ class _PayPalScreenState extends State<PayPalScreen> {
               );
               },
               child: const Text("Nazad"),
-            ),
+            ): const Center(child: CircularProgressIndicator()),
           ),
-          if (isLoading)
-            const Center(child: CircularProgressIndicator()),
+           
         ],
       ),
     );

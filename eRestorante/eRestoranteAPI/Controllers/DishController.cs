@@ -29,5 +29,12 @@ namespace eRestoranteAPI.Controllers
         {
             return base.Update(id, update);
         }
+
+        [Authorize]
+        [HttpGet("{id}/recommend")]
+        public List<eRestorante.Models.Model.Dishes> Recommend(int id)
+        {
+            return (_service as IDishesService).Recommended(id);
+        }
     }
 }
