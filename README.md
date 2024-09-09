@@ -69,5 +69,7 @@ For the mobile app use these credentials:
 ## WARNINGS
 Setting up the app can take a few minutes. The docker compose up command can take up to 3-4 minutes, while also the flutter run command can take 3-4 minutes if it's run on a slower machine, so have patience :)
 
+PayPal is in German because my account is a german one, so that is not a bug.
+
 ## LICENSE
 This whole project is for my university so it has an Apache-2.0 licese which you can feel free to use.
