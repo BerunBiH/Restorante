@@ -128,6 +128,11 @@ namespace eRestorante.Services.Services
 
 
                     }
+
+                    if (data.Count==0)
+                    {
+                        return null;
+                    }
                     var trainData = mlContext.Data.LoadFromEnumerable(data);
 
                     MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
@@ -144,6 +149,11 @@ namespace eRestorante.Services.Services
                     var est = mlContext.Recommendation().Trainers.MatrixFactorization(options);
 
                     model = est.Fit(trainData);
+                }
+
+                if(model==null)
+                {
+                    return null;
                 }
 
                 var dishes = _context.Dishes.Where(x => x.DishId != id);
