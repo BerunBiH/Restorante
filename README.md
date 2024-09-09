@@ -2,7 +2,7 @@
 
 This is a project I did for my University. It's a restaurant app that has a mobile and a desktop component. 
 
-The app was made using .NET and Flutter. The mobile app supports Android while the desktop client supports Windows. It's also possible to run the app on iOS on the mobile part and on Linux for the desktop part but those platforms were not the primary focus while developing the app.
+The app was made using .NET and Flutter. The mobile app supports Android while the desktop client supports Windows. It's also possible to run the app on iOS on the mobile part and on Linux for the desktop part but those platforms were not the primary focus while developing the app so you could experience unexpected behaviours, errors and bugs.
 
 The mobile app allows users to brows different dishes, create orders, reservations and view their user profile, while the desktop app allows the staff to look at the orders, tag them as done or not, put out new dishes and drinks, and manage the reservations.
 
