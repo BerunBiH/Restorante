@@ -354,14 +354,14 @@ Widget _foodCardBuilder(Dish dish) {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 20,),
-          Text(
+          recommendedDishes.isNotEmpty? Text(
             'Uz ovo jelo, najviše su se prodavali iduća 3 jela: ${recommendedDishes[0].dishName},${recommendedDishes[1].dishName},${recommendedDishes[2].dishName}',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
             ),
             textAlign: TextAlign.center,
-          ),
+          ): SizedBox.shrink(),
           SizedBox(height: 20,),
           Divider(
                   indent: 400,
@@ -803,7 +803,7 @@ Widget _buildLineChart() {
             pw.SizedBox(height: 8),
             pw.Text('Broj puta koje je jelo prodano: ${numOrder}', style: pw.TextStyle(font: ttf, fontSize: 16)),
             pw.SizedBox(height: 8),
-            pw.Text('Uz ovo jelo, najviše su se prodavali iduća 3 jela: ${recommendedDishes[0].dishName},${recommendedDishes[1].dishName},${recommendedDishes[2].dishName}', style: pw.TextStyle(font: ttf, fontSize: 16)),
+            recommendedDishes.isNotEmpty? pw.Text('Uz ovo jelo, najviše su se prodavali iduća 3 jela: ${recommendedDishes[0].dishName},${recommendedDishes[1].dishName},${recommendedDishes[2].dishName}', style: pw.TextStyle(font: ttf, fontSize: 16)):pw.SizedBox.shrink(),
             pw.SizedBox(height: 16),
   
             // Display the dish image

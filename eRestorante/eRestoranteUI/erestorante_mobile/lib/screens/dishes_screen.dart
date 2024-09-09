@@ -511,11 +511,12 @@ void _showInfoDialog(Dish dish) {
             child: ListBody(
               children: <Widget>[
                 Text('Uz jelo ${dish.dishName} žeimo Vam srdačno također preporučiti da probate:', textAlign: TextAlign.center,),
-                Text('${recommendDishes[0].dishName},${recommendDishes[1].dishName},${recommendDishes[2].dishName},', textAlign: TextAlign.center,style: TextStyle(
+                recommendDishes.isNotEmpty?Text('${recommendDishes[0].dishName},${recommendDishes[1].dishName},${recommendDishes[2].dishName},', textAlign: TextAlign.center,style: TextStyle(
                   fontWeight: FontWeight.bold,
                         fontSize: 24.0,
                         color: Colors.black,
-                ),),
+                ),):
+                Text("Upsss, nemamo Vam sta preporuciti :(")
               ],
             ),
           ),
