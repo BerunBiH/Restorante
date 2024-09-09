@@ -18,7 +18,6 @@ namespace eRestoranteAPI.Controllers
             _service = service;
         }
 
-        [Authorize]
         [HttpGet()]
         public async Task<PageResult<T>> Get([FromQuery]TSearch? search=null)
         {
