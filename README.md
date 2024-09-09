@@ -43,6 +43,7 @@ If you want to check only the API endpoints you can open [Swagger](http://localh
 
 
 ### If you choose the erestorante_desktop follow these steps:
+- If you are on widnows enable Developer mode
 - Open an IDE of your choice
 - Install all required dependencies:
 - `flutter pub get`
