@@ -66,6 +66,10 @@ For the mobile app use these credentials:
 `email: korisnik.korisnik@gmail.com`
 `password: korisnik`
 
+For the PayPal payment use these credentials:
+`email: rs2.personal@gmail.com`
+`password: ;2&c7&C3`
+
 ## WARNINGS
 Setting up the app can take a few minutes. The docker compose up command can take up to 3-4 minutes, while also the flutter run command can take 3-4 minutes if it's run on a slower machine, so have patience :)
 
