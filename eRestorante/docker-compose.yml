@@ -42,7 +42,7 @@ services:
 
 #rabbitMQ
   erestorante-rabbitmq:
-    image: rabbitmq:3.13-management
+    image: rabbitmq:3.8-management-alpine
     hostname: erestorante-rabbitmq
     restart: unless-stopped
     ports:
