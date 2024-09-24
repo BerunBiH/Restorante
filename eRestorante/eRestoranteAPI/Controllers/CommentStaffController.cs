@@ -15,19 +15,19 @@ namespace eRestoranteAPI.Controllers
         {
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<eRestorante.Models.Model.CommentStaff> Insert([FromBody] CommentStaffInsertRequest insert)
         {
             return base.Insert(insert);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<eRestorante.Models.Model.CommentStaff> Update(int id, [FromBody] CommentStaffUpdateRequest update)
         {
             return base.Update(id, update);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<IActionResult> Delete(int id)
         {
             return base.Delete(id);

@@ -33,6 +33,7 @@ namespace eRestoranteAPI.Controllers
             return await _service.Update(id, update);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> Delete(int id)
         {

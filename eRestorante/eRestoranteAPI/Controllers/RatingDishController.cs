@@ -15,19 +15,19 @@ namespace eRestoranteAPI.Controllers
         {
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<eRestorante.Models.Model.RatingDish> Insert([FromBody] RatingDishInsertRequest insert)
         {
             return base.Insert(insert);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<eRestorante.Models.Model.RatingDish> Update(int id, [FromBody] RatingDishUpdateRequest update)
         {
             return base.Update(id, update);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<IActionResult> Delete(int id)
         {
             return base.Delete(id);
