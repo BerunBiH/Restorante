@@ -293,7 +293,7 @@ Stack(
                       ):
                        SizedBox.shrink(),
                        SizedBox(height: 10.0),
-                         _buildBoolField(
+                      _buildBoolField(
                         isSpeciality: _isSpeciality,
                         onChanged: (value) {
                           setState(() {
@@ -338,74 +338,27 @@ Stack(
   );
 }
 Widget _buildBoolField({
-    required bool isSpeciality,
-    required Function(bool) onChanged,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              onChanged(true);
-            },
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              decoration: BoxDecoration(
-                color: isSpeciality ? Colors.green : Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: isSpeciality ? Colors.green : Colors.grey,
-                  width: 2.0,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  'Jest specijalitet',
-                  style: TextStyle(
-                    color: isSpeciality ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 10.0),
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              onChanged(false);
-            },
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              decoration: BoxDecoration(
-                color: !isSpeciality ? Colors.red : Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: !isSpeciality ? Colors.red : Colors.grey,
-                  width: 2.0,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  'Nije specijalitet',
-                  style: TextStyle(
-                    color: !isSpeciality ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  required bool isSpeciality,
+  required Function(bool) onChanged,
+}) {
+  return CheckboxListTile(
+    value: isSpeciality,
+    onChanged: (bool? newValue) {
+      if (newValue != null) {
+        onChanged(newValue);
+      }
+    },
+    title: Text(
+      isSpeciality ? 'Specijalitet: DA' : 'Specijalitet: NE',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: isSpeciality ? Colors.green : Colors.red,
+      ),
+    ),
+    activeColor: Colors.green,
+    checkColor: Colors.white,
+  );
+}
 
 
 Widget _buildTextField({

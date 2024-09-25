@@ -43,7 +43,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late UserProvider _userProvider;
   late DishProvider _dishProvider;
   SearchResult<User>? resultU;
-  SearchResult<Dish>? resultD;
+  SearchResult<Dish>? resultDishes;
   bool _isPdfReady = false;
   File? _pdfFile;
   final GlobalKey _pieChartKey = GlobalKey();
@@ -58,6 +58,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   int numOrder=0;
   List<RatingDishes> ratingDishes = [];
   List<Dish> recommendedDishes = [];
+  Dish? selectedDish;
   List<String> dates=[];
   List<double> averageReviews=[];
   double rating1=0;
@@ -78,6 +79,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   Future<void> _loadData() async {
     var dataU = await _userProvider.get();
     var data = await _categoryProvider.get();
+    var dataDishes = await _dishProvider.get();
     var dataReco;
     if(widget.dish!=null)
     {
@@ -86,12 +88,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
 
     setState(() {
+      resultDishes = dataDishes;
       resultU = dataU;
       result = data;
       category = result!.result;
       if(widget.dish!=null)
       {
         recommendedDishes=dataReco.result;
+        selectedDish=widget.dish!;
       }
       var user = resultU!.result.firstWhere((u) => u.userEmail!.contains(Authorization.email!));
       if (user.userRoles![0].role!.roleName != "Menedzer" || user.userRoles![0].role!.roleName != "Kuhar") {
@@ -191,57 +195,59 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: (widget.dish != null)
-                            ? _foodCardBuilder(widget.dish!)
-                            : Container(
-                              height: 200,
-                              width: 400,
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Dobrodošli na dio stranice za recenzije!',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        style: TextStyle(fontSize: 16, color: Colors.black), // Base text style
-                                        children: [
-                                          TextSpan(
-                                            text: 'Da biste pregledali recenzije za neko jelo, pritisnite ikonu ',
-                                          ),
-                                          WidgetSpan(
-                                            child: Icon(Icons.info_outline, size: 16, color: Colors.deepPurple),
-                                          ),
-                                          TextSpan(
-                                            text: ' Ta se ikona zajedno sa ikonama za uređivanje i brisanje jela nalazi na svakom jelu. Idite na \n',
-                                          ),
-                                          WidgetSpan(
-                                            child: TextButton(
-                                              onPressed: () { Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (context) => DishesScreen(),
-                                                              ),
-                                                            );
-                                              },
-                                              child: Text('jelovnik'),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
+                      child: Column(
+                        children: [
+                          _buildSearch(dishes: resultDishes!.result, selectedDish: widget.dish!=null?null: selectedDish, 
+                           onDishChanged: (Dish? value) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReviewScreen(dish: value,),
                               ),
-                            ),
+                            );
+                           }
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: (selectedDish != null)
+                                ? _foodCardBuilder(selectedDish!)
+                                : Container(
+                                  height: 200,
+                                  width: 400,
+                                  child: Card(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Dobrodošli na dio stranice za recenzije!',
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        RichText(
+                                          textAlign: TextAlign.center,
+                                          text: TextSpan(
+                                            style: TextStyle(fontSize: 16, color: Colors.black), // Base text style
+                                            children: [
+                                              TextSpan(
+                                                text: 'Da biste pregledali recenzije za neko jelo izaberite jelo iz liste iznad ili pritisnite ikonu ',
+                                              ),
+                                              WidgetSpan(
+                                                child: Icon(Icons.info_outline, size: 16, color: Colors.deepPurple),
+                                              ),
+                                              TextSpan(
+                                                text: ' Ta se ikona nalazi na jelovniku.',
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ),
+                                ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -250,6 +256,54 @@ class _ReviewScreenState extends State<ReviewScreen> {
       ),
     );
   }
+
+Widget _buildSearch({
+  required List<Dish> dishes,
+  required Dish? selectedDish,
+  required Function(Dish?) onDishChanged,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Container(
+        width: 1000,
+        child: Card(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 20.0),
+                const Text("Pretražite po nazivu jela da vidite recenziju."),
+                const SizedBox(height: 20.0),
+                DropdownButtonFormField<Dish>(
+                  value: selectedDish,
+                  hint: widget.dish==null? const Text("Izaberite jelo"): Text(widget.dish!.dishName!),
+                  items: dishes.map((Dish dish) {
+                    return DropdownMenuItem<Dish>(
+                      value: dish,
+                      child: Text(dish.dishName!),
+                    );
+                  }).toList(),
+                  onChanged: onDishChanged,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 10.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+
 
   // _foodCardBuilder function
 Widget _foodCardBuilder(Dish dish) {
@@ -511,7 +565,7 @@ Widget _foodCardBuilder(Dish dish) {
                           ),
                         );
                         },
-                      child: Text('NAZAD'),
+                      child: Text('NAZAD NA JELOVNIK'),
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
