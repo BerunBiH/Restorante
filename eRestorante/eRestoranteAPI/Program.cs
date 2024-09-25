@@ -625,21 +625,32 @@ using (var scope = app.Services.CreateScope())
             new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 3), CustomerId = 3, DishId = 3 },
             new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 4), CustomerId = 4, DishId = 4 },
             new RatingDish { RatingNumber = 2, RatingDate = new DateOnly(2024, 9, 5), CustomerId = 5, DishId = 5 },
-            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 6), CustomerId = 6, DishId = 6 },
-            new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 7), CustomerId = 7, DishId = 7 },
+            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 6), CustomerId = 6, DishId = 4 },
+            new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 7), CustomerId = 7, DishId = 9 },
             new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 8), CustomerId = 8, DishId = 8 },
             new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 9), CustomerId = 9, DishId = 9 },
             new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 10), CustomerId = 10, DishId = 10 },
             new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 11), CustomerId = 1, DishId = 2 },
             new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 12), CustomerId = 2, DishId = 3 },
-            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 13), CustomerId = 3, DishId = 4 },
+            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 13), CustomerId = 3, DishId = 5 },
             new RatingDish { RatingNumber = 2, RatingDate = new DateOnly(2024, 9, 14), CustomerId = 4, DishId = 5 },
             new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 15), CustomerId = 5, DishId = 6 },
-            new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 16), CustomerId = 6, DishId = 7 },
+            new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 16), CustomerId = 6, DishId = 1 },
             new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 17), CustomerId = 7, DishId = 8 },
             new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 18), CustomerId = 8, DishId = 9 },
             new RatingDish { RatingNumber = 2, RatingDate = new DateOnly(2024, 9, 19), CustomerId = 9, DishId = 10 },
-            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 20), CustomerId = 10, DishId = 1 }
+            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 20), CustomerId = 10, DishId = 1 },
+            new RatingDish { RatingNumber = 1, RatingDate = new DateOnly(2024, 9, 21), CustomerId = 1, DishId = 3 },
+            new RatingDish { RatingNumber = 2, RatingDate = new DateOnly(2024, 9, 22), CustomerId = 2, DishId = 2 },
+            new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 23), CustomerId = 3, DishId = 5 },
+            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 24), CustomerId = 4, DishId = 6 },
+            new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 25), CustomerId = 5, DishId = 5 },
+            new RatingDish { RatingNumber = 2, RatingDate = new DateOnly(2024, 9, 26), CustomerId = 6, DishId = 8 },
+            new RatingDish { RatingNumber = 3, RatingDate = new DateOnly(2024, 9, 27), CustomerId = 7, DishId = 9 },
+            new RatingDish { RatingNumber = 4, RatingDate = new DateOnly(2024, 9, 28), CustomerId = 8, DishId = 10 },
+            new RatingDish { RatingNumber = 1, RatingDate = new DateOnly(2024, 9, 29), CustomerId = 9, DishId = 1 },
+            new RatingDish { RatingNumber = 5, RatingDate = new DateOnly(2024, 9, 30), CustomerId = 10, DishId = 2 }
+
         );
 
         dataContext.Orders.AddRange(
