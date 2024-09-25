@@ -15,13 +15,13 @@ namespace eRestoranteAPI.Controllers
         {
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<eRestorante.Models.Model.Customer> Insert([FromBody] CustomerInsertRequest insert)
         {
             return base.Insert(insert);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<eRestorante.Models.Model.Customer> Update(int id, [FromBody] CustomerUpdateRequest update)
         {
             return base.Update(id, update);

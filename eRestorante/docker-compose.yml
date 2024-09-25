@@ -3,7 +3,7 @@ networks:
     driver: bridge 
 
 services:
-#mssql docker
+  # mssql docker
   erestorante-sql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     restart: unless-stopped
@@ -38,9 +38,8 @@ services:
       - erestorante-sql
     depends_on:
       - erestorante-sql
-      - erestorante-rabbitmq
 
-#rabbitMQ
+  # RabbitMQ
   erestorante-rabbitmq:
     image: rabbitmq:3.8-management-alpine
     hostname: erestorante-rabbitmq
@@ -55,14 +54,20 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER} 
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD} 
+    depends_on:
+      - erestorante-api
     networks:
       - erestorantenet
     volumes:
       - ./docker_data/rabbitmq_data:/var/lib/rabbitmq
       - ./docker_data/rabbitmq_logs:/var/log/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
-#ReservationMailingService
-
+  # ReservationMailingService
   erestorante-mailingservice:
     restart: unless-stopped
     container_name: erestorante-mailingservice
@@ -81,10 +86,7 @@ services:
       - SmtpPass=${SMTP_PASS}
       - SmtpUser=${SMTP_USER}
     depends_on:
-      - erestorante-rabbitmq
-      - erestorante-api
-      - erestorante-sql 
+      erestorante-rabbitmq:
+        condition: service_healthy
     networks:
       - erestorantenet
-
-

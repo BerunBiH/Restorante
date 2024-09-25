@@ -19,19 +19,19 @@ namespace eRestoranteAPI.Controllers
         {
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<OrderDrinks> Insert([FromBody] OrderDrinksInsertRequest insert)
         {
             return base.Insert(insert);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<OrderDrinks> Update(int id, [FromBody] OrderDrinksUpdateRequest update)
         {
             return base.Update(id, update);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public override Task<IActionResult> Delete(int id)
         {
             return base.Delete(id);
