@@ -455,6 +455,8 @@ Future<void> _loadData() async {
                                     {
                                         try{
                                             CustomerInsert newUser=CustomerInsert(widget._nameController.text, widget._surenameController.text, widget._emailController.text, widget._phoneController.text,widget._passwordController.text,widget._passwordRepeatController.text,base64Image);
+                                            Authorization.email="admin.admin@gmail.com";
+                                            Authorization.password="admin";
                                             await _customerProvider.insert(newUser);
                                             showDialog(
                                               barrierDismissible: false,

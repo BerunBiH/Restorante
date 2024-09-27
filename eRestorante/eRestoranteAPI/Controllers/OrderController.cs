@@ -20,9 +20,9 @@ namespace eRestoranteAPI.Controllers
         }
 
         [Authorize]
-        public override Task<eRestorante.Models.Model.Order> Insert([FromBody] OrderInsertRequest insert)
+        public override async Task<eRestorante.Models.Model.Order> Insert([FromBody] OrderInsertRequest insert)
         {
-            return base.Insert(insert);
+            return await _service.Insert(insert);
         }
 
         [Authorize]

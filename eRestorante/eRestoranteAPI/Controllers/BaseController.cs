@@ -25,7 +25,7 @@ namespace eRestoranteAPI.Controllers
             return await _service.Get(search);
         }
 
-        [Authorize(Roles = "Menedzer, Konobar, Gost, Kuhar, Šanker")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<T> GetById(int id)
         {
