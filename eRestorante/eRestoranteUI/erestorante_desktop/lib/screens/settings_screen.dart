@@ -59,6 +59,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       users = resultU!.result;
       user = users.firstWhere((x) => x.userId == Info.id);
       _isLoading = false;
+      widget._emailController.text=user.userEmail!;
+      widget._nameController.text=user.userName!;
+      widget._surenameController.text=user.userSurname!;
+      widget._phoneController.text=user.userPhone!;
     });
   }
 Future<void> _pickImage() async {

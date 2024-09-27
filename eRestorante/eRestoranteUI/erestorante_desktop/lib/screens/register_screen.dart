@@ -238,6 +238,14 @@ Future<void> _loadData() async {
     resultU=dataU;
     users=resultU!.result;
 
+    if(widget.user!=null)
+    {
+      widget._emailController.text=widget.user!.userEmail!;
+      widget._nameController.text=widget.user!.userName!;
+      widget._surenameController.text=widget.user!.userSurname!;
+      widget._phoneController.text=widget.user!.userPhone!;
+    }
+
     _isLoading = false;
   });
 }
