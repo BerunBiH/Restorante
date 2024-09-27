@@ -65,6 +65,14 @@ Future<void> _loadData() async {
     result = data;
     category = result!.result;
     _isLoading = false;
+
+        if(widget.drink!=null)
+    {
+      widget._costController.text=widget.drink!.drinkCost.toString();
+      widget._descriptionController.text=widget.drink!.drinkDescription!;
+      widget._nameController.text=widget.drink!.drinkName!;
+      widget._alcoholController.text=widget.drink!.drinkAlcoholPerc!.toString();
+    }
   });
 }
 

@@ -19,6 +19,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class DishAddScreen extends StatefulWidget {
@@ -70,6 +71,13 @@ Future<void> _loadData() async {
     category = result!.result;
     _isLoading = false;
     _isSpeciality = widget.dish?.speciality ?? false;
+
+    if(widget.dish!=null)
+    {
+      widget._costController.text=widget.dish!.dishCost.toString();
+      widget._descriptionController.text=widget.dish!.dishDescription!;
+      widget._nameController.text=widget.dish!.dishName!;
+    }
   });
 }
 

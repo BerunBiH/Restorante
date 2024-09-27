@@ -61,6 +61,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       resultU = dataU;
       customers = resultU!.result;
       customer = customers.firstWhere((x) => x.customerId == Info.id);
+
+      widget._emailController.text=customer.customerEmail!;
+      widget._surenameController.text=customer.customerSurname!;
+      widget._phoneController.text=customer.customerPhone!;
+      widget._nameController.text=customer.customerName!;
+      
       _isLoading = false;
     });
   }
