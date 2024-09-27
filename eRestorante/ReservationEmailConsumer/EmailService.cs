@@ -34,6 +34,7 @@ public class EmailService
 
             var smtpPass = Environment.GetEnvironmentVariable("SmtpPass");
             var smtpUser = Environment.GetEnvironmentVariable("SmtpUser");
+
             client.Authenticate(smtpUser, smtpPass);
 
             client.Send(emailMessage);

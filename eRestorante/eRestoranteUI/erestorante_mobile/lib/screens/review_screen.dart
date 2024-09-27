@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:erestorante_mobile/models/commentDish.dart';
 import 'package:erestorante_mobile/models/dish.dart';
+import 'package:erestorante_mobile/models/ratingDishInsert.dart';
 import 'package:erestorante_mobile/models/ratingDishes.dart';
 import 'package:erestorante_mobile/models/search_result.dart';
 import 'package:erestorante_mobile/providers/comment_dish_provider.dart';
 import 'package:erestorante_mobile/providers/dish_provider.dart';
 import 'package:erestorante_mobile/providers/rating_dish_provider.dart';
+import 'package:erestorante_mobile/screens/comment_dish_screen.dart';
 import 'package:erestorante_mobile/screens/staff_review_screen.dart';
 import 'package:erestorante_mobile/utils/util.dart';
 import 'package:erestorante_mobile/widgets/master_screen.dart';
@@ -32,6 +34,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late List<ImageProvider> _dishImages;
   List<bool> _isExpandedList = [];
   List<Dish> newListDish=[];
+  late List<Dish> dishes;
+  int? selectedUserId;
+  int? grade;
+  List<int> numbers=[1,2,3,4,5];
 
   @override
   void initState() {
@@ -55,6 +61,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
     setState(() {
       resultD = dataD;
+      dishes=resultD!.result;
       resultRD = dataRD;
       resultCD = dataCD;
       for(var ratingDish in resultRD!.result)
@@ -121,6 +128,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         },
                       ),
                     ),
+                    _buildRegisterButton(context)
                   ],
                 ),
               ),
@@ -278,6 +286,182 @@ class _ReviewScreenState extends State<ReviewScreen> {
       ),
     );
   }
+
+  Container _buildRegisterButton(BuildContext context) {
+    return Container(
+      width: 400,
+      height: 100,
+      child: Card(
+        child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: ElevatedButton(
+                      onPressed: () {
+                          showDialog(
+              barrierDismissible: false,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return StatefulBuilder(
+                                            builder: (context, setState) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                  "Recenzirajte jelo",
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                content: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      "Da bi recenzirali jelo ispunite dole zadana polja:",
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(height: 20),
+                                                    Text(
+                                                      "Izaberite jelo:",
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    DropdownButton<int>(
+                                                      value: selectedUserId,  // This should be an integer (userId)
+                                                      hint: Text("Izaberite jelo"),
+                                                      onChanged: (int? newValue) {
+                                                        setState(() {
+                                                          selectedUserId = newValue;  // Change the userId, not userName
+                                                        });
+                                                      },
+                                                      items: dishes.map<DropdownMenuItem<int>>((Dish dish) {
+                                                        return DropdownMenuItem<int>(
+                                                          value: dish.dishID,  // Use userId as the value
+                                                          child: Text('${dish.dishName}'),  // Display name
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                    Text(
+                                                      "Ocjenite jelo na skali od 1 do 5:",
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                     DropdownButton<int>(
+                                                      value: grade, 
+                                                      hint: Text("Izaberite ocjenu"),
+                                                      onChanged: (int? newValue) {
+                                                        setState(() {
+                                                          grade = newValue;  
+                                                        });
+                                                      },
+                                                      items: numbers.map<DropdownMenuItem<int>>((int number) {
+                                                        return DropdownMenuItem<int>(
+                                                          value: number,
+                                                          child: Text(number.toString()),
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                    
+                                                ],
+                                                ),
+                                                actions: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      ElevatedButton(
+                                                        onPressed: () async {
+                                                          selectedUserId;
+                                                          try{
+                                                            RatingDishInsert newRating= RatingDishInsert(Info.id, selectedUserId, grade);
+                                                            await _ratingDishProvider.insert(newRating);  
+                                                              Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => CommentDishScreen(selectedUserId: selectedUserId!,),
+                                                              ),
+                                                            );
+                                                          }
+                                                          catch(e)
+                                                          {
+                                                              showDialog(
+                                                                barrierDismissible: false,
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return StatefulBuilder(
+                                                                    builder: (context, setState) {
+                                                                      return AlertDialog(
+                                                                        title: Text(
+                                                                          "Upps, nešto nije okay",
+                                                                          textAlign: TextAlign.center,
+                                                                        ),
+                                                                        content: Column(
+                                                                          mainAxisSize: MainAxisSize.min,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Nešto nije okay, pokušajte ponovo!",
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                            SizedBox(height: 20),
+                                                                          ],
+                                                                        ),
+                                                                        actions: [
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              ElevatedButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: const Text("Ok"),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  );
+                                                                },
+                                                              );
+                                                      
+                                                          }
+                                                        },
+                                                        child: const Text("Ok"),
+                                                      ),
+                                                      SizedBox(width: 20.0,),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10.0),
+                                                          ),
+                                                          overlayColor: Colors.red,
+                                                          surfaceTintColor: const Color.fromARGB(255, 255, 0, 0),
+                                                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                                                        ),
+                                                        onPressed: () async {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: const Text("Odustani"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
+                      },
+                      child: Text('Ocjeni jelo'),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        surfaceTintColor:  Colors.green,
+                        overlayColor: Colors.green,
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      ),
+            )
+        )
+      )
+      );
+  }
+ 
 
   void _showDetailsDialog(Dish dish){
     List<RatingDishes> ratingForDish=[];

@@ -6,10 +6,10 @@ part 'commentDishInsert.g.dart';
 @JsonSerializable(explicitToJson: true)
 class CommentDishInsert{
   int? dishId;
-  int? userId;
+  int? CustomerId;
   String? commentText;
 
-  CommentDishInsert(this.dishId, this.userId, this.commentText);
+  CommentDishInsert(this.dishId, this.CustomerId, this.commentText);
 
   factory CommentDishInsert.fromJson(Map<String, dynamic> json) => _$CommentDishInsertFromJson(json);
 
