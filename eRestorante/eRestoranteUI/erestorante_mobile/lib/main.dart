@@ -167,6 +167,8 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
+                            Authorization.email="admin.admin@gmail.com";
+                            Authorization.password="admin";
                             Navigator.push(
                               context,
                               MaterialPageRoute(
