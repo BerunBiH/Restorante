@@ -76,5 +76,7 @@ Setting up the app can take a few minutes. The docker compose up command can tak
 
 PayPal is in German because my account is a german one, so that is not a bug.
 
+For everything else just send me a message :)
+
 ## LICENSE
 This whole project is for my university so it has an Apache-2.0 licese which you can feel free to use.
