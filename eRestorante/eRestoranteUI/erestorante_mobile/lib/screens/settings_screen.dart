@@ -442,7 +442,7 @@ Widget _buildPasswordTextField({
 }) {
   return TextField(
     controller: controller,
-    obscureText: obscureText,
+    obscureText: !obscureText,
     decoration: InputDecoration(
       labelText: labelText,
       prefixIcon: Icon(Icons.lock),
@@ -504,6 +504,9 @@ Widget _buildButtonRow() {
           }
           await _customerProvider.update(customer.customerId!,newCustomer);
           Authorization.email=newCustomer.customerEmail;
+          Info.image=newCustomer.customerImage;
+          Info.name = newCustomer.customerName;
+          Info.surname = newCustomer.customerSurname;
            showDialog(
             barrierDismissible: false,
                                       context: context,
@@ -532,7 +535,6 @@ Widget _buildButtonRow() {
                                                   children: [
                                                     ElevatedButton(
                                                       onPressed: () async {
-                                                        Info.image=newCustomer.customerImage;
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(

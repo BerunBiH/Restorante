@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cross_scroll/cross_scroll.dart';
 import 'package:erestorante_mobile/models/dish.dart';
 import 'package:erestorante_mobile/models/drink.dart';
@@ -39,6 +41,9 @@ class _ArchiveOrderScreenState extends State<ArchiveOrderScreen> {
   double totalPrice=0.0;
   bool authorised=false;
   bool _isLoading = true;
+  bool _isSwipingHintVisible = true;
+  double _swipePosition = 0.0;
+  late Timer _swipeTimer;
  @override
   void initState() {
     super.initState();
@@ -46,6 +51,7 @@ class _ArchiveOrderScreenState extends State<ArchiveOrderScreen> {
     _dishProvider = context.read<DishProvider>();
     _drinkProvider = context.read<DrinkProvider>();
     _loadData();
+    _startSwipeHintAnimation();
   }
   Future<void> _loadData() async {
     var dataO = await _orderProvider.get(filter: {
@@ -60,6 +66,25 @@ class _ArchiveOrderScreenState extends State<ArchiveOrderScreen> {
     });
   }
 
+  void _startSwipeHintAnimation() {
+  _swipeTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    if (mounted) {
+      setState(() {
+        _swipePosition = _swipePosition == 0.0 ? 50.0 : 0.0; 
+      });
+    }
+  });
+}
+
+void _stopSwipeHintAnimation() {
+  if (_isSwipingHintVisible) {
+    setState(() {
+      _isSwipingHintVisible = false;
+    });
+    _swipeTimer.cancel();
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +98,21 @@ class _ArchiveOrderScreenState extends State<ArchiveOrderScreen> {
       orderExists: false,
       child: (_isLoading) ?
       Center(child: CircularProgressIndicator()):
-      _buildAuthorisation()
+      GestureDetector(
+              onPanDown: (_) => _stopSwipeHintAnimation(),
+              child: Stack(
+                children: [
+                  _buildAuthorisation(),
+                  if (_isSwipingHintVisible)
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 300),
+                      bottom: 100.0 ,
+                      left: (_swipePosition + (MediaQuery.of(context).size.width / 2)) - 25,
+                      child: Icon(Icons.arrow_forward, size: 70, color: Color.fromARGB(255, 149, 97, 233)),
+                    ),
+                ],
+              ),
+            ),
     );
   }
 

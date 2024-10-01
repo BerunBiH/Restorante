@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cross_scroll/cross_scroll.dart';
 import 'package:erestorante_mobile/models/reservation.dart';
 import 'package:erestorante_mobile/models/reservationUpdate.dart';
@@ -25,11 +27,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
   late ReservationProvider _reservationProvider;
   SearchResult<Reservation>? resultR;
   bool _isLoading = true;
+  bool _isSwipingHintVisible = true;
+  double _swipePosition = 0.0;
+  late Timer _swipeTimer;
  @override
   void initState() {
     super.initState();
     _reservationProvider = context.read<ReservationProvider>();
     _loadData();
+     _startSwipeHintAnimation();
   }
   Future<void> _loadData() async {
     var dataR = await _reservationProvider.get(filter: {
@@ -41,19 +47,54 @@ class _ReservationScreenState extends State<ReservationScreen> {
     });
   }
 
+  
+void _startSwipeHintAnimation() {
+  _swipeTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    if (mounted) {
+      setState(() {
+        _swipePosition = _swipePosition == 0.0 ? 50.0 : 0.0; 
+      });
+    }
+  });
+}
+
+void _stopSwipeHintAnimation() {
+  if (_isSwipingHintVisible) {
+    setState(() {
+      _isSwipingHintVisible = false;
+    });
+    _swipeTimer.cancel();
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(isJelovnikPressed: false,
-    isKorpaPressed: false,
-    isMojProfilPressed: false,
-    isPostavkePressed: false,
-    isRecenzijePressed: false,
-    isRezervacijePressed: true,
-    orderExists: false,
-      child: (_isLoading) ?
-      Center(child: CircularProgressIndicator()):
-      _buildAuthorisation()
+    return MasterScreenWidget(
+      isJelovnikPressed: false,
+      isKorpaPressed: false,
+      isMojProfilPressed: false,
+      isPostavkePressed: false,
+      isRecenzijePressed: false,
+      isRezervacijePressed: true,
+      orderExists: false,
+      child: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : GestureDetector(
+              onPanDown: (_) => _stopSwipeHintAnimation(),
+              child: Stack(
+                children: [
+                  _buildAuthorisation(),
+                  if (_isSwipingHintVisible)
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 300),
+                      bottom: 100.0 ,
+                      left: (_swipePosition + (MediaQuery.of(context).size.width / 2)) - 25,
+                      child: Icon(Icons.arrow_forward, size: 70, color: Color.fromARGB(255, 149, 97, 233)),
+                    ),
+                ],
+              ),
+            ),
     );
   }
 
