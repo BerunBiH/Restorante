@@ -504,6 +504,7 @@ Widget _buildButtonRow() {
           }
           await _customerProvider.update(customer.customerId!,newCustomer);
           Authorization.email=newCustomer.customerEmail;
+          Authorization.password=newCustomer.customerPassword;
           Info.image=newCustomer.customerImage;
           Info.name = newCustomer.customerName;
           Info.surname = newCustomer.customerSurname;
